@@ -264,8 +264,8 @@ public class _2_Level extends EditorObject {
                     }
                     public double getDepth() {
                         //System.out.println(part.getAttribute("depth").doubleValue());
-                        //return part.getAttribute("depth").doubleValue();
-                        return -100000;
+                        return part.getAttribute("depth").doubleValue() + -100000;
+                        //return -100000;
                     }
                     public double getAlpha() {
                         return 1.0; // part.getAttribute("imageAlpha").doubleValue();
