@@ -3,6 +3,7 @@ package com.woogleFX.engine.fx;
 import com.woogleFX.editorObjects.EditorObject;
 import com.woogleFX.editorObjects.attributes.EditorAttribute;
 import com.woogleFX.engine.fx.hierarchy.FXHierarchy;
+import com.woogleFX.engine.gui.BackgroundViewer;
 import com.woogleFX.file.FileManager;
 import com.woogleFX.file.resourceManagers.ResourceManager;
 import com.woogleFX.engine.LevelManager;
@@ -23,6 +24,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTreeTableCell;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 
@@ -156,6 +158,10 @@ public class FXPropertiesView {
                         before = getItem();
 
                         Bounds bounds = localToScreen(getBoundsInLocal());
+
+                        if (this.getTableRow().getItem().getName().equalsIgnoreCase("backgroundId")) {
+                            new BackgroundViewer(GameVersion.VERSION_WOG2, this).start(new Stage());
+                        }
 
                         if (bounds == null) return;
 
