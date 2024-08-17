@@ -108,8 +108,18 @@ public class FXPropertiesView {
                 } else {
 
                     if (getTableRow().getTreeItem() != null) {
-                        EditorAttribute EditorAttribute = getTableRow().getTreeItem().getValue();
-                        if (InputField.verify(EditorAttribute.getObject(), EditorAttribute.getType(), EditorAttribute.stringValue())) {
+                        EditorAttribute attribute = getTableRow().getTreeItem().getValue();
+
+                        boolean valid = true;
+
+                        if (attribute.stringValue().isEmpty()) {
+                            if (!InputField.verify(attribute.getObject(), attribute.getType(), attribute.getDefaultValue(), attribute.getRequiredInFile())) {
+                                valid = false;
+                            }
+                        } else if (!InputField.verify(attribute.getObject(), attribute.getType(), attribute.actualValue(), attribute.getRequiredInFile())) {
+                            valid = false;
+                        }
+                        if (valid) {
                             setStyle("-fx-text-fill: #000000ff");
                         } else {
                             setStyle("-fx-text-fill: #ff0000ff");
@@ -171,7 +181,8 @@ public class FXPropertiesView {
                         if (contextMenu != null) contextMenu.hide();
                         contextMenu = possibleAttributeValues(this, getItem(), LevelManager.getLevel().getVersion());
 
-                        if (((VBox)((ScrollPane)contextMenu.getItems().get(0).getGraphic()).getContent()).getChildren().isEmpty()) return;
+
+                        if (contextMenu.getItems().isEmpty() || ((VBox)((ScrollPane)contextMenu.getItems().get(0).getGraphic()).getContent()).getChildren().isEmpty()) return;
 
                         contextMenu.show(FXStage.getStage(), x, y);
 
@@ -244,7 +255,7 @@ public class FXPropertiesView {
                     public void commitEdit(String s) {
                         InputField type = getTableRow().getItem().getType();
                         EditorObject object = getTableRow().getItem().getObject();
-                        super.commitEdit(InputField.verify(object, type, s) ? s : before);
+                        super.commitEdit(InputField.verify(object, type, s, getTableRow().getItem().getRequiredInFile()) ? s : before);
                     }
 
 
@@ -268,12 +279,12 @@ public class FXPropertiesView {
             // Change the actual attribute to reflect the edit.
             EditorAttribute attribute = propertiesView.getTreeItem(e.getTreeTablePosition().getRow()).getValue();
             String oldValue = attribute.stringValue();
-            if (InputField.verify(attribute.getObject(), attribute.getType(), e.getNewValue())) {
+            if (InputField.verify(attribute.getObject(), attribute.getType(), e.getNewValue(), attribute.getRequiredInFile())) {
                 attribute.getObject().setAttribute(attribute.getName(), e.getNewValue());
             }
 
             // If the edit was actually valid:
-            if (e.getNewValue().isEmpty() || InputField.verify(attribute.getObject(), attribute.getType(), e.getNewValue())) {
+            if (e.getNewValue().isEmpty() || InputField.verify(attribute.getObject(), attribute.getType(), e.getNewValue(), attribute.getRequiredInFile())) {
 
                 // Push an attribute change to the undo buffer.
                 UndoManager.registerChange(new AttributeChangeAction(attribute, oldValue,
@@ -364,7 +375,7 @@ public class FXPropertiesView {
     private static ContextMenu possibleAttributeValues(TextFieldTreeTableCell<EditorAttribute, String> cell, String currentText, GameVersion version) {
         ContextMenu contextMenu = new ContextMenu();
         EditorAttribute attribute = cell.getTableRow().getItem();
-        if (attribute == null) {
+        if (attribute == null || attribute.getType() == null) {
             return contextMenu;
         }
 
@@ -405,7 +416,7 @@ public class FXPropertiesView {
             }
             case _1_BALL -> {
                 String path = FileManager.getGameDir(version);
-                File[] ballFiles = new File(path + "\\res\\balls").listFiles();
+                File[] ballFiles = new File(path + "/res/balls").listFiles();
                 if (ballFiles != null) {
                     for (File ballFile : ballFiles) {
                         Button setImageItem = new Button(ballFile.getName());
@@ -427,7 +438,7 @@ public class FXPropertiesView {
             }
             case _2_BALL_TYPE -> {
                 String path = FileManager.getGameDir(version);
-                File[] ballFiles = new File(path + "\\res\\balls").listFiles();
+                File[] ballFiles = new File(path + "/res/balls").listFiles();
                 if (ballFiles != null) {
                     for (File ballFile : ballFiles) {
                         if (ballFile.getName().contains(".")) continue;

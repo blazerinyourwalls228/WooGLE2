@@ -121,6 +121,7 @@ public class MouseReleasedManager {
                     }
                 }
             } else if (level instanceof WOG2Level wog2Level) {
+                boolean foundAlready = false;
                 for (EditorObject ball : wog2Level.getObjects().toArray(new EditorObject[0])) {
                     if (ball instanceof _2_Level_BallInstance ballInstance) {
                         if (ball != SelectionManager.getStrand1Gooball()) {
@@ -142,10 +143,14 @@ public class MouseReleasedManager {
                                     SelectionManager.getStrand1Gooball().update();
                                     ball.update();
 
+                                    foundAlready = true;
                                     break;
 
                                 }
                             }
+
+                            if (foundAlready) break;
+
                         }
                     }
                 }

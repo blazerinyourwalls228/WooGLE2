@@ -90,7 +90,7 @@ public class _2_Item_Object extends EditorObject {
                 image = ResourceManager.getImage(null, getAttribute("name").stringValue(), GameVersion.VERSION_WOG2);
             }
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
         }
 
 

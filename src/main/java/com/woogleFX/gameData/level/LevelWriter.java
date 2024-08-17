@@ -193,11 +193,11 @@ public class LevelWriter {
 
         LevelInformation levelInformation = getAllLevelInformation(level);
 
-        String levelName = outputPathString.substring(outputPathString.lastIndexOf("\\") + 1);
+        String levelName = outputPathString.substring(outputPathString.lastIndexOf("/") + 1);
 
-        String scenePathText = outputPathString + "\\" + levelName + ".scene";
-        String levelPathText = outputPathString + "\\" + levelName + ".level";
-        String resrcPathText = outputPathString + "\\" + levelName + ".resrc";
+        String scenePathText = outputPathString + "/" + levelName + ".scene";
+        String levelPathText = outputPathString + "/" + levelName + ".level";
+        String resrcPathText = outputPathString + "/" + levelName + ".resrc";
 
         if (exportingGoomod) {
             //If exporting to goomod, add .xml to the end of each path.
@@ -215,13 +215,13 @@ public class LevelWriter {
         String textPathText = "text.xml";
 
         if (!exportingGoomod) {
-            addinPathText = outputPathString + "\\" + levelName + "." + addinPathText;
-            textPathText = outputPathString + "\\" + levelName + "." + textPathText;
+            addinPathText = outputPathString + "/" + levelName + "." + addinPathText;
+            textPathText = outputPathString + "/" + levelName + "." + textPathText;
         } else {
             String WoGDir = FileManager.getGameDir(version);
-            String initialPath = WoGDir + "\\res\\levels\\" + levelName + "\\goomod";
-            addinPathText = initialPath + "\\" + addinPathText;
-            textPathText = initialPath + "\\" + textPathText;
+            String initialPath = WoGDir + "/res/levels/" + levelName + "/goomod";
+            addinPathText = initialPath + "/" + addinPathText;
+            textPathText = initialPath + "/" + textPathText;
         }
 
         Path outputPath = Path.of(outputPathString);
@@ -251,15 +251,15 @@ public class LevelWriter {
         }
 
         String otherDir = FileManager.getGameDir(version == GameVersion.VERSION_WOG1_NEW ? GameVersion.VERSION_WOG1_OLD : GameVersion.VERSION_WOG1_NEW);
-        if (!exportingGoomod && Files.exists(Path.of(otherDir + "\\res\\levels\\" + levelName))) {
-            File[] images = new File(otherDir + "\\res\\levels\\" + levelName).listFiles();
+        if (!exportingGoomod && Files.exists(Path.of(otherDir + "/res/levels/" + levelName))) {
+            File[] images = new File(otherDir + "/res/levels/" + levelName).listFiles();
             if (images != null) for (File imageFile : images) {
                 /* Make sure that we're not saving a "goomod" folder or something */
                 if (imageFile.getName().contains(".png") || imageFile.getName().contains(".ogg")) {
                     if (imageFile.getPath().substring(imageFile.getPath().lastIndexOf(".")).equals(".png") ||
                             imageFile.getPath().substring(imageFile.getPath().lastIndexOf(".")).equals(".ogg")) {
-                        if (!Files.exists(Path.of(outputPath + "\\" + imageFile.getName()))) {
-                            Files.copy(imageFile.toPath(), Path.of(outputPath + "\\" + imageFile.getName()));
+                        if (!Files.exists(Path.of(outputPath + "/" + imageFile.getName()))) {
+                            Files.copy(imageFile.toPath(), Path.of(outputPath + "/" + imageFile.getName()));
                         }
                     }
                 }

@@ -31,6 +31,7 @@ import com.woogleFX.gameData.level.GameVersion;
 import com.woogleFX.gameData.level.WOG1Level;
 import com.woogleFX.gameData.level.WOG2Level;
 import com.worldOfGoo2.level._2_Level;
+import javafx.stage.FileChooser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
@@ -79,7 +80,7 @@ public class FileManager {
         return failedImage;
     }
     public static void openFailedImage() throws IOException {
-        failedImage = openImageFromFilePath(editorLocation + "ObjectIcons\\failed.png");
+        failedImage = openImageFromFilePath(editorLocation + "ObjectIcons/failed.png");
     }
 
 
@@ -88,9 +89,9 @@ public class FileManager {
     static {
         String editorLocation1;
         try {
-            editorLocation1 = new File(SupremeMain.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent() + "\\";
-            if (!Files.exists(Path.of(editorLocation1 + "\\src"))) {
-                editorLocation1 = new File(SupremeMain.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getParent() + "\\";
+            editorLocation1 = new File(SupremeMain.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent() + "/";
+            if (!Files.exists(Path.of(editorLocation1 + "/src"))) {
+                editorLocation1 = new File(SupremeMain.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getParent() + "/";
             }
             logger.debug(editorLocation1);
         } catch (URISyntaxException ignored) {
@@ -168,7 +169,7 @@ public class FileManager {
 
             case VERSION_WOG1_OLD -> {
 
-                String levelDir = oldWOG1dir + "\\res\\levels\\" + levelName + "\\" + levelName;
+                String levelDir = oldWOG1dir + "/res/levels/" + levelName + "/" + levelName;
 
                 File sceneF = new File(levelDir + ".scene.bin");
                 saxParser.parse(new InputSource(new StringReader(bytesToString(AESBinFormat.decodeFile(sceneF)))), defaultHandler);
@@ -193,7 +194,7 @@ public class FileManager {
 
             case VERSION_WOG1_NEW -> {
 
-                String levelDir = newWOG1dir + "\\res\\levels\\" + levelName + "\\" + levelName;
+                String levelDir = newWOG1dir + "/res/levels/" + levelName + "/" + levelName;
 
                 File sceneF = new File(levelDir + ".scene");
                 saxParser.parse(sceneF, defaultHandler);
@@ -218,8 +219,13 @@ public class FileManager {
 
             case VERSION_WOG2 -> {
 
-                String contents = Files.readString(Path.of(WOG2dir + "\\res\\levels\\" + levelName + ".wog2"));
-                EditorObject levelObject = ObjectGOOParser.read("_2_Level", contents);
+                String contents = Files.readString(Path.of(WOG2dir + "/res/levels/" + levelName + ".wog2"));
+                EditorObject levelObject;
+                try {
+                    levelObject = ObjectGOOParser.read("_2_Level", contents);
+                } catch (Exception e) {
+                    throw new IOException("Failed to deserialize level " + levelName);
+                }
                 ArrayList<EditorObject> objects = new ArrayList<>();
                 Stack<EditorObject> toAdd = new Stack<>();
                 toAdd.push(levelObject);
@@ -258,16 +264,16 @@ public class FileManager {
 
         BallFileOpener defaultHandler = new BallFileOpener(objects, resources, version);
         if (version == GameVersion.VERSION_WOG1_OLD) {
-            File ballFile = new File(oldWOG1dir + "\\res\\balls\\" + ballName + "\\balls.xml.bin");
-            File ballFileR = new File(oldWOG1dir + "\\res\\balls\\" + ballName + "\\resources.xml.bin");
+            File ballFile = new File(oldWOG1dir + "/res/balls/" + ballName + "/balls.xml.bin");
+            File ballFileR = new File(oldWOG1dir + "/res/balls/" + ballName + "/resources.xml.bin");
             BallFileOpener.mode = 0;
             saxParser.parse(new InputSource(new StringReader(bytesToString(AESBinFormat.decodeFile(ballFile)))), defaultHandler);
             BallFileOpener.mode = 1;
             saxParser.parse(new InputSource(new StringReader(bytesToString(AESBinFormat.decodeFile(ballFileR)))), defaultHandler);
             return new _Ball(objects, resources);
         } else if (version == GameVersion.VERSION_WOG1_NEW) {
-            File ballFile = new File(newWOG1dir + "\\res\\balls\\" + ballName + "\\balls.xml");
-            File ballFileR = new File(newWOG1dir + "\\res\\balls\\" + ballName + "\\resources.xml");
+            File ballFile = new File(newWOG1dir + "/res/balls/" + ballName + "/balls.xml");
+            File ballFileR = new File(newWOG1dir + "/res/balls/" + ballName + "/resources.xml");
             BallFileOpener.mode = 0;
             saxParser.parse(ballFile, defaultHandler);
             BallFileOpener.mode = 1;
@@ -293,17 +299,17 @@ public class FileManager {
         String dir;
         if (version == GameVersion.VERSION_WOG1_OLD) {
             dir = oldWOG1dir;
-            ballFile = new File(dir + "\\properties\\resources.xml.bin");
+            ballFile = new File(dir + "/properties/resources.xml.bin");
             saxParser.parse(new InputSource(new StringReader(bytesToString(AESBinFormat.decodeFile(ballFile)))), defaultHandler);
         } else if (version == GameVersion.VERSION_WOG1_NEW) {
             dir = newWOG1dir;
-            ballFile = new File(dir + "\\properties\\resources.xml");
+            ballFile = new File(dir + "/properties/resources.xml");
             saxParser.parse(ballFile, defaultHandler);
         } else if (version == GameVersion.VERSION_WOG2) {
             dir = WOG2dir;
-            ballFile = new File(dir + "\\res\\items\\images\\_resources.xml");
+            ballFile = new File(dir + "/res/items/images/_resources.xml");
             saxParser.parse(ballFile, defaultHandler);
-            ballFile = new File(dir + "\\res\\environments\\images\\_resources.xml");
+            ballFile = new File(dir + "/res/environments/images/_resources.xml");
             saxParser.parse(ballFile, defaultHandler);
         }
         return resources;
@@ -322,10 +328,10 @@ public class FileManager {
 
         BallFileOpener.mode = 0;
         if (version == GameVersion.VERSION_WOG1_OLD && !oldWOG1dir.isEmpty()) {
-            File ballFile = new File(oldWOG1dir + "\\properties\\fx.xml.bin");
+            File ballFile = new File(oldWOG1dir + "/properties/fx.xml.bin");
             saxParser.parse(new InputSource(new StringReader(bytesToString(AESBinFormat.decodeFile(ballFile)))), defaultHandler);
         } else if (version == GameVersion.VERSION_WOG1_NEW && !newWOG1dir.isEmpty()) {
-            File ballFile2 = new File(newWOG1dir + "\\properties\\fx.xml");
+            File ballFile2 = new File(newWOG1dir + "/properties/fx.xml");
             saxParser.parse(ballFile2, defaultHandler);
         }
         return objects;
@@ -343,7 +349,7 @@ public class FileManager {
         BallFileOpener defaultHandler = new BallFileOpener(objects, resources, version);
         BallFileOpener.mode = 0;
         if (version == GameVersion.VERSION_WOG1_OLD && !oldWOG1dir.isEmpty()) {
-            File ballFile = new File(oldWOG1dir + "\\properties\\text.xml.bin");
+            File ballFile = new File(oldWOG1dir + "/properties/text.xml.bin");
             byte[] bytes = AESBinFormat.decodeFile(ballFile);
             // If the file starts with EF BB BF, strip these three bytes (not sure why it does this)
             if (bytes[0] == (byte)0xEF && bytes[1] == (byte)0xBB && bytes[2] == (byte)0xBF) {
@@ -354,7 +360,7 @@ public class FileManager {
             String stringBytes = bytesToString(bytes);
             saxParser.parse(new InputSource(new StringReader(stringBytes)), defaultHandler);
         } else if (version == GameVersion.VERSION_WOG1_NEW && !newWOG1dir.isEmpty()) {
-            File ballFile2 = new File(newWOG1dir + "\\properties\\text.xml");
+            File ballFile2 = new File(newWOG1dir + "/properties/text.xml");
             saxParser.parse(ballFile2, defaultHandler);
         }
         return objects;
@@ -372,12 +378,12 @@ public class FileManager {
         BallFileOpener defaultHandler = new BallFileOpener(objects, resources, version);
         BallFileOpener.mode = 0;
         if (version == GameVersion.VERSION_WOG1_OLD && !oldWOG1dir.isEmpty()) {
-            File ballFile = new File(oldWOG1dir + "\\properties\\materials.xml.bin");
+            File ballFile = new File(oldWOG1dir + "/properties/materials.xml.bin");
             byte[] bytes = AESBinFormat.decodeFile(ballFile);
             String stringBytes = bytesToString(bytes);
             saxParser.parse(new InputSource(new StringReader(stringBytes)), defaultHandler);
         } else if (version == GameVersion.VERSION_WOG1_NEW && !newWOG1dir.isEmpty()) {
-            File ballFile2 = new File(newWOG1dir + "\\properties\\materials.xml");
+            File ballFile2 = new File(newWOG1dir + "/properties/materials.xml");
             saxParser.parse(ballFile2, defaultHandler);
         }
         return objects;
@@ -388,7 +394,7 @@ public class FileManager {
 
         ArrayList<EditorObject> items = new ArrayList<>();
 
-        for (File itemFile : new File(WOG2dir + "\\res\\items").listFiles()) {
+        for (File itemFile : new File(WOG2dir + "/res/items").listFiles()) {
 
             if (itemFile.getName().endsWith(".wog2")) {
                 items.addAll(ObjectGOOParser.read("_2_Item_Collection", Files.readString(itemFile.toPath())).getChildren());
@@ -418,7 +424,7 @@ public class FileManager {
 
     public static _2Ball open2Ball(String ballName, GameVersion version) throws ParserConfigurationException, SAXException, IOException {
 
-        String contents = Files.readString(Path.of(WOG2dir + "\\res\\balls\\" + ballName + "\\ball.wog2"));
+        String contents = Files.readString(Path.of(WOG2dir + "/res/balls/" + ballName + "/ball.wog2"));
 
         EditorObject levelObject = ObjectGOOParser.read("_2_Ball", contents);
         ArrayList<EditorObject> objects = new ArrayList<>();
@@ -440,11 +446,28 @@ public class FileManager {
 
         BallFileOpener defaultHandler = new BallFileOpener(objects, resources, GameVersion.VERSION_WOG1_NEW);
 
-        File ballFileR = new File(WOG2dir + "\\res\\balls\\" + ballName + "\\resources.xml");
+        File ballFileR = new File(WOG2dir + "/res/balls/" + ballName + "/resources.xml");
         BallFileOpener.mode = 1;
         saxParser.parse(ballFileR, defaultHandler);
 
         return new _2Ball(objects, resources);
+
+    }
+
+
+    public static FileChooser.ExtensionFilter get2ExtensionFilter() {
+
+        String os = System.getProperty("os.name").toLowerCase();
+
+        if (os.contains("win")) {
+            return new FileChooser.ExtensionFilter("World of Goo 2 executable", "World Of Goo 2.exe");
+        } else if (os.contains("mac")) {
+            return new FileChooser.ExtensionFilter("World of Goo 2 executable", "World Of Goo 2.app");
+        } else if (os.contains("nix") || os.contains("nux") || os.contains("aix")) {
+            return new FileChooser.ExtensionFilter("World of Goo 2 executable", "World Of Goo 2.elf");
+        } else {
+            throw new RuntimeException("Unsupported OS: " + os);
+        }
 
     }
 

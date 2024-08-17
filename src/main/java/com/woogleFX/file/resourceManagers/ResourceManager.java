@@ -86,7 +86,7 @@ public class ResourceManager {
         EditorObject resource = findResource(resources, id, version);
         if (resource == null) {
             try {
-                File itemFile = new File(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "\\res\\items\\" + id + ".wog2");
+                File itemFile = new File(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "/res/items/" + id + ".wog2");
                 ArrayList<EditorObject> items = ObjectGOOParser.read("_2_Item_Collection", Files.readString(itemFile.toPath())).getChildren();
                 for (EditorObject item : items) {
                     // System.out.println(item.getAttribute("name").stringValue());
@@ -122,7 +122,7 @@ public class ResourceManager {
         EditorObject resource = findResource(resources, id, version);
         if (resource == null) {
             try {
-                File itemFile = new File(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "\\res\\environments\\" + id + ".wog2");
+                File itemFile = new File(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "/res/environments/" + id + ".wog2");
                 EditorObject item = ObjectGOOParser.read("_2_Environment", Files.readString(itemFile.toPath()));
                 item.update();
                 for (EditorObject child : item.getChildren()) {
@@ -172,12 +172,12 @@ public class ResourceManager {
         String dir = FileManager.getGameDir(version);
         if (resource instanceof ResrcImage resrcImage) {
             try {
-                if (Files.exists(Path.of(dir + "\\" + resrcImage.getAdjustedPath() + ".png"))) {
-                    resrcImage.setImage(FileManager.openImageFromFilePath(dir + "\\" + resrcImage.getAdjustedPath() + ".png"));
-                } else if (Files.exists(Path.of(dir + "\\" + resrcImage.getAdjustedPath() + ".image"))) {
-                    BufferedImage maybe = ImageIO.read(new File(dir + "\\" + resrcImage.getAdjustedPath() + ".image"));
+                if (Files.exists(Path.of(dir + "/" + resrcImage.getAdjustedPath() + ".png"))) {
+                    resrcImage.setImage(FileManager.openImageFromFilePath(dir + "/" + resrcImage.getAdjustedPath() + ".png"));
+                } else if (Files.exists(Path.of(dir + "/" + resrcImage.getAdjustedPath() + ".image"))) {
+                    BufferedImage maybe = ImageIO.read(new File(dir + "/" + resrcImage.getAdjustedPath() + ".image"));
                     if (maybe != null) resrcImage.setImage(SwingFXUtils.toFXImage(maybe, null));
-                    else resrcImage.setImage(SwingFXUtils.toFXImage(KTXFileManager.readKTXImage(Path.of(dir + "\\" + resrcImage.getAdjustedPath() + ".image")), null));
+                    else resrcImage.setImage(SwingFXUtils.toFXImage(KTXFileManager.readKTXImage(Path.of(dir + "/" + resrcImage.getAdjustedPath() + ".image")), null));
                 }
                 return true;
             } catch (IOException ignored) {

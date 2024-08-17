@@ -29,17 +29,17 @@ public class LevelTab extends Tab {
     public static final int UNSAVED_CHANGES = 1;
     public static final int UNSAVED_CHANGES_UNMODIFIABLE = 2;
 
-    private static final Image noChangesImageOld = FileManager.getIcon("ButtonIcons\\Level\\no_unsaved_changes_old.png");
-    private static final Image changesImageOld = FileManager.getIcon("ButtonIcons\\Level\\unsaved_changes_old.png");
-    private static final Image changesUnmodifiableImageOld = FileManager.getIcon("ButtonIcons\\Level\\unsaved_changes_unmodifiable_old.png");
+    private static final Image noChangesImageOld = FileManager.getIcon("ButtonIcons/Level/no_unsaved_changes_old.png");
+    private static final Image changesImageOld = FileManager.getIcon("ButtonIcons/Level/unsaved_changes_old.png");
+    private static final Image changesUnmodifiableImageOld = FileManager.getIcon("ButtonIcons/Level/unsaved_changes_unmodifiable_old.png");
 
-    private static final Image noChangesImageNew = FileManager.getIcon("ButtonIcons\\Level\\no_unsaved_changes_new.png");
-    private static final Image changesImageNew = FileManager.getIcon("ButtonIcons\\Level\\unsaved_changes_new.png");
-    private static final Image changesUnmodifiableImageNew = FileManager.getIcon("ButtonIcons\\Level\\unsaved_changes_unmodifiable_new.png");
+    private static final Image noChangesImageNew = FileManager.getIcon("ButtonIcons/Level/no_unsaved_changes_new.png");
+    private static final Image changesImageNew = FileManager.getIcon("ButtonIcons/Level/unsaved_changes_new.png");
+    private static final Image changesUnmodifiableImageNew = FileManager.getIcon("ButtonIcons/Level/unsaved_changes_unmodifiable_new.png");
 
-    private static final Image noChangesImage2 = FileManager.getIcon("ButtonIcons\\Level\\no_unsaved_changes_2.png");
-    private static final Image changesImage2 = FileManager.getIcon("ButtonIcons\\Level\\unsaved_changes_2.png");
-    private static final Image changesUnmodifiableImage2 = FileManager.getIcon("ButtonIcons\\Level\\unsaved_changes_unmodifiable_2.png");
+    private static final Image noChangesImage2 = FileManager.getIcon("ButtonIcons/Level/no_unsaved_changes_2.png");
+    private static final Image changesImage2 = FileManager.getIcon("ButtonIcons/Level/unsaved_changes_2.png");
+    private static final Image changesUnmodifiableImage2 = FileManager.getIcon("ButtonIcons/Level/unsaved_changes_unmodifiable_2.png");
 
 
     public void update(int editingStatus, boolean shouldSelect) {

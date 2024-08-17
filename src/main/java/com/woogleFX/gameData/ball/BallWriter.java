@@ -36,8 +36,8 @@ public class BallWriter {
 
         String name = ball.objects.get(0).getAttribute("name").stringValue();
 
-        String ballsPathText = outputPathString + "\\balls.xml";
-        String resourcesPathText = outputPathString + "\\resources.xml";
+        String ballsPathText = outputPathString + "/balls.xml";
+        String resourcesPathText = outputPathString + "/resources.xml";
 
         if (!goomod && version == GameVersion.VERSION_WOG1_OLD) {
             ballsPathText += ".bin";
@@ -74,16 +74,16 @@ public class BallWriter {
 
         if (goomod) return;
 
-        if (!Files.exists(Path.of(otherDir + "\\res\\balls\\" + name))) return;
+        if (!Files.exists(Path.of(otherDir + "/res/balls/" + name))) return;
 
-        File[] images = new File(otherDir + "\\res\\balls\\" + name).listFiles();
+        File[] images = new File(otherDir + "/res/balls/" + name).listFiles();
         if (images == null) return;
 
         for (File imageFile : images) {
             if (imageFile.getPath().substring(imageFile.getPath().lastIndexOf(".")).equals(".png") || imageFile.getPath().substring(imageFile.getPath().lastIndexOf(".")).equals(".ogg")) {
-                if (Files.exists(Path.of(outputPath + "\\" + imageFile.getName()))) continue;
+                if (Files.exists(Path.of(outputPath + "/" + imageFile.getName()))) continue;
 
-                Files.copy(imageFile.toPath(), Path.of(outputPath + "\\" + imageFile.getName()));
+                Files.copy(imageFile.toPath(), Path.of(outputPath + "/" + imageFile.getName()));
 
             }
         }

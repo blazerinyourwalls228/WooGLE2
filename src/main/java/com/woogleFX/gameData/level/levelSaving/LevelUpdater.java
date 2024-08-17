@@ -1,10 +1,9 @@
 package com.woogleFX.gameData.level.levelSaving;
 
 import com.woogleFX.editorObjects.EditorObject;
-import com.woogleFX.editorObjects.attributes.EditorAttribute;
-import com.woogleFX.editorObjects.attributes.InputField;
 import com.woogleFX.engine.gui.alarms.AskForLevelNameAlarm;
 import com.woogleFX.engine.gui.alarms.ErrorAlarm;
+import com.woogleFX.engine.gui.alarms.LevelIssuesAlarm;
 import com.woogleFX.file.fileExport.GOOWriter;
 import com.woogleFX.gameData.ball._Ball;
 import com.woogleFX.engine.fx.hierarchy.FXHierarchy;
@@ -47,52 +46,34 @@ public class LevelUpdater {
     }
 
 
-    private static boolean verifySingleObject(EditorObject object) {
-        for (EditorAttribute attribute : object.getAttributes())
-            if (!InputField.verify(object, attribute.getType(), attribute.stringValue()))
-                return false;
-        return true;
-    }
-
-
-    private static boolean verifyAllObjects(ArrayList<EditorObject> EditorObjects) {
-        for (EditorObject object : EditorObjects) if (!verifySingleObject(object)) return false;
-        return true;
-    }
-
-
-    private static boolean verifyEntireLevel(_Level level) {
-        if (level instanceof WOG1Level wog1Level) {
-            return verifyAllObjects(wog1Level.getScene()) &&
-                    verifyAllObjects(wog1Level.getLevel()) &&
-                    verifyAllObjects(wog1Level.getResrc()) &&
-                    verifyAllObjects(wog1Level.getText()) &&
-                    verifyAllObjects(wog1Level.getAddin());
-        } else if (level instanceof WOG2Level wog2Level) {
-            return verifyAllObjects(wog2Level.getObjects());
-        } else return false;
-    }
-
-
     public static boolean saveSpecificLevel(_Level level, GameVersion version) {
+
+        boolean okayToSave = true;
+
+        // Check for errors in level objects
+        if (!LevelVerifier.verifyEntireLevel(level)) {
+            // Fail to save
+            ErrorAlarm.show("Level could not be verified");
+            okayToSave = false;
+        }
+
+        if (level instanceof WOG2Level wog2Level) {
+
+            ArrayList<String> levelErrors = LevelVerifier.checkForWoG2Errors(wog2Level);
+
+            if (!levelErrors.isEmpty()) {
+                if (LevelIssuesAlarm.show(levelErrors)) return false;
+            }
+
+        }
+        // TODO: check for game errors (stuff like there being a levelexit but no pipe)
+
+        if (!okayToSave) return false;
 
         if (level instanceof WOG1Level) {
 
-            boolean okayToSave = true;
-
-            // Check for errors in level objects
-            if (!verifyEntireLevel(level)) {
-                // Fail to save
-                ErrorAlarm.show("Level could not be verified");
-                okayToSave = false;
-            }
-
-            // TODO: check for game errors (stuff like there being a levelexit but no pipe)
-
-            if (!okayToSave) return false;
-
             try {
-                LevelWriter.saveAsXML(level, FileManager.getGameDir(version) + "\\res\\levels\\" + level.getLevelName(),
+                LevelWriter.saveAsXML(level, FileManager.getGameDir(version) + "/res/levels/" + level.getLevelName(),
                         version, false, true);
                 return true;
             } catch (IOException e) {
@@ -106,7 +87,7 @@ public class LevelUpdater {
             GOOWriter.recursiveGOOExport(export, ((WOG2Level) level).getLevel(), 0);
 
             try {
-                Files.writeString(Path.of(FileManager.getGameDir(version) + "\\res\\levels\\" + level.getLevelName() + ".wog2"), export.toString());
+                Files.writeString(Path.of(FileManager.getGameDir(version) + "/res/levels/" + level.getLevelName() + ".wog2"), export.toString());
                 return true;
             } catch (IOException e) {
                 ErrorAlarm.show(e);
@@ -137,7 +118,7 @@ public class LevelUpdater {
         if (level.getVersion() == GameVersion.VERSION_WOG1_OLD) {
             try {
                 ProcessBuilder processBuilder = new ProcessBuilder(
-                        FileManager.getGameDir(GameVersion.VERSION_WOG1_OLD) + "\\WorldOfGoo.exe", level.getLevelName());
+                        FileManager.getGameDir(GameVersion.VERSION_WOG1_OLD) + "/WorldOfGoo.exe", level.getLevelName());
                 processBuilder.directory(new File(FileManager.getGameDir(GameVersion.VERSION_WOG1_OLD)));
                 processBuilder.start();
             } catch (Exception e) {
@@ -146,9 +127,8 @@ public class LevelUpdater {
         } else if (level.getVersion() == GameVersion.VERSION_WOG2) {
 
             try {
-                System.out.println(level.getLevelName());
                 ProcessBuilder processBuilder = new ProcessBuilder(
-                        new File(FileManager.getGameDir(GameVersion.VERSION_WOG2)).getParent() + "\\World Of Goo 2.exe");
+                        new File(FileManager.getGameDir(GameVersion.VERSION_WOG2)).getParent().replaceAll("\\\\", "/") + "/" + FileManager.get2ExtensionFilter().getExtensions().get(0));
                 processBuilder.directory(new File(FileManager.getGameDir(GameVersion.VERSION_WOG2)));
                 processBuilder.start();
             } catch (Exception e) {
@@ -177,8 +157,8 @@ public class LevelUpdater {
         String start = FileManager.getGameDir(level.getVersion());
 
         /* Change level name in directory */
-        File originalLevelDirectory = new File(start + "\\res\\levels\\" + level.getLevelName());
-        File levelDirectory = new File(start + "\\res\\levels\\" + text);
+        File originalLevelDirectory = new File(start + "/res/levels/" + level.getLevelName());
+        File levelDirectory = new File(start + "/res/levels/" + text);
         if (!originalLevelDirectory.renameTo(levelDirectory)) {
             ErrorAlarm.show("Could not rename level! (" + level.getLevelName() + " to " + text + ")");
             return;
@@ -191,7 +171,7 @@ public class LevelUpdater {
         for (File levelPart : levelParts) {
             if (levelPart.getName().length() >= level.getLevelName().length()
                     && levelPart.getName().startsWith(level.getLevelName())) {
-                if (!levelPart.renameTo(new File(start + "\\res\\levels\\" + text + "\\" + text
+                if (!levelPart.renameTo(new File(start + "/res/levels/" + text + "/" + text
                         + levelPart.getName().substring(level.getLevelName().length())))) {
                     ErrorAlarm.show("Could not rename level! (" + level.getLevelName() + " to " + text + ")");
                     return;
@@ -228,30 +208,41 @@ public class LevelUpdater {
     }
 
     public static void deleteLevel(_Level level) {
-        if (level != null) {
-            AskForLevelNameAlarm.show("delete", level.getVersion());
-        }
+        if (level == null) return;
+        AskForLevelNameAlarm.show("delete", level.getVersion());
     }
 
     public static void deleteLevelForReal(_Level level) {
-        try {
-            nuke(new File(FileManager.getGameDir(level.getVersion()) + "\\res\\levels\\" + level.getLevelName()));
-            TabPane levelSelectPane = FXLevelSelectPane.getLevelSelectPane();
-            if (levelSelectPane.getTabs().size() == 1) {
-                FXLevelSelectPane.getLevelSelectPane().setMinHeight(0);
-                FXLevelSelectPane.getLevelSelectPane().setMaxHeight(0);
-                // If all tabs are closed, clear the side pane
-                FXHierarchy.getHierarchy().setRoot(null);
-                // Clear the properties pane too
-                FXPropertiesView.changeTableView(new EditorObject[]{});
+
+        if (level instanceof WOG1Level) {
+
+            try {
+                nuke(new File(FileManager.getGameDir(level.getVersion()) + "/res/levels/" + level.getLevelName()));
+                TabPane levelSelectPane = FXLevelSelectPane.getLevelSelectPane();
+                if (levelSelectPane.getTabs().size() == 1) {
+                    FXLevelSelectPane.getLevelSelectPane().setMinHeight(0);
+                    FXLevelSelectPane.getLevelSelectPane().setMaxHeight(0);
+                    // If all tabs are closed, clear the side pane
+                    FXHierarchy.getHierarchy().setRoot(null);
+                    // Clear the properties pane too
+                    FXPropertiesView.changeTableView(new EditorObject[]{});
+                }
+                levelSelectPane.getTabs().remove(levelSelectPane.getSelectionModel().getSelectedItem());
+            } catch (IOException e) {
+                ErrorAlarm.show(e);
             }
-            levelSelectPane.getTabs().remove(levelSelectPane.getSelectionModel().getSelectedItem());
-        } catch (Exception e) {
-            ErrorAlarm.show(e);
+
+        } else if (level instanceof WOG2Level) {
+            try {
+                Files.delete(Path.of(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "/res/levels/" + level.getLevelName() + ".wog2"));
+            } catch (IOException e) {
+                ErrorAlarm.show(e);
+            }
         }
+
     }
 
-    public static void nuke(File file) throws Exception {
+    public static void nuke(File file) throws IOException {
         if (file.isDirectory()) {
             File[] children = file.listFiles();
             if (children != null) for (File child : children) {
@@ -263,37 +254,43 @@ public class LevelUpdater {
 
     public static void exportLevel(_Level level, boolean includeAddinInfo) {
 
-        String dir = FileManager.getGameDir(level.getVersion());
+        if (level instanceof WOG1Level) {
 
-        FileChooser fileChooser = new FileChooser();
-        if (!Files.exists(Path.of((dir + "\\res\\levels\\" + level.getLevelName() + "\\goomod")))) {
-            try {
-                Files.createDirectories(Path.of((dir + "\\res\\levels\\" + level.getLevelName() + "\\goomod")));
-            } catch (Exception e) {
-                ErrorAlarm.show(e);
+            String dir = FileManager.getGameDir(level.getVersion());
+
+            FileChooser fileChooser = new FileChooser();
+            if (!Files.exists(Path.of((dir + "/res/levels/" + level.getLevelName() + "/goomod")))) {
+                try {
+                    Files.createDirectories(Path.of((dir + "/res/levels/" + level.getLevelName() + "/goomod")));
+                } catch (Exception e) {
+                    ErrorAlarm.show(e);
+                }
             }
-        }
-        fileChooser.setInitialDirectory(new File((dir + "\\res\\levels\\" + level.getLevelName() + "\\goomod")));
-        fileChooser.setInitialFileName(level.getLevelName());
+            fileChooser.setInitialDirectory(new File((dir + "/res/levels/" + level.getLevelName() + "/goomod")));
+            fileChooser.setInitialFileName(level.getLevelName());
 
-        ExtensionFilter goomodFilter = new ExtensionFilter("World of Goo mod (*.goomod)", "*.goomod");
-        fileChooser.getExtensionFilters().add(goomodFilter);
-        File export = fileChooser.showSaveDialog(FXStage.getStage());
+            ExtensionFilter goomodFilter = new ExtensionFilter("World of Goo mod (*.goomod)", "*.goomod");
+            fileChooser.getExtensionFilters().add(goomodFilter);
+            File export = fileChooser.showSaveDialog(FXStage.getStage());
 
-        ArrayList<_Level> levels = new ArrayList<>();
-        levels.add(level);
+            ArrayList<_Level> levels = new ArrayList<>();
+            levels.add(level);
 
-        ArrayList<_Ball> balls = new ArrayList<>();
-        for (EditorObject object : ((WOG1Level)level).getLevel()) if (object instanceof BallInstance ballInstance)
-            if (!balls.contains(ballInstance.getBall())) balls.add(ballInstance.getBall());
+            ArrayList<_Ball> balls = new ArrayList<>();
+            for (EditorObject object : ((WOG1Level) level).getLevel())
+                if (object instanceof BallInstance ballInstance)
+                    if (!balls.contains(ballInstance.getBall())) balls.add(ballInstance.getBall());
 
-        if (export != null) {
-            try {
-                GoomodExporter.exportGoomod(export, levels, balls, level.getVersion(), includeAddinInfo);
-            } catch (IOException e) {
-                logger.error("", e);
+            if (export != null) {
+                try {
+                    GoomodExporter.exportGoomod(export, levels, balls, level.getVersion(), includeAddinInfo);
+                } catch (IOException e) {
+                    logger.error("", e);
+                }
             }
+
         }
+
     }
 
 }

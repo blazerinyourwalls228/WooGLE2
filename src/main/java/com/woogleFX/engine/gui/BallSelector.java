@@ -75,7 +75,7 @@ public class BallSelector extends Application {
 
         VBox allBallsBox = new VBox();
 
-        ballDir = new File(FileManager.getGameDir(oldVersion) + "\\res\\balls");
+        ballDir = new File(FileManager.getGameDir(oldVersion) + "/res/balls");
 
         ScrollPane realPane = new ScrollPane(allBallsBox);
 

@@ -116,7 +116,7 @@ public class AskForLevelNameAlarm {
             case "changename" -> {
                 stage.setTitle("Change Level Name");
                 okButton.setOnAction(event -> {
-                    File[] allLevels = new File(FileManager.getGameDir(version) + "\\res\\levels").listFiles();
+                    File[] allLevels = new File(FileManager.getGameDir(version) + "/res/levels").listFiles();
                     if (allLevels == null) return;
                     for (File levelFile : allLevels) {
                         if (levelFile.getName().equals(enterNameHere.getText())) {

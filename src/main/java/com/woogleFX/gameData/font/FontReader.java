@@ -24,7 +24,7 @@ public class FontReader {
 
         String text;
         try {
-            text = Files.readString(Path.of(dir + "\\" + fontPath + ".txt"));
+            text = Files.readString(Path.of(dir + "/" + fontPath + ".txt"));
         } catch (IOException e) {
             return null;
         }
@@ -68,7 +68,7 @@ public class FontReader {
 
                 Image image;
                 try {
-                    image = FileManager.openImageFromFilePath(dir + "\\res\\fonts\\" + imageID + ".png");
+                    image = FileManager.openImageFromFilePath(dir + "/res/fonts/" + imageID + ".png");
                 } catch (IOException e) {
                     logger.error("", e);
                     image = null;

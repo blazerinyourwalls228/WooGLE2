@@ -54,7 +54,7 @@ public class BackgroundViewer extends Application {
             VBox allBgsBox = new VBox();
 
             ArrayList<_2_Environment> environments = new ArrayList<>();
-            for (File child : new File(FileManager.getGameDir(version) + "\\res\\\\environments").listFiles()) {
+            for (File child : new File(FileManager.getGameDir(version) + "/res/environments").listFiles()) {
                 if (!child.getPath().endsWith(".wog2")) {
                     continue;
                 }

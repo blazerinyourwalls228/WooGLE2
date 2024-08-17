@@ -144,11 +144,18 @@ public class EnvironmentHelper {
 
     public static javafx.scene.paint.Color hex2ARGB(String h) {
         try {
-            var a = Integer.valueOf(h.substring(0, 2), 16);
-            var r = Integer.valueOf(h.substring(2, 4), 16);
-            var g = Integer.valueOf(h.substring(4, 6), 16);
-            var b = Integer.valueOf(h.substring(6, 8), 16);
-            return new Color(r / 255d, g / 255d, b / 255d, a / 255d);
+            if (h.length() == 8) { // AARRGGBB
+                var a = Integer.valueOf(h.substring(0, 2), 16);
+                var r = Integer.valueOf(h.substring(2, 4), 16);
+                var g = Integer.valueOf(h.substring(4, 6), 16);
+                var b = Integer.valueOf(h.substring(6, 8), 16);
+                return new Color(r / 255d, g / 255d, b / 255d, a / 255d);
+            } else { // RRGGBB
+                var r = Integer.valueOf(h.substring(0, 2), 16);
+                var g = Integer.valueOf(h.substring(2, 4), 16);
+                var b = Integer.valueOf(h.substring(4, 6), 16);
+                return new Color(r / 255d, g / 255d, b / 255d, 1.0);
+            }
         } catch(Exception e) { // If a color is invalid we'll just use white
             System.out.println("Error while loading color " + h);
             e.printStackTrace();

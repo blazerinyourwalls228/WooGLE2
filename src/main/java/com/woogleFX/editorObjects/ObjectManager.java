@@ -4,6 +4,7 @@ import com.woogleFX.editorObjects.attributes.InputField;
 import com.woogleFX.editorObjects.objectCreators.ObjectAdder;
 import com.woogleFX.editorObjects.objectCreators.ObjectCreator;
 import com.woogleFX.engine.LevelManager;
+import com.woogleFX.engine.SelectionManager;
 import com.woogleFX.engine.fx.hierarchy.FXHierarchy;
 import com.woogleFX.engine.fx.FXPropertiesView;
 import com.woogleFX.engine.undoHandling.UndoManager;
@@ -29,7 +30,6 @@ public class ObjectManager {
     public static void create(_Level _level, EditorObject _object, int row) {
 
         EditorObject object = _object;
-        object.update();
 
         if (object instanceof _2_Level_BallInstance) {
             ObjectAdder.fixGooBall(object);
@@ -56,8 +56,19 @@ public class ObjectManager {
 
             level.getObjects().add(object);
 
-            if (object instanceof _2_Level_BallInstance ballInstance)
-                BallInstanceHelper.addTerrainBall(level, ballInstance);
+            int i = switch (level.getCurrentlySelectedSection()) {
+                case "Terrain" -> 0;
+                case "Balls" -> 1;
+                case "Items" -> 2;
+                case "Pins" -> 3;
+                case "Camera" -> 4;
+                default -> -1;
+            };
+            FXHierarchy.getNewHierarchySwitcherButtons().getSelectionModel().select((i + 1) % 5);
+            FXHierarchy.getNewHierarchySwitcherButtons().getSelectionModel().select(i);
+
+            FXHierarchy.getHierarchy().getSelectionModel().clearSelection();
+            FXHierarchy.getHierarchy().getSelectionModel().select(object.getTreeItem());
 
         } else {
 
@@ -94,6 +105,8 @@ public class ObjectManager {
             } else if (object instanceof Vertex vertex) vertex.getParent().update();
 
         }
+
+        object.update();
 
     }
 
@@ -142,10 +155,6 @@ public class ObjectManager {
 
         } else if (_level instanceof WOG2Level level) {
 
-            if (_item instanceof _2_Level_BallInstance ballInstance) {
-                deleteItem(level, level.getLevel().getChildren("terrainBalls").get(level.getLevel().getChildren("balls").indexOf(ballInstance)), false);
-            }
-
             level.getObjects().remove(_item);
 
             if (!parentDeleted) {
@@ -153,7 +162,54 @@ public class ObjectManager {
                 _item.getParent().getTreeItem().getChildren().remove(_item.getTreeItem());
             }
 
+            if (_item instanceof _2_Level_BallInstance ballInstance) {
+
+                String id = ballInstance.getAttribute("uid").stringValue();
+
+                for (EditorObject EditorObject : level.getObjects())
+                    if (EditorObject instanceof _2_Level_Strand strand) {
+
+                        String gb1 = strand.getAttribute("ball1UID").stringValue();
+                        if (gb1.equals(id)) {
+                            strand.setGoo1(null);
+                            strand.update();
+                        }
+
+                        String gb2 = strand.getAttribute("ball2UID").stringValue();
+                        if (gb2.equals(id)) {
+                            strand.setGoo2(null);
+                            strand.update();
+                        }
+
+                    }
+
+            }
+
+            if (_item instanceof _2_Level_Strand strand) {
+
+                String gb1 = strand.getAttribute("ball1UID").stringValue();
+                String gb2 = strand.getAttribute("ball2UID").stringValue();
+
+                for (EditorObject EditorObject : level.getObjects())
+                    if (EditorObject instanceof _2_Level_BallInstance ballInstance) {
+
+                        String id = ballInstance.getAttribute("uid").stringValue();
+
+                        if (gb1.equals(id)) {
+                            ballInstance.update();
+                        }
+
+                        if (gb2.equals(id)) {
+                            ballInstance.update();
+                        }
+
+                    }
+
+            }
+
         }
+
+        _item.update();
 
     }
 

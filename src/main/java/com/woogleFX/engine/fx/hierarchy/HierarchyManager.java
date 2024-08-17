@@ -38,62 +38,62 @@ public class HierarchyManager {
                     "Addin_type", "Addin_version", "Addin_description",
                     "Addin_author", "Addin_levels", "Addin_level",
                     "Addin_dir", "Addin_wtf_name",
-                    "Addin_subtitle", "Addin_ocd" -> "addin\\addin";
-            case "BallInstance" -> "level\\BallInstance";
-            case "button" -> "scene\\button";
-            case "buttongroup" -> "scene\\buttongroup";
-            case "camera" -> "level\\camera";
-            case "circle" -> "scene\\circle";
-            case "compositegeom" -> "scene\\compositegeom";
-            case "endoncollision" -> "level\\endoncollision";
-            case "endonmessage" -> "level\\endonmessage";
-            case "endonnogeom" -> "level\\endonnogeom";
-            case "fire" -> "level\\fire";
-            case "font" -> "resrc\\font";
-            case "hinge" -> "scene\\hinge";
-            case "label" -> "scene\\label";
-            case "level" -> "level\\level";
-            case "levelexit" -> "level\\levelexit";
-            case "line" -> "scene\\line";
-            case "linearforcefield" -> "scene\\linearforcefield";
-            case "loopsound" -> "level\\loopsound";
-            case "motor" -> "scene\\motor";
-            case "music" -> "level\\music";
-            case "particles" -> "scene\\particles";
-            case "pipe" -> "level\\pipe";
-            case "poi" -> "level\\poi";
-            case "rectangle" -> "scene\\rectangle";
-            case "radialforcefield" -> "scene\\radialforcefield";
-            case "ResourceManifest" -> "resrc\\resourcemanifest";
-            case "Resources" -> "resrc\\resources";
-            case "Image" -> "resrc\\resrcimage";
-            case "scene" -> "scene\\scene";
-            case "SceneLayer" -> "scene\\SceneLayer";
-            case "SetDefaults" -> "resrc\\setdefaults";
-            case "signpost" -> "level\\signpost";
-            case "slider" -> "scene\\slider";
-            case "Sound" -> "resrc\\sound";
-            case "Strand" -> "level\\Strand";
-            case "string" -> "text\\textstring";
-            case "strings" -> "text\\textstrings";
-            case "targetheight" -> "level\\targetheight";
-            case "Vertex" -> "level\\Vertex";
+                    "Addin_subtitle", "Addin_ocd" -> "addin/addin";
+            case "BallInstance" -> "level/BallInstance";
+            case "button" -> "scene/button";
+            case "buttongroup" -> "scene/buttongroup";
+            case "camera" -> "level/camera";
+            case "circle" -> "scene/circle";
+            case "compositegeom" -> "scene/compositegeom";
+            case "endoncollision" -> "level/endoncollision";
+            case "endonmessage" -> "level/endonmessage";
+            case "endonnogeom" -> "level/endonnogeom";
+            case "fire" -> "level/fire";
+            case "font" -> "resrc/font";
+            case "hinge" -> "scene/hinge";
+            case "label" -> "scene/label";
+            case "level" -> "level/level";
+            case "levelexit" -> "level/levelexit";
+            case "line" -> "scene/line";
+            case "linearforcefield" -> "scene/linearforcefield";
+            case "loopsound" -> "level/loopsound";
+            case "motor" -> "scene/motor";
+            case "music" -> "level/music";
+            case "particles" -> "scene/particles";
+            case "pipe" -> "level/pipe";
+            case "poi" -> "level/poi";
+            case "rectangle" -> "scene/rectangle";
+            case "radialforcefield" -> "scene/radialforcefield";
+            case "ResourceManifest" -> "resrc/resourcemanifest";
+            case "Resources" -> "resrc/resources";
+            case "Image" -> "resrc/resrcimage";
+            case "scene" -> "scene/scene";
+            case "SceneLayer" -> "scene/SceneLayer";
+            case "SetDefaults" -> "resrc/setdefaults";
+            case "signpost" -> "level/signpost";
+            case "slider" -> "scene/slider";
+            case "Sound" -> "resrc/sound";
+            case "Strand" -> "level/Strand";
+            case "string" -> "text/textstring";
+            case "strings" -> "text/textstrings";
+            case "targetheight" -> "level/targetheight";
+            case "Vertex" -> "level/Vertex";
 
-            // case "_2_Level_Ball" -> "level\\BallInstance";
-            case "CameraKeyFrame" -> "level\\camera";
-            case "Pin" -> "scene\\hinge";
-            case "Item" -> "scene\\SceneLayer";
-            // case "Strand" -> "level\\Strand";
-            case "UserVariable" -> "addin\\addin";
+            // case "_2_Level_Ball" -> "level/BallInstance";
+            case "CameraKeyFrame" -> "level/camera";
+            case "Pin" -> "scene/hinge";
+            case "Item" -> "scene/SceneLayer";
+            // case "Strand" -> "level/Strand";
+            case "UserVariable" -> "addin/addin";
 
             default -> null;
         };
         if (iconName == null) return null;
 
         if (terrain)
-            iconName = "WoG2\\TerrainBallInstance";
+            iconName = "WoG2/TerrainBallInstance";
 
-        return FileManager.getIcon("ObjectIcons\\" + iconName + ".png");
+        return FileManager.getIcon("ObjectIcons/" + iconName + ".png");
 
     }
 
@@ -101,21 +101,21 @@ public class HierarchyManager {
 
         String iconName = switch (name) {
 
-            case "LevelExit" -> "level\\levelexit";
-            case "CameraEOL", "CameraControl" -> "level\\camera";
-            case "Pool" -> "level\\pipe";
-            case "TerrainClear" -> "WoG2\\terrainClear";
-            case "TerrainDeadly" -> "WoG2\\terrainDeadly";
-            case "TerrainFrictionless" -> "WoG2\\terrainFrictionless";
-            case "TerrainNonSticky" -> "WoG2\\terrainNonSticky";
-            case "TerrainSticky" -> "WoG2\\terrainSticky";
-            case "TerrainUnwalkable" -> "WoG2\\terrainUnwalkable";
+            case "LevelExit" -> "level/levelexit";
+            case "CameraEOL", "CameraControl" -> "level/camera";
+            case "Pool" -> "level/pipe";
+            case "TerrainClear" -> "WoG2/terrainClear";
+            case "TerrainDeadly" -> "WoG2/terrainDeadly";
+            case "TerrainFrictionless" -> "WoG2/terrainFrictionless";
+            case "TerrainNonSticky" -> "WoG2/terrainNonSticky";
+            case "TerrainSticky" -> "WoG2/terrainSticky";
+            case "TerrainUnwalkable" -> "WoG2/terrainUnwalkable";
 
-            default -> "scene\\SceneLayer";
+            default -> "scene/SceneLayer";
         };
         if (iconName == null) return null;
 
-        return FileManager.getIcon("ObjectIcons\\" + iconName + ".png");
+        return FileManager.getIcon("ObjectIcons/" + iconName + ".png");
 
     }
 
@@ -187,8 +187,10 @@ public class HierarchyManager {
 
                 for (EditorAttribute attribute : editorObject.getAttributes()) {
                     if (attribute.stringValue().isEmpty()) {
-                        if (!InputField.verify(editorObject, attribute.getType(), attribute.getDefaultValue()) && attribute.getRequiredInFile()) valid = false;
-                    } else if (!InputField.verify(editorObject, attribute.getType(), attribute.actualValue())) {
+                        if (!InputField.verify(editorObject, attribute.getType(), attribute.getDefaultValue(), attribute.getRequiredInFile())) {
+                            valid = false;
+                        }
+                    } else if (!InputField.verify(editorObject, attribute.getType(), attribute.actualValue(), attribute.getRequiredInFile())) {
                         valid = false;
                     }
                 }

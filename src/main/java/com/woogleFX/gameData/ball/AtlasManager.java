@@ -25,7 +25,7 @@ public class AtlasManager {
 
         atlas.clear();
 
-        File atlasFile = new File(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "\\res\\balls\\_atlas.image.atlas");
+        File atlasFile = new File(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "/res/balls/_atlas.image.atlas");
 
         try {
 
@@ -37,9 +37,9 @@ public class AtlasManager {
             // Image count
             int imageCount = ByteBuffer.wrap(input.readNBytes(4)).order(ByteOrder.LITTLE_ENDIAN).getInt(0);
 
-            BufferedImage maybe = ImageIO.read(new File(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "\\res\\balls\\_atlas.image"));
+            BufferedImage maybe = ImageIO.read(new File(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "/res/balls/_atlas.image"));
 
-            BufferedImage image = (maybe != null) ? maybe : KTXFileManager.readKTXImage(Path.of(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "\\res\\balls\\_atlas.image"));
+            BufferedImage image = (maybe != null) ? maybe : KTXFileManager.readKTXImage(Path.of(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "/res/balls/_atlas.image"));
 
             for (int i = 0; i < imageCount; i++) {
 

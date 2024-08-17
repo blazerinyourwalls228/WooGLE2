@@ -352,11 +352,10 @@ public class FXEditorButtons {
             String name = ball.getObjects().get(0).getAttribute("name").stringValue();
 
             EditorObject ballInstance = ObjectCreator.create2("_2_Level_Ball", ((WOG2Level)LevelManager.getLevel()).getLevel(), ball.getVersion());
-            ballInstance.setAttribute("type", name);
-            ballInstance.setTypeID("balls");
             EditorObject point = ObjectCreator.create2("_2_Point", ballInstance, ball.getVersion());
             point.setTypeID("pos");
-            ballInstance.getChildren().add(point);
+            ballInstance.setAttribute("type", name);
+            ballInstance.setTypeID("balls");
 
             ((WOG2Level)LevelManager.getLevel()).getObjects().add(ballInstance);
 
@@ -422,7 +421,7 @@ public class FXEditorButtons {
 
     private static void level(ToolBar toolBar) {
 
-        String prefix = "ButtonIcons\\Level\\";
+        String prefix = "ButtonIcons/Level/";
 
         setIcon(buttonNewOld, prefix + "new_lvl_old.png");
         buttonNewOld.setOnAction(e -> LevelLoader.newLevel(GameVersion.VERSION_WOG1_OLD));
@@ -505,7 +504,7 @@ public class FXEditorButtons {
 
     private static void edit(ToolBar toolBar) {
 
-        String prefix = "ButtonIcons\\Edit\\";
+        String prefix = "ButtonIcons/Edit/";
 
         setIcon(buttonUndo, prefix + "undo.png");
         buttonUndo.setOnAction(e -> UndoManager.undo());
@@ -571,7 +570,7 @@ public class FXEditorButtons {
 
     private static void resources(ToolBar toolBar) {
 
-        String prefix = "ButtonIcons\\Resources\\";
+        String prefix = "ButtonIcons/Resources/";
 
         setIcon(buttonUpdateLevelResources, prefix + "update_level_resources.png");
         buttonUpdateLevelResources.setOnAction(e -> LevelResourceManager.updateLevelResources(LevelManager.getLevel()));
@@ -650,7 +649,7 @@ public class FXEditorButtons {
 
     private static void showHide(ToolBar toolBar) {
 
-        String prefix = "ButtonIcons\\ShowHide\\";
+        String prefix = "ButtonIcons/ShowHide/";
 
         setIcon(buttonShowHideCamera, prefix + "showhide_cam.png");
         buttonShowHideCamera.setOnAction(e -> VisibilityManager.showHideCameras());
@@ -742,7 +741,7 @@ public class FXEditorButtons {
 
     private static void addObjects(ToolBar toolBar) {
 
-        String prefix = "ButtonIcons\\AddObject\\";
+        String prefix = "ButtonIcons/AddObject/";
 
         setIcon(addLineButton, prefix + "line.png");
         addLineButton.setOnAction(e -> ObjectAdder.addObject("line"));

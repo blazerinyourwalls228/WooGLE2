@@ -26,7 +26,7 @@ public class FXStage {
 
 
         try {
-            stage.getIcons().add(FileManager.getIcon("ButtonIcons\\icon.png"));
+            stage.getIcons().add(FileManager.getIcon("ButtonIcons/icon.png"));
         } catch (Exception e) {
             logger.error("", e);
         }

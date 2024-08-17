@@ -43,7 +43,7 @@ public class EditorAttribute {
     }
 
     public String stringValue() {
-        if (value.getValue().isEmpty()) return defaultValue;
+        if (value.getValue().isEmpty()) return defaultValue == null ? "" : defaultValue;
         else return value.getValue();
     }
 
@@ -90,7 +90,7 @@ public class EditorAttribute {
     }
 
 
-    private String defaultValue = "";
+    private String defaultValue = null;
     public String getDefaultValue() {
         return defaultValue;
     }

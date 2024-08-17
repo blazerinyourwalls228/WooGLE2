@@ -208,14 +208,4 @@ public class BallInstanceHelper {
 
     }
 
-
-    public static void addTerrainBall(WOG2Level level, _2_Level_BallInstance ballInstance) {
-
-        EditorObject terrainBall = ObjectCreator.create2("_2_Level_TerrainBall", level.getLevel(), GameVersion.VERSION_WOG2);
-        terrainBall.setTypeID("terrainBalls");
-        terrainBall.setAttribute("group", ballInstance.getAttribute2("terrainGroup").stringValue());
-        level.getObjects().add(level.getLevel().getChildren("balls").indexOf(ballInstance), terrainBall);
-
-    }
-
 }

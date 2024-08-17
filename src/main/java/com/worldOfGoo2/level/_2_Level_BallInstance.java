@@ -130,9 +130,9 @@ public class _2_Level_BallInstance extends EditorObject {
 
         addAttribute("angle", InputField._2_NUMBER);
 
-        addAttribute("terrainGroup", InputField._2_TERRAIN_GROUP_TYPE_INDEX);
+        addAttribute("terrainGroup", InputField._2_TERRAIN_GROUP_TYPE_INDEX).setDefaultValue("-1").assertRequired();
 
-        addAttribute("discovered", InputField._2_BOOLEAN);
+        addAttribute("discovered", InputField._2_BOOLEAN).setDefaultValue("true");
         addAttribute("floatingWhileAsleep", InputField._2_BOOLEAN);
         addAttribute("interactive", InputField._2_BOOLEAN);
         addAttribute("wakeWithLiquid", InputField._2_BOOLEAN);
@@ -166,7 +166,10 @@ public class _2_Level_BallInstance extends EditorObject {
         addAttributeAdapter("pos", AttributeAdapter.pointAttributeAdapter(this, "pos", "pos"));
 
         EditorAttribute typeAttribute = new EditorAttribute("type", InputField._2_BALL_TYPE, obj);
-        typeAttribute.addChangeListener((observable, oldValue, newValue) -> setType(newValue));
+        typeAttribute.addChangeListener((observable, oldValue, newValue) -> {
+            setType(newValue);
+            refreshObjectPositions();
+        });
         addAttributeAdapter("typeEnum", new AttributeAdapter("type") {
 
             @Override
@@ -180,27 +183,6 @@ public class _2_Level_BallInstance extends EditorObject {
             public void setValue(String value) {
                 typeAttribute.setValue(value);
                 setAttribute2("typeEnum", map2.getOrDefault(value, 0));
-            }
-
-        });
-
-        addAttributeAdapter("terrainGroup", new AttributeAdapter("terrainGroup") {
-
-            @Override
-            public EditorAttribute getValue() {
-                WOG2Level level = (WOG2Level) LevelManager.getLevel();
-                EditorObject terrainBall = level.getLevel().getChildren("terrainBalls").get(level.getLevel().getChildren("balls").indexOf(obj));
-                EditorAttribute temp = new EditorAttribute("terrainGroup", InputField._2_BALL_TYPE, obj);
-                temp.setValue(terrainBall.getAttribute("group").stringValue());
-                return temp;
-            }
-
-            @Override
-            public void setValue(String value) {
-                WOG2Level level = (WOG2Level) LevelManager.getLevel();
-                EditorObject terrainBall = level.getLevel().getChildren("terrainBalls").get(level.getLevel().getChildren("balls").indexOf(obj));
-                setAttribute2("terrainGroup", value);
-                terrainBall.setAttribute("group", value);
             }
 
         });
@@ -257,8 +239,6 @@ public class _2_Level_BallInstance extends EditorObject {
                 strand.update();
             }
         }
-
-        refreshObjectPositions();
 
     }
 
@@ -395,7 +375,7 @@ public class _2_Level_BallInstance extends EditorObject {
                 return 0.05;
             }
             public boolean isEdgeOnly() {
-                return true;
+                return false;
             }
             public Paint getBorderColor() {
                 if (ball == null) {

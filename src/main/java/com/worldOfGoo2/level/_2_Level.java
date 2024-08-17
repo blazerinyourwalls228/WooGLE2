@@ -32,8 +32,8 @@ public class _2_Level extends EditorObject {
         addAttribute("gameLevel", InputField._2_GAME_LEVEL);
         addAttribute("startingUID", InputField._2_UID);
         addAttribute("island", InputField._2_ISLAND_ID);
-        addAttribute("environmentId", InputField._2_NUMBER).assertRequired();
-        addAttribute("backgroundId", InputField._2_BACKGROUND_ID).assertRequired();
+        addAttribute("environmentId", InputField._2_NUMBER).setDefaultValue("").assertRequired();
+        addAttribute("backgroundId", InputField._2_BACKGROUND_ID).setDefaultValue("").assertRequired();
 
         addAttribute("gravity", InputField._2_CHILD_HIDDEN).assertRequired();
         putAttributeChildAlias("gravity", "_2_Point");
@@ -51,11 +51,11 @@ public class _2_Level extends EditorObject {
         putAttributeChildAlias("initialCameraPos", "_2_Point");
         addAttributeAdapter("initialCameraPos", AttributeAdapter.pointAttributeAdapter(this, "initialCameraPos", "initialCameraPos"));
 
-        addAttribute("initialCameraZoom", InputField._2_NUMBER).assertRequired();
+        addAttribute("initialCameraZoom", InputField._2_NUMBER).setDefaultValue("1").assertRequired();
         addAttribute("cameraAutoBounds", InputField._2_BOOLEAN).assertRequired();
         addAttribute("ballsRateRequired", InputField._2_NUMBER).assertRequired();
-        addAttribute("musicId", InputField._2_MUSIC_ID).assertRequired();
-        addAttribute("ambienceId", InputField._2_SOUND_ID).assertRequired();
+        addAttribute("musicId", InputField._2_MUSIC_ID).setDefaultValue("").assertRequired();
+        addAttribute("ambienceId", InputField._2_SOUND_ID).setDefaultValue("").assertRequired();
         addAttribute("musicOffset", InputField._2_NUMBER).assertRequired();
         addAttribute("ambienceOffset", InputField._2_NUMBER).assertRequired();
         addAttribute("liquidScale", InputField._2_NUMBER);
@@ -145,6 +145,19 @@ public class _2_Level extends EditorObject {
         initialCameraPos.getAttribute("y").addChangeListener((observable, oldValue, newValue) ->
                 setAttribute2("initialCameraPos", getAttribute2("initialCameraPos").positionValue().getX() + "," + newValue));
 
+        updateObjectPositions();
+        getAttribute("backgroundId").addChangeListener((observable, oldValue, newValue) -> updateObjectPositions());
+
+    }
+
+
+    private void updateObjectPositions() {
+
+        clearObjectPositions();
+
+        EditorObject boundsBottomLeft = getChildren("boundsBottomLeft").get(0);
+        EditorObject boundsTopRight = getChildren("boundsTopRight").get(0);
+
         addObjectComponent(new RectangleComponent() {
             public double getX() {
                 double minx = boundsBottomLeft.getAttribute("x").doubleValue();
@@ -219,16 +232,6 @@ public class _2_Level extends EditorObject {
             }
         });
 
-        updateObjectPositions();
-        getAttribute("backgroundId").addChangeListener((observable, oldValue, newValue) -> updateObjectPositions());
-
-    }
-
-
-    private void updateObjectPositions() {
-
-        clearObjectPositions();
-
         try {
 
             if (getAttribute("backgroundId").stringValue().isEmpty()) return;
@@ -240,9 +243,6 @@ public class _2_Level extends EditorObject {
                 Image image = part.getAttribute("imageName").imageValue(null, GameVersion.VERSION_WOG2);
 
                 double partRotation = 0;
-
-                EditorObject boundsTopRight = getChildren("boundsTopRight").get(0);
-                EditorObject boundsBottomLeft = getChildren("boundsBottomLeft").get(0);
 
                 addObjectComponent(new ImageComponent() {
                     public double getX() {

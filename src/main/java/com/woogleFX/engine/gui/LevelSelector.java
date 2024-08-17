@@ -42,7 +42,7 @@ public class LevelSelector extends Application {
         VBox allLevelsBox = new VBox();
 
         ArrayList<String> levels = new ArrayList<>();
-        for (File child : new File(FileManager.getGameDir(version) + "\\res\\levels").listFiles()) {
+        for (File child : new File(FileManager.getGameDir(version) + "/res/levels").listFiles()) {
             if (version == GameVersion.VERSION_WOG1_OLD || version == GameVersion.VERSION_WOG1_NEW) {
                 levels.add(child.getName());
             } else {

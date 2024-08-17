@@ -29,7 +29,7 @@ public class LevelResourceManager {
     public static void deleteResource(_Level level, String file) {
         String path = new File(file).getName();
         String startPath = FileManager.getGameDir(level.getVersion());
-        File levelFile = new File(startPath + "\\res\\levels\\" + level.getLevelName());
+        File levelFile = new File(startPath + "/res/levels/" + level.getLevelName());
         File[] levelChildren = levelFile.listFiles();
         if (levelChildren != null) {
             for (File resourceFile : levelChildren) {

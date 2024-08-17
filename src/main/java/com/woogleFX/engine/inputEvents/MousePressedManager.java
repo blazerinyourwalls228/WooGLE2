@@ -216,7 +216,7 @@ public class MousePressedManager {
 
                 EditorAttribute newAttribute = new EditorAttribute(attribute.getName(), attribute.getType(), selected);
 
-                if (!attribute.getDefaultValue().isEmpty()) newAttribute.setDefaultValue(attribute.getDefaultValue());
+                if (attribute.getDefaultValue() != null) newAttribute.setDefaultValue(attribute.getDefaultValue());
                 newAttribute.setValue(attribute.stringValue());
                 if (attribute.getRequiredInFile()) newAttribute.assertRequired();
                 output.add(newAttribute);
@@ -247,8 +247,8 @@ public class MousePressedManager {
         }
 
         ArrayList<ObjectComponent> byDepth = Renderer.orderObjectPositionsByDepth(level);
-        byDepth.sort((o1, o2) -> (int)Math.signum(o1.getDepth() - o2.getDepth()));
-        for (int i = byDepth.size() - 1; i >= 0; i--) {
+        byDepth.sort((o1, o2) -> (int)Math.signum(o2.getDepth() - o1.getDepth()));
+        for (int i = 0; i < byDepth.size(); i++) {
             ObjectComponent object = byDepth.get(i);
             if (!object.isVisible()) continue;
             if (!object.isSelectable()) continue;

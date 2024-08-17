@@ -55,7 +55,7 @@ public class _2_Level_Strand extends EditorObject {
 
         addAttribute("ball1UID", InputField._2_BALL_UID);
         addAttribute("ball2UID", InputField._2_BALL_UID);
-        addAttribute("type", InputField._2_STRAND_TYPE);
+        addAttribute("type", InputField._2_STRAND_TYPE).setDefaultValue("1").assertRequired();
         addAttribute("filled", InputField._2_BOOLEAN);
 
         setMetaAttributes(MetaEditorAttribute.parse("ball1UID,ball2UID,type,filled,"));
@@ -101,29 +101,12 @@ public class _2_Level_Strand extends EditorObject {
             String gb1 = getAttribute("ball1UID").stringValue();
             String gb2 = getAttribute("ball2UID").stringValue();
 
-            if (id.equals(gb1)) {
-
-                goo1 = ballInstance;
-
-                //if (strand == null) {
-
-                //    String type = ballInstance.getAttribute("type").stringValue();
-                //    if (setStrand(type)) strandBallID = 1;
-
-                //}
-
-            }
-
-            else if (id.equals(gb2)) {
-
-                goo2 = ballInstance;
-
-                //String type = ballInstance.getAttribute("type").stringValue();
-                //if (setStrand(type)) strandBallID = 2;
-
-            }
+            if (id.equals(gb1)) goo1 = ballInstance;
+            else if (id.equals(gb2)) goo2 = ballInstance;
 
         }
+
+        if (goo1 != null && goo1.getAttribute("type").stringValue().equals("Terrain")) setAttribute("type", "10");
 
         if (strandImage == null) {
             try {
@@ -148,8 +131,6 @@ public class _2_Level_Strand extends EditorObject {
                 e.printStackTrace();
             }
         }
-
-        //if (strandImage != null) addPartAsObjectPosition();
 
         addPartAsObjectPosition();
 

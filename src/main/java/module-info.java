@@ -1,8 +1,8 @@
 module com.example.WOGAnniversaryEditor {
-  requires transitive javafx.controls;
+  requires javafx.controls;
   requires java.desktop;
   requires javafx.swing;
-  requires transitive javafx.graphics;
+  requires javafx.graphics;
   requires org.bouncycastle.provider;
   requires org.apache.commons.compress;
   requires java.xml;

@@ -43,8 +43,7 @@ public class GameResourceManager {
             findWorldOfGoo.getExtensionFilters()
                     .add(new FileChooser.ExtensionFilter("World of Goo executable", "WorldOfGoo.exe"));
         } else if (version == GameVersion.VERSION_WOG2) {
-            findWorldOfGoo.getExtensionFilters()
-                    .add(new FileChooser.ExtensionFilter("World of Goo 2 executable", "World Of Goo 2.exe"));
+            findWorldOfGoo.getExtensionFilters().add(FileManager.get2ExtensionFilter());
         }
 
         File worldOfGoo = findWorldOfGoo.showOpenDialog(new Stage());
@@ -52,7 +51,7 @@ public class GameResourceManager {
             return false;
         } else {
             if (version == GameVersion.VERSION_WOG1_OLD) {
-                FileManager.setOldWOG1dir(worldOfGoo.getParent());
+                FileManager.setOldWOG1dir(worldOfGoo.getParent().replaceAll("\\\\", "/"));
                 try {
                     FileManager.saveProperties();
                 } catch (IOException e) {
@@ -60,7 +59,7 @@ public class GameResourceManager {
                 }
                 reloadWorldOfGoo(GameVersion.VERSION_WOG1_OLD);
             } else if (version == GameVersion.VERSION_WOG1_NEW) {
-                FileManager.setNewWOG1dir(worldOfGoo.getParent() + "\\game");
+                FileManager.setNewWOG1dir(worldOfGoo.getParent().replaceAll("\\\\", "/") + "/game");
                 try {
                     FileManager.saveProperties();
                 } catch (IOException e) {
@@ -68,7 +67,7 @@ public class GameResourceManager {
                 }
                 reloadWorldOfGoo(GameVersion.VERSION_WOG1_NEW);
             } else if (version == GameVersion.VERSION_WOG2) {
-                FileManager.setWOG2dir(worldOfGoo.getParent() + "\\game");
+                FileManager.setWOG2dir(worldOfGoo.getParent().replaceAll("\\\\", "/") + "/game");
                 try {
                     FileManager.saveProperties();
                 } catch (IOException e) {

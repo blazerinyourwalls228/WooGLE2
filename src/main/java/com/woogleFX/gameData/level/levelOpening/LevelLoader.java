@@ -224,9 +224,9 @@ public class LevelLoader {
             initialCameraPos.setTypeID("initialCameraPos");
             levelObject.setAttribute("initialCameraPos", "0,0");
 
-            levelObject.setAttribute("initialCameraZoom", 0);
+            levelObject.setAttribute("initialCameraZoom", 1);
             levelObject.setAttribute("cameraAutoBounds", "false");
-            levelObject.setAttribute("ballsRateRequired", 0);
+            levelObject.setAttribute("ballsRateRequired", 50);
             levelObject.setAttribute("musicId", "");
             levelObject.setAttribute("ambienceId", "");
             levelObject.setAttribute("musicOffset", 0);

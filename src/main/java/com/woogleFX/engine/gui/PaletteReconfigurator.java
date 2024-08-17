@@ -60,7 +60,7 @@ public class PaletteReconfigurator extends Application {
 
             String dir = FileManager.getGameDir(version);
             if (dir.isEmpty()) continue;
-            File[] balls = new File(dir + "\\res\\balls").listFiles();
+            File[] balls = new File(dir + "/res/balls").listFiles();
             if (balls == null) continue;
 
             Label label = new Label("Version 1.3 Goo Balls");

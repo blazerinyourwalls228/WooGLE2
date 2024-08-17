@@ -58,8 +58,6 @@ public class ClipboardManager {
 
         for (EditorObject object : selectedList) {
 
-            ObjectAdder.adjustObjectLocation(object);
-
             if (object instanceof BallInstance) {
                 ObjectAdder.fixGooBall(object);
                 for (EditorObject EditorObject : ((WOG1Level)level).getLevel()) {
@@ -73,7 +71,9 @@ public class ClipboardManager {
                 ObjectAdder.fixGooBall(object);
                 for (EditorObject EditorObject : ((WOG2Level)level).getObjects()) {
                     if (EditorObject instanceof _2_Level_Strand strand) {
-                        strand.update();
+                        if (strand.getAttribute("ball1UID").stringValue().equals(object.getAttribute("uid").stringValue())
+                        || strand.getAttribute("ball2UID").stringValue().equals(object.getAttribute("uid").stringValue()))
+                            strand.update();
                     }
                 }
             }
@@ -83,9 +83,14 @@ public class ClipboardManager {
                 wog2Level.getObjects().add(object);
                 object.update();
                 object.onLoaded();
+                ObjectManager.create(level, object, wog2Level.getLevel().getChildren().size());
+            } else {
+                ObjectManager.create(level, object, 0);
             }
-            ObjectManager.create(level, object, 0);
             objectCreationActions.add(new ObjectCreationAction(object, object.getParent().getChildren().indexOf(object)));
+
+            ObjectAdder.adjustObjectLocation(object);
+
         }
 
         UndoManager.registerChange(objectCreationActions.toArray(new UserAction[0]));

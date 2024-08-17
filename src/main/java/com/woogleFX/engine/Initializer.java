@@ -115,10 +115,17 @@ public class Initializer {
             }
         }
 
-        // KTXFileManager.readKTXImage(Path.of(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "\\res\\balls\\_atlas.image"));
+        // KTXFileManager.readKTXImage(Path.of(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "/res/balls/_atlas.image"));
 
-        // AnimBinReader.attemptToRead(Path.of(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "\\res\\anim\\TransitionBlackScreen\\TransitionBlackScreen.anim.bin"));
-        // AnimBinReader.attemptToRead(Path.of(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "\\res\\anim\\DishConnectedLadyHair\\LadyHair.anim.bin"));
+        // AnimBinReader.attemptToRead(Path.of(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "/res/anim/LevelArrow/LevelArrow.anim.bin"), null);
+        // AnimBinReader.attemptToRead(Path.of(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "/res/anim/TransitionBlackScreen/TransitionBlackScreen.anim.bin"), null);
+        // AnimBinReader.attemptToRead(Path.of(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "/res/anim/DishConnectedLadyHair/LadyHair.anim.bin"), null);
+
+        // AnimBinReader.attemptToRead(Path.of(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "/res/anim/IslandMap1_islands/IslandMap1_islands.anim.bin"), null);
+
+        // AnimBinReader.attemptToRead(Path.of(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "/res/anim/Cutscene5Scene1/Cutscene5Scene1.anim.bin"), null);
+
+        // System.exit(0);
 
     }
 

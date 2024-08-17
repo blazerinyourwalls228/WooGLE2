@@ -3,6 +3,10 @@ package com.woogleFX.file.fileExport;
 import com.woogleFX.editorObjects.EditorObject;
 import com.woogleFX.editorObjects.attributes.EditorAttribute;
 import com.woogleFX.editorObjects.attributes.InputField;
+import com.woogleFX.editorObjects.objectCreators.ObjectCreator;
+import com.woogleFX.gameData.level.GameVersion;
+
+import java.util.ArrayList;
 
 public class GOOWriter {
 
@@ -19,8 +23,18 @@ public class GOOWriter {
                 exportBuilder.append("\"").append(editorAttribute.getName()).append("\":\t");
                 if (editorAttribute.getType() == InputField._2_LIST_CHILD || editorAttribute.getType() == InputField._2_LIST_CHILD_HIDDEN) exportBuilder.append("[");
 
+                ArrayList<EditorObject> children = object.getChildren(editorAttribute.getName());
+                if (editorAttribute.getName().equals("terrainBalls")) {
+                    for (EditorObject ball : object.getChildren("balls")) {
+                        EditorObject terrainBall = ObjectCreator.create2("_2_Level_TerrainBall", null, GameVersion.VERSION_WOG2);
+                        terrainBall.setTypeID("terrainBalls");
+                        terrainBall.setAttribute("group", ball.getAttribute("terrainGroup").stringValue());
+                        children.add(terrainBall);
+                    }
+                }
+
                 boolean any = false;
-                for (EditorObject child : object.getChildren(editorAttribute.getName())) {
+                for (EditorObject child : children) {
 
                     any = true;
 

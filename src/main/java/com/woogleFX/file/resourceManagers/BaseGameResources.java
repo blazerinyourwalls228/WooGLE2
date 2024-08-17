@@ -39,7 +39,7 @@ public class BaseGameResources {
 
     public static void init() {
 
-        String prefix = FileManager.getEditorLocation() + "\\BaseGameResources\\";
+        String prefix = FileManager.getEditorLocation() + "/BaseGameResources/";
 
         loadFileIntoSet(prefix + "GooBallTypes.txt", GOO_BALL_TYPES);
         loadFileIntoSet(prefix + "Images.txt", IMAGES);

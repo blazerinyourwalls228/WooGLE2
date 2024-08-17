@@ -34,7 +34,7 @@ public class LevelResourceImporter {
     /** Modifies an image path to match those in the game. */
     private static String cleanImagePath(String path, GameVersion version) {
 
-        path = path.replace("\\", "/");
+        path = path.replace("/", "/");
         if (path.startsWith("/")) path = path.substring(1);
         if (path.endsWith(".png")) path = path.substring(0, path.length() - 4);
 
@@ -74,7 +74,7 @@ public class LevelResourceImporter {
     public static void importImages(_Level level) {
         FileChooser fileChooser = new FileChooser();
         String wogDir = FileManager.getGameDir(level.getVersion());
-        fileChooser.setInitialDirectory(new File(wogDir + "\\res\\images\\"));
+        fileChooser.setInitialDirectory(new File(wogDir + "/res/images/"));
         List<File> resrcFiles = fileChooser.showOpenMultipleDialog(FXStage.getStage());
 
         if (resrcFiles != null && !resrcFiles.isEmpty()) {
@@ -103,16 +103,16 @@ public class LevelResourceImporter {
             return;
         }
 
-        String normalizedFilename = resrcFile.getName().split("\\.")[0].replace(' ', '_');
+        String normalizedFilename = resrcFile.getName().split("/.")[0].replace(' ', '_');
 
         String dir = FileManager.getGameDir(level.getVersion());
-        String toLevel = "res\\levels\\" + level.getLevelName();
-        String pathBase = dir + "\\" + toLevel;
+        String toLevel = "res/levels/" + level.getLevelName();
+        String pathBase = dir + "/" + toLevel;
 
         // If a file with this name already exists, rename it by adding the smallest available number to its name.
-        if (new File(pathBase + "\\" + normalizedFilename + ".png").exists()) {
+        if (new File(pathBase + "/" + normalizedFilename + ".png").exists()) {
             int i = 1;
-            while (new File(pathBase + "\\" + normalizedFilename + "_" + i + ".png").exists()) i++;
+            while (new File(pathBase + "/" + normalizedFilename + "_" + i + ".png").exists()) i++;
             normalizedFilename += "_" + i;
         }
 
@@ -129,10 +129,10 @@ public class LevelResourceImporter {
             }
         } else {
             // If this resource isn't from the base game, save the actual image file in the level folder.
-            OutputStream outputStream = new FileOutputStream(pathBase + "\\" + normalizedFilename + ".png");
+            OutputStream outputStream = new FileOutputStream(pathBase + "/" + normalizedFilename + ".png");
             ImageIO.write(image, "png", outputStream);
             outputStream.close();
-            path = toLevel + "\\" + normalizedFilename;
+            path = toLevel + "/" + normalizedFilename;
         }
 
         String id = "IMAGE_SCENE_" + level.getLevelName().toUpperCase() + "_" + normalizedFilename.toUpperCase();
@@ -148,7 +148,7 @@ public class LevelResourceImporter {
         UndoManager.registerChange(
                 new ObjectCreationAction(sceneLayer, sceneLayer.getParent().getChildren().indexOf(sceneLayer)),
                 new ObjectCreationAction(imageResourceObject, imageResourceObject.getParent().getChildren().indexOf(imageResourceObject)),
-                new CreateFileAction(dir + "\\" + path + ".png", Files.readAllBytes(resrcFile.toPath()))
+                new CreateFileAction(dir + "/" + path + ".png", Files.readAllBytes(resrcFile.toPath()))
         );
 
     }
@@ -157,7 +157,7 @@ public class LevelResourceImporter {
     public static void importMusic(_Level level) {
         FileChooser fileChooser = new FileChooser();
         String wogDir = FileManager.getGameDir(level.getVersion());
-        fileChooser.setInitialDirectory(new File(wogDir + "\\res\\music"));
+        fileChooser.setInitialDirectory(new File(wogDir + "/res/music"));
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("OGG sound file", "*.ogg"));
 
         File resrcFile = fileChooser.showOpenDialog(FXStage.getStage());
@@ -173,11 +173,11 @@ public class LevelResourceImporter {
         String dir = FileManager.getGameDir(level.getVersion());
 
         /* copy file */
-        String normalizedFilename = resrcFile.getName().split("\\.")[0].replace(' ', '_');
+        String normalizedFilename = resrcFile.getName().split("/.")[0].replace(' ', '_');
         String soundPath = "res/levels/" + level.getLevelName() + "/" + normalizedFilename;
-        if (!new File(dir + "\\res\\music\\" + resrcFile.getName()).exists()) {
+        if (!new File(dir + "/res/music/" + resrcFile.getName()).exists()) {
             try {
-                Files.copy(resrcFile.toPath(), Paths.get(dir + "\\res\\music\\" + resrcFile.getName()));
+                Files.copy(resrcFile.toPath(), Paths.get(dir + "/res/music/" + resrcFile.getName()));
             } catch (IOException e) {
                 ErrorAlarm.show(e);
             }
@@ -237,7 +237,7 @@ public class LevelResourceImporter {
     public static void importLoopsound(_Level level) {
         FileChooser fileChooser = new FileChooser();
         String wogDir = FileManager.getGameDir(level.getVersion());
-        fileChooser.setInitialDirectory(new File(wogDir + "\\res\\sounds"));
+        fileChooser.setInitialDirectory(new File(wogDir + "/res/sounds"));
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("OGG sound file", "*.ogg"));
 
         File resrcFile = fileChooser.showOpenDialog(FXStage.getStage());
@@ -255,11 +255,11 @@ public class LevelResourceImporter {
         String dir = FileManager.getGameDir(level.getVersion());
 
         /* copy file */
-        String normalizedFilename = resrcFile.getName().split("\\.")[0].replace(' ', '_');
+        String normalizedFilename = resrcFile.getName().split("/.")[0].replace(' ', '_');
         String soundPath = "res/levels/" + level.getLevelName() + "/" + normalizedFilename;
-        if (!new File(dir + "\\res\\sounds\\" + resrcFile.getName()).exists()) {
+        if (!new File(dir + "/res/sounds/" + resrcFile.getName()).exists()) {
             try {
-                Files.copy(resrcFile.toPath(), Paths.get(dir + "\\res\\sounds\\" + resrcFile.getName()));
+                Files.copy(resrcFile.toPath(), Paths.get(dir + "/res/sounds/" + resrcFile.getName()));
             } catch (Exception e) {
                 ErrorAlarm.show(e);
             }

@@ -4,6 +4,8 @@ import com.woogleFX.engine.fx.FXCanvas;
 import com.woogleFX.engine.fx.FXContainers;
 import com.woogleFX.engine.renderer.Renderer;
 import com.woogleFX.engine.LevelManager;
+import com.woogleFX.gameData.level.WOG1Level;
+import com.woogleFX.gameData.level.WOG2Level;
 import com.woogleFX.gameData.level._Level;
 import javafx.scene.control.SplitPane;
 import javafx.scene.input.ScrollEvent;
@@ -34,8 +36,13 @@ public class MouseWheelMovedManager {
         double mouseX = e.getX();
         double mouseY = e.getY() - FXCanvas.getMouseYOffset();
 
-        if (oldScaleX * amt < 0.001 || oldScaleX * amt > 1000 ||
-            oldScaleY * amt < 0.001 || oldScaleY * amt > 1000) return;
+        if (level instanceof WOG1Level) {
+            if (oldScaleX * amt < 0.001 || oldScaleX * amt > 1000 ||
+                    oldScaleY * amt < 0.001 || oldScaleY * amt > 1000) return;
+        } else if (level instanceof WOG2Level) {
+            if (oldScaleX * amt < 3 || oldScaleX * amt > 100000 ||
+                    oldScaleY * amt < 3 || oldScaleY * amt > 100000) return;
+        }
 
         double newScaleX = oldScaleX * amt;
         double newScaleY = oldScaleY * amt;

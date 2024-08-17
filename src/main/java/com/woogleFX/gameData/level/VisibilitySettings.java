@@ -6,8 +6,8 @@ import javafx.scene.image.Image;
 
 public class VisibilitySettings {
 
-    private static final Image showHideAnim0 = FileManager.getIcon("ButtonIcons\\ShowHide\\showhide_anim_disabled.png");
-    private static final Image showHideAnim = FileManager.getIcon("ButtonIcons\\ShowHide\\showhide_anim.png");
+    private static final Image showHideAnim0 = FileManager.getIcon("ButtonIcons/ShowHide/showhide_anim_disabled.png");
+    private static final Image showHideAnim = FileManager.getIcon("ButtonIcons/ShowHide/showhide_anim.png");
     private boolean showAnimations = true;
     public boolean isShowAnimations() {
         return showAnimations;
@@ -18,8 +18,8 @@ public class VisibilitySettings {
     }
 
 
-    private static final Image showHideCam0 = FileManager.getIcon("ButtonIcons\\ShowHide\\showhide_cam_disabled.png");
-    private static final Image showHideCam1 = FileManager.getIcon("ButtonIcons\\ShowHide\\showhide_cam.png");
+    private static final Image showHideCam0 = FileManager.getIcon("ButtonIcons/ShowHide/showhide_cam_disabled.png");
+    private static final Image showHideCam1 = FileManager.getIcon("ButtonIcons/ShowHide/showhide_cam.png");
     private boolean showCameras = false;
     public boolean isShowCameras() {
         return showCameras;
@@ -30,8 +30,8 @@ public class VisibilitySettings {
     }
 
 
-    private static final Image showHideForcefields0 = FileManager.getIcon("ButtonIcons\\ShowHide\\showhide_forcefields_disabled.png");
-    private static final Image showHideForcefields1 = FileManager.getIcon("ButtonIcons\\ShowHide\\showhide_forcefields.png");
+    private static final Image showHideForcefields0 = FileManager.getIcon("ButtonIcons/ShowHide/showhide_forcefields_disabled.png");
+    private static final Image showHideForcefields1 = FileManager.getIcon("ButtonIcons/ShowHide/showhide_forcefields.png");
     private boolean showForcefields = true;
     public boolean isShowForcefields() {
         return showForcefields;
@@ -42,8 +42,8 @@ public class VisibilitySettings {
     }
 
 
-    private static final Image showHideGeometry0 = FileManager.getIcon("ButtonIcons\\ShowHide\\showhide_geometry_disabled.png");
-    private static final Image showHideGeometry1 = FileManager.getIcon("ButtonIcons\\ShowHide\\showhide_geometry.png");
+    private static final Image showHideGeometry0 = FileManager.getIcon("ButtonIcons/ShowHide/showhide_geometry_disabled.png");
+    private static final Image showHideGeometry1 = FileManager.getIcon("ButtonIcons/ShowHide/showhide_geometry.png");
     private int showGeometry = 2;
     public int getShowGeometry() {
         return showGeometry;
@@ -58,8 +58,8 @@ public class VisibilitySettings {
     }
 
 
-    private static final Image showHideImages0 = FileManager.getIcon("ButtonIcons\\ShowHide\\showhide_images_disabled.png");
-    private static final Image showHideImages1 = FileManager.getIcon("ButtonIcons\\ShowHide\\showhide_images.png");
+    private static final Image showHideImages0 = FileManager.getIcon("ButtonIcons/ShowHide/showhide_images_disabled.png");
+    private static final Image showHideImages1 = FileManager.getIcon("ButtonIcons/ShowHide/showhide_images.png");
     private boolean showGraphics = true;
     public boolean isShowGraphics() {
         return showGraphics;
@@ -70,9 +70,9 @@ public class VisibilitySettings {
     }
 
 
-    private static final Image showHideGoobs0 = FileManager.getIcon("ButtonIcons\\ShowHide\\showhide_goobs_disabled.png");
-    private static final Image showHideGoobs1 = FileManager.getIcon("ButtonIcons\\ShowHide\\showhide_goobs_wireframe.png");
-    private static final Image showHideGoobs2 = FileManager.getIcon("ButtonIcons\\ShowHide\\showhide_goobs.png");
+    private static final Image showHideGoobs0 = FileManager.getIcon("ButtonIcons/ShowHide/showhide_goobs_disabled.png");
+    private static final Image showHideGoobs1 = FileManager.getIcon("ButtonIcons/ShowHide/showhide_goobs_wireframe.png");
+    private static final Image showHideGoobs2 = FileManager.getIcon("ButtonIcons/ShowHide/showhide_goobs.png");
     private int showGoos = 2;
     public int getShowGoos() {
         return showGoos;
@@ -87,8 +87,8 @@ public class VisibilitySettings {
     }
 
 
-    private static final Image showHideParticles0 = FileManager.getIcon("ButtonIcons\\ShowHide\\showhide_particles_disabled.png");
-    private static final Image showHideParticles1 = FileManager.getIcon("ButtonIcons\\ShowHide\\showhide_particles.png");
+    private static final Image showHideParticles0 = FileManager.getIcon("ButtonIcons/ShowHide/showhide_particles_disabled.png");
+    private static final Image showHideParticles1 = FileManager.getIcon("ButtonIcons/ShowHide/showhide_particles.png");
     private boolean showParticles = true;
     public boolean isShowParticles() {
         return showParticles;
@@ -99,8 +99,8 @@ public class VisibilitySettings {
     }
 
 
-    private static final Image showHideLabels0 = FileManager.getIcon("ButtonIcons\\ShowHide\\showhide_labels_disabled.png");
-    private static final Image showHideLabels1 = FileManager.getIcon("ButtonIcons\\ShowHide\\showhide_labels.png");
+    private static final Image showHideLabels0 = FileManager.getIcon("ButtonIcons/ShowHide/showhide_labels_disabled.png");
+    private static final Image showHideLabels1 = FileManager.getIcon("ButtonIcons/ShowHide/showhide_labels.png");
     private boolean showLabels = true;
     public boolean isShowLabels() {
         return showLabels;
@@ -111,8 +111,8 @@ public class VisibilitySettings {
     }
 
 
-    private static final Image showHideBGColor0 = FileManager.getIcon("ButtonIcons\\ShowHide\\showhide_scenebgcolor_disabled.png");
-    private static final Image showHideBGColor1 = FileManager.getIcon("ButtonIcons\\ShowHide\\showhide_scenebgcolor.png");
+    private static final Image showHideBGColor0 = FileManager.getIcon("ButtonIcons/ShowHide/showhide_scenebgcolor_disabled.png");
+    private static final Image showHideBGColor1 = FileManager.getIcon("ButtonIcons/ShowHide/showhide_scenebgcolor.png");
     private boolean showSceneBGColor = true;
     public boolean isShowSceneBGColor() {
         return showSceneBGColor;

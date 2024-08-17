@@ -10,7 +10,6 @@ import com.woogleFX.editorObjects.attributes.EditorAttribute;
 import com.woogleFX.editorObjects.attributes.InputField;
 import com.woogleFX.editorObjects.attributes.MetaEditorAttribute;
 import com.woogleFX.editorObjects.objectComponents.ObjectComponent;
-import com.woogleFX.editorObjects.objectCreators.ObjectCreator;
 import com.woogleFX.gameData.level.GameVersion;
 
 import javafx.scene.control.TreeItem;

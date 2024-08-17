@@ -53,10 +53,10 @@ public class _2_Level_Item extends EditorObject {
     public _2_Level_Item(EditorObject parent) {
         super(parent, "Item", GameVersion.VERSION_WOG2);
 
-        addAttribute("id", InputField._2_STRING).assertRequired();
+        addAttribute("id", InputField._2_STRING).setDefaultValue("").assertRequired();
         addAttribute("type", InputField._2_ITEM_TYPE).assertRequired();
-        addAttribute("localizedStringId", InputField._2_STRING).assertRequired();
-        addAttribute("uid", InputField._2_UID).assertRequired();
+        addAttribute("localizedStringId", InputField._2_STRING).setDefaultValue("").assertRequired();
+        addAttribute("uid", InputField._2_UID).setDefaultValue("0").assertRequired();
 
         addAttribute("pos", InputField._2_CHILD_HIDDEN).assertRequired();
         putAttributeChildAlias("pos", "_2_Point");
@@ -64,21 +64,21 @@ public class _2_Level_Item extends EditorObject {
         addAttribute("scale", InputField._2_CHILD_HIDDEN).assertRequired();
         putAttributeChildAlias("scale", "_2_Point");
 
-        addAttribute("rotation", InputField._2_NUMBER).assertRequired();
-        addAttribute("depth", InputField._2_NUMBER).assertRequired();
+        addAttribute("rotation", InputField._2_NUMBER).setDefaultValue("0").assertRequired();
+        addAttribute("depth", InputField._2_NUMBER).setDefaultValue("0").assertRequired();
         addAttribute("flipHorizontal", InputField._2_BOOLEAN);
         addAttribute("flipVertical", InputField._2_BOOLEAN);
-        addAttribute("rotSpeed", InputField._2_NUMBER).assertRequired();
+        addAttribute("rotSpeed", InputField._2_NUMBER).setDefaultValue("0").assertRequired();
         addAttribute("collisionGroup", InputField._2_COLLISION_GROUP);
         addAttribute("bodyUID", InputField._2_UID);
-        addAttribute("seed", InputField._2_NUMBER).assertRequired();
+        addAttribute("seed", InputField._2_NUMBER).setDefaultValue("0").assertRequired();
         addAttribute("maxCount", InputField._2_NUMBER);
         addAttribute("ratePps", InputField._2_NUMBER);
-        addAttribute("liquidType", InputField._2_LIQUID_TYPE).assertRequired();
-        addAttribute("adapterBallId", InputField._2_BALL_UID).assertRequired(); // Maybe?
-        addAttribute("invisible", InputField._2_BOOLEAN).assertRequired();
-        addAttribute("forcedRandomizationIndex", InputField._2_NUMBER).assertRequired();
-        addAttribute("particleEffectName", InputField._2_STRING).assertRequired();
+        addAttribute("liquidType", InputField._2_LIQUID_TYPE).setDefaultValue("0").assertRequired();
+        addAttribute("adapterBallId", InputField._2_BALL_UID).setDefaultValue("0").assertRequired(); // Maybe?
+        addAttribute("invisible", InputField._2_BOOLEAN).setDefaultValue("false").assertRequired();
+        addAttribute("forcedRandomizationIndex", InputField._2_NUMBER).setDefaultValue("0").assertRequired();
+        addAttribute("particleEffectName", InputField._2_STRING).setDefaultValue("").assertRequired();
         addAttribute("uid1", InputField._2_UID);
         addAttribute("uid2", InputField._2_UID);
 
@@ -123,7 +123,7 @@ public class _2_Level_Item extends EditorObject {
 
         });
 
-        EditorAttribute temp = new EditorAttribute("type", InputField._2_ITEM_TYPE, obj);
+        EditorAttribute temp = new EditorAttribute("type", InputField._2_ITEM_TYPE, obj).assertRequired();
         addAttributeAdapter("type", new AttributeAdapter("type") {
 
             @Override

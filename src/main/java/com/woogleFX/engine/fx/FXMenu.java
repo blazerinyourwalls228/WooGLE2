@@ -45,7 +45,7 @@ public class FXMenu {
 
         fileMenu.setText("File");
 
-        String prefix = "ButtonIcons\\File\\";
+        String prefix = "ButtonIcons/File/";
 
         reloadWorldOfGooOldItem.setText("Reload World of Goo 1.3");
         setIcon(reloadWorldOfGooOldItem, prefix + "reload_world_of_goo_old.png");
@@ -118,7 +118,7 @@ public class FXMenu {
 
         levelMenu.setText("Level");
 
-        String prefix = "ButtonIcons\\Level\\";
+        String prefix = "ButtonIcons/Level/";
 
         newLevelOldItem.setText("New Level (1.3)...");
         setIcon(newLevelOldItem, prefix + "new_lvl_old.png");
@@ -196,7 +196,7 @@ public class FXMenu {
 
         editMenu.setText("Edit");
 
-        String prefix = "ButtonIcons\\Edit\\";
+        String prefix = "ButtonIcons/Edit/";
 
         undoItem.setText("Undo");
         setIcon(undoItem, prefix + "undo.png");
@@ -244,7 +244,7 @@ public class FXMenu {
 
         resourcesMenu.setText("Resources");
 
-        String prefix = "ButtonIcons\\Resources\\";
+        String prefix = "ButtonIcons/Resources/";
 
         updateLevelResourcesItem.setText("Update Level Resources...");
         setIcon(updateLevelResourcesItem, prefix + "update_level_resources.png");

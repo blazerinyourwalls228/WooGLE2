@@ -84,11 +84,12 @@ public enum InputField {
 
     ;
 
-    public static boolean verify(EditorObject object, InputField type, String potential) {
+    public static boolean verify(EditorObject object, InputField type, String potential, boolean required) {
 
         if (type == null) return true;
+        if (type == _2_LIST_STRING || type == _2_LIST_NUMBER || type == _2_LIST_CHILD || type == _2_LIST_CHILD_HIDDEN) return true;
 
-        if (potential.isEmpty()) return !(type == _1_IMAGE_REQUIRED);
+        if (potential == null) return !(type == _1_IMAGE_REQUIRED || required);
 
         switch (type) {
 
@@ -245,7 +246,7 @@ public enum InputField {
 
             case _1_BALL -> {
                 String dir = FileManager.getGameDir(object.getVersion());
-                File[] ballFiles = new File(dir + "\\res\\balls").listFiles();
+                File[] ballFiles = new File(dir + "/res/balls").listFiles();
                 if (ballFiles == null) return false;
                 for (File ballFile : ballFiles) {
                     if (ballFile.getName().equals(potential)) {
@@ -315,7 +316,7 @@ public enum InputField {
                     String adjustedPath = resrcImage.getAdjustedPath();
                     String setDefaultsPart = adjustedPath.substring(0, adjustedPath.length() - path.length());
                     String dir = FileManager.getGameDir(resrcImage.getVersion());
-                    return new File(dir + "\\" + setDefaultsPart + potential + ".png").exists();
+                    return new File(dir + "/" + setDefaultsPart + potential + ".png").exists();
                 } else return false;
             }
 
@@ -325,7 +326,7 @@ public enum InputField {
                     String adjustedPath = sound.getAdjustedPath();
                     String setDefaultsPart = adjustedPath.substring(0, adjustedPath.length() - path.length());
                     String dir = FileManager.getGameDir(sound.getVersion());
-                    return new File(dir + "\\" + setDefaultsPart + potential + ".ogg").exists();
+                    return new File(dir + "/" + setDefaultsPart + potential + ".ogg").exists();
                 } else return false;
             }
 

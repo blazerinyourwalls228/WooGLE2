@@ -9,13 +9,17 @@ import com.woogleFX.editorObjects.objectComponents.ObjectComponent;
 import com.woogleFX.engine.SelectionManager;
 import com.woogleFX.engine.fx.FXCanvas;
 import com.woogleFX.engine.LevelManager;
+import com.woogleFX.engine.fx.FXContainers;
+import com.woogleFX.engine.fx.FXLevelSelectPane;
 import com.woogleFX.gameData.level.WOG1Level;
 import com.woogleFX.gameData.level.WOG2Level;
 import com.woogleFX.gameData.level._Level;
 
+import com.worldOfGoo2.misc._2_Point;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.SplitPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.transform.Affine;
@@ -133,6 +137,8 @@ public class Renderer {
 
     public static void drawLevelToCanvas(_Level level, Canvas canvas) {
 
+        if (level instanceof WOG2Level wog2Level) clampLevelCamera(wog2Level, canvas);
+
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
 
         ArrayList<ObjectComponent> objectPositionsOrderedByDepth = orderObjectPositionsByDepth(level);
@@ -143,9 +149,10 @@ public class Renderer {
             addObjectPositionToListByDepth(objectPositionsOrderedByDepth, EffectsManager.getPlacingStrand(SelectionManager.getStrand1Gooball(), gameRelativeX, gameRelativeY));
         }
 
-        objectPositionsOrderedByDepth.sort((o1, o2) -> (int)Math.signum(o1.getDepth() - o2.getDepth()));
+        objectPositionsOrderedByDepth.sort((o1, o2) -> (int)Math.signum(o2.getDepth() - o1.getDepth()));
 
-        for (ObjectComponent objectComponent : objectPositionsOrderedByDepth) {
+        for (int i = objectPositionsOrderedByDepth.size() - 1; i >= 0; i--) {
+            ObjectComponent objectComponent = objectPositionsOrderedByDepth.get(i);
 
             if (!objectComponent.isVisible()) continue;
 
@@ -171,6 +178,27 @@ public class Renderer {
             graphicsContext.restore();
 
         }
+
+    }
+
+
+    private static void clampLevelCamera(WOG2Level level, Canvas canvas) {
+
+        EditorObject boundsBottomLeft = level.getLevel().getChildren("boundsBottomLeft").get(0);
+        EditorObject boundsTopRight = level.getLevel().getChildren("boundsTopRight").get(0);
+
+        SplitPane splitPane = FXContainers.getSplitPane();
+        double cameraWidth = (splitPane.getDividerPositions()[0] * splitPane.getWidth() - 6) / level.getZoom();
+        double cameraHeight = (FXCanvas.getCanvas().getHeight() - FXLevelSelectPane.getLevelSelectPane().getHeight()) / level.getZoom();
+
+        if (-level.getOffsetX() / level.getZoom() + cameraWidth < boundsBottomLeft.getAttribute("x").doubleValue())
+            level.setOffsetX(-(boundsBottomLeft.getAttribute("x").doubleValue() - cameraWidth) * level.getZoom());
+        if (-level.getOffsetX() / level.getZoom() > boundsTopRight.getAttribute("x").doubleValue())
+            level.setOffsetX(-(boundsTopRight.getAttribute("x").doubleValue()) * level.getZoom());
+        if (-level.getOffsetY() / level.getZoom() + cameraHeight < -boundsTopRight.getAttribute("y").doubleValue())
+            level.setOffsetY(-(-boundsBottomLeft.getAttribute("y").doubleValue() - cameraHeight) * level.getZoom());
+        if (-level.getOffsetY() / level.getZoom() > -boundsBottomLeft.getAttribute("y").doubleValue())
+            level.setOffsetY(-(-boundsTopRight.getAttribute("y").doubleValue()) * level.getZoom());
 
     }
 

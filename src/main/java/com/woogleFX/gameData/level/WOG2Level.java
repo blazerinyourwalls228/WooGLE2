@@ -32,12 +32,20 @@ public class WOG2Level extends _Level {
 
         LevelManager.setLevel(this);
 
+        for (EditorObject ball : getLevel().getChildren("balls")) {
+            EditorObject terrainBall = getLevel().getChildren("terrainBalls").remove(0);
+            getObjects().remove(terrainBall);
+            getLevel().getChildren().remove(terrainBall);
+            ball.setAttribute("terrainGroup", terrainBall.getAttribute("group").stringValue());
+        }
+
         //for (EditorObject object : objects) {
         //    object.update();
         //}
 
-        setOffsetX(500);
-        setZoom(10);
+        setOffsetX(1000);
+        setOffsetY(500);
+        setZoom(30);
 
     }
 

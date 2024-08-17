@@ -112,7 +112,7 @@ public class GlobalResourceManager {
     private static void openItems() {
 
         new Thread(() -> {
-            for (File itemFile : new File(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "\\res\\items").listFiles())
+            for (File itemFile : new File(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "/res/items").listFiles())
                 if (itemFile.getName().endsWith(".wog2"))
                     ItemHelper.getItemActualName(itemFile.getName().substring(0, itemFile.getName().length() - 5));
         }).start();
@@ -189,7 +189,7 @@ public class GlobalResourceManager {
 
     private static void openAnimations(GameVersion version) {
 
-        File animationsDirectory = new File(FileManager.getGameDir(version) + "\\res\\anim");
+        File animationsDirectory = new File(FileManager.getGameDir(version) + "/res/anim");
         File[] animationsArray = animationsDirectory.listFiles();
         if (animationsArray == null) return;
 
