@@ -464,7 +464,7 @@ public class FileManager {
         } else if (os.contains("mac")) {
             return new FileChooser.ExtensionFilter("World of Goo 2 executable", "World Of Goo 2.app");
         } else if (os.contains("nix") || os.contains("nux") || os.contains("aix")) {
-            return new FileChooser.ExtensionFilter("World of Goo 2 executable", "World Of Goo 2.elf");
+            return new FileChooser.ExtensionFilter("World of Goo 2 executable", "WorldOfGoo2");
         } else {
             throw new RuntimeException("Unsupported OS: " + os);
         }
