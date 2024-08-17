@@ -53,7 +53,7 @@ public class LevelVerifier {
         }
 
         // Check level for initialCameraZoom=0
-        if (level.getLevel().getAttribute("initialCameraZoom").intValue() == 0) {
+        if (level.getLevel().getAttribute("initialCameraZoom").doubleValue() == 0) {
             errors.add("Level initialCameraZoom is zero");
         }
 
