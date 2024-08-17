@@ -67,7 +67,10 @@ public class GameResourceManager {
                 }
                 reloadWorldOfGoo(GameVersion.VERSION_WOG1_NEW);
             } else if (version == GameVersion.VERSION_WOG2) {
-                FileManager.setWOG2dir(worldOfGoo.getParent().replaceAll("\\\\", "/") + "/game");
+                if (FileManager.get2ExtensionFilter().getExtensions().get(0).equals("WorldOfGoo2.app"))
+                    FileManager.setWOG2dir(worldOfGoo.getParent().replaceAll("\\\\", "/") + "/Contents/Resources/game");
+                else
+                    FileManager.setWOG2dir(worldOfGoo.getParent().replaceAll("\\\\", "/") + "/game");
                 try {
                     FileManager.saveProperties();
                 } catch (IOException e) {
