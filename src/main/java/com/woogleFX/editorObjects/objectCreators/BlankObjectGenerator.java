@@ -22,6 +22,10 @@ public class BlankObjectGenerator {
 
         addinLevelDir.setAttribute("value", levelName);
 
+        if (version == GameVersion.VERSION_WOG2) {
+            addin.setAttribute("spec-version", "2.0");
+        }
+
         return addin;
     }
 

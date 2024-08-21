@@ -9,7 +9,6 @@ import com.woogleFX.engine.LevelManager;
 import com.woogleFX.editorObjects.DragSettings;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 
 /** Represents a circle component in any object. */
 public abstract class CircleComponent extends ObjectComponent

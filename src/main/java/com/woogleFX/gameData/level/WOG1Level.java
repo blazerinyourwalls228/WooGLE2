@@ -39,14 +39,6 @@ public class WOG1Level extends _Level {
         return resrc.get(0);
     }
 
-    private final ArrayList<EditorObject> addin;
-    public ArrayList<EditorObject> getAddin() {
-        return addin;
-    }
-    public EditorObject getAddinObject() {
-        return addin.get(0);
-    }
-
     private final ArrayList<EditorObject> text;
     public ArrayList<EditorObject> getText() {
         return text;
@@ -63,12 +55,11 @@ public class WOG1Level extends _Level {
                   ArrayList<EditorObject> text,
                   GameVersion version) {
 
-        super(version);
+        super(version, addin);
 
         this.scene = scene;
         this.level = level;
         this.resrc = resrc;
-        this.addin = addin;
         this.text = text;
 
         LevelManager.setLevel(this);

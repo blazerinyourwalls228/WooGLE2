@@ -3,6 +3,7 @@ package com.worldOfGoo2.environments;
 import com.woogleFX.editorObjects.EditorObject;
 import com.woogleFX.editorObjects.attributes.InputField;
 import com.woogleFX.gameData.level.GameVersion;
+import com.worldOfGoo2.misc._2_Point;
 
 public class _2_Environment_Layer extends EditorObject {
 
@@ -21,22 +22,15 @@ public class _2_Environment_Layer extends EditorObject {
         addAttribute("mirrorY", InputField._2_STRING);
         addAttribute("flipX", InputField._2_STRING);
         addAttribute("flipY", InputField._2_STRING);
-
-        addAttribute("anchors", InputField._2_LIST_CHILD);
-        putAttributeChildAlias("anchors", "_2_Point");
-
+        addAttribute("anchors", InputField._2_LIST_CHILD).setChildAlias(_2_Point.class);
         addAttribute("anchorsTakeDepthIntoAccount", InputField._2_STRING);
         addAttribute("bloom", InputField._2_STRING);
         addAttribute("color", InputField._2_STRING);
         addAttribute("blendingType", InputField._2_STRING);
         addAttribute("flashAnimationName", InputField._2_STRING);
         addAttribute("isFlashAnimation", InputField._2_STRING);
-
-        addAttribute("animScroll", InputField._2_STRING);
-        putAttributeChildAlias("animScroll", "_2_Point");
-
-        addAttribute("gradient", InputField._2_CHILD);
-        putAttributeChildAlias("gradient", "_2_Environment_Gradient");
+        addAttribute("animScroll", InputField._2_STRING).setChildAlias(_2_Point.class);
+        addAttribute("gradient", InputField._2_CHILD).setChildAlias(_2_Environment_Gradient.class);
 
     }
 

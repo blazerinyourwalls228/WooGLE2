@@ -23,78 +23,10 @@ public class _2_Level extends EditorObject {
     public _2_Level(EditorObject parent) {
         super(parent, "Level", GameVersion.VERSION_WOG2);
 
-        addAttribute("version", InputField._2_NUMBER).assertRequired();
-        addAttribute("type", InputField._2_LEVEL_TYPE).assertRequired();
-        addAttribute("forceFadeEOL", InputField._2_BOOLEAN);
-        addAttribute("skin", InputField._2_SKIN);
-        addAttribute("uuid", InputField._2_UUID).assertRequired();
-        addAttribute("title", InputField._2_STRING).assertRequired();
-        addAttribute("gameLevel", InputField._2_GAME_LEVEL);
-        addAttribute("startingUID", InputField._2_UID);
-        addAttribute("island", InputField._2_ISLAND_ID);
-        addAttribute("environmentId", InputField._2_NUMBER).setDefaultValue("").assertRequired();
-        addAttribute("backgroundId", InputField._2_BACKGROUND_ID).setDefaultValue("").assertRequired();
-
-        addAttribute("gravity", InputField._2_CHILD_HIDDEN).assertRequired();
-        putAttributeChildAlias("gravity", "_2_Point");
         addAttributeAdapter("gravity", AttributeAdapter.pointAttributeAdapter(this, "gravity", "gravity"));
-
-        addAttribute("boundsTopRight", InputField._2_CHILD_HIDDEN).assertRequired();
-        putAttributeChildAlias("boundsTopRight", "_2_Point");
         addAttributeAdapter("boundsTopRight", AttributeAdapter.pointAttributeAdapter(this, "boundsTopRight", "boundsTopRight"));
-
-        addAttribute("boundsBottomLeft", InputField._2_CHILD_HIDDEN).assertRequired();
-        putAttributeChildAlias("boundsBottomLeft", "_2_Point");
         addAttributeAdapter("boundsBottomLeft", AttributeAdapter.pointAttributeAdapter(this, "boundsBottomLeft", "boundsBottomLeft"));
-
-        addAttribute("initialCameraPos", InputField._2_CHILD_HIDDEN).assertRequired();
-        putAttributeChildAlias("initialCameraPos", "_2_Point");
         addAttributeAdapter("initialCameraPos", AttributeAdapter.pointAttributeAdapter(this, "initialCameraPos", "initialCameraPos"));
-
-        addAttribute("initialCameraZoom", InputField._2_NUMBER).setDefaultValue("1").assertRequired();
-        addAttribute("cameraAutoBounds", InputField._2_BOOLEAN).assertRequired();
-        addAttribute("ballsRateRequired", InputField._2_NUMBER).assertRequired();
-        addAttribute("musicId", InputField._2_MUSIC_ID).setDefaultValue("").assertRequired();
-        addAttribute("ambienceId", InputField._2_SOUND_ID).setDefaultValue("").assertRequired();
-        addAttribute("musicOffset", InputField._2_NUMBER).assertRequired();
-        addAttribute("ambienceOffset", InputField._2_NUMBER).assertRequired();
-        addAttribute("liquidScale", InputField._2_NUMBER);
-        addAttribute("pretickSeconds", InputField._2_NUMBER).assertRequired();
-        addAttribute("conduitSuckVolume", InputField._2_NUMBER);
-        addAttribute("fireSfxVolume", InputField._2_NUMBER);
-
-        addAttribute("balls", InputField._2_LIST_CHILD_HIDDEN).assertRequired();
-        putAttributeChildAlias("balls", "_2_Level_Ball");
-
-        addAttribute("strands", InputField._2_LIST_CHILD_HIDDEN).assertRequired();
-        putAttributeChildAlias("strands", "_2_Level_Strand");
-
-        addAttribute("terrainGroups", InputField._2_LIST_CHILD_HIDDEN).assertRequired();
-        putAttributeChildAlias("terrainGroups", "_2_Level_TerrainGroup");
-
-        addAttribute("items", InputField._2_LIST_CHILD_HIDDEN).assertRequired();
-        putAttributeChildAlias("items", "_2_Level_Item");
-
-        addAttribute("pins", InputField._2_LIST_CHILD_HIDDEN).assertRequired();
-        putAttributeChildAlias("pins", "_2_Level_Pin");
-
-        addAttribute("initialCameraKeyframes", InputField._2_LIST_CHILD_HIDDEN).assertRequired();
-        putAttributeChildAlias("initialCameraKeyframes", "_2_Level_CameraKeyFrame");
-
-        addAttribute("terrainBalls", InputField._2_LIST_CHILD).assertRequired();
-        putAttributeChildAlias("terrainBalls", "_2_Level_TerrainBall");
-
-        addAttribute("levelEnvironmentEffects", InputField._2_LIST_STRING).assertRequired();
-        addAttribute("enableTimeBugs", InputField._2_BOOLEAN).assertRequired();
-        addAttribute("timebugMoves", InputField._2_NUMBER);
-
-        String general = "version,type,uuid,title,gameLevel,startingUID,island,";
-        String visuals = "?Visuals<environmentId,backgroundId,levelEnvironmentEffects,skin,liquidScale>";
-        String sound = "?Sound<musicId,ambienceId,musicOffset,ambienceOffset,conduitSuckVolume,fireSfxVolume>";
-        String camera = "?Camera<boundsTopRight,boundsBottomLeft,initialCameraPos,initialCameraZoom,cameraAutoBounds,forceFadeEOL>";
-        String gameplay = "?Gameplay<gravity,ballsRateRequired,pretickSeconds,enableTimeBugs,timebugMoves>";
-        setMetaAttributes(MetaEditorAttribute.parse(general + gameplay + visuals + sound + camera));
-
 
         setTypeID("_2_Level");
 
@@ -102,8 +34,16 @@ public class _2_Level extends EditorObject {
 
 
     @Override
-    public String[] getPossibleChildren() {
-        return new String[] { "_2_Level_Ball", "_2_Level_Strand", "_2_Level_TerrainGroup", "_2_Level_Item", "_2_Level_Pin", "_2_Level_CameraKeyFrame", "_2_Level_TerrainBall" };
+    public Class<? extends EditorObject>[] getPossibleChildren() {
+        return new Class[] {
+                _2_Level_BallInstance.class,
+                _2_Level_Strand.class,
+                _2_Level_TerrainGroup.class,
+                _2_Level_Item.class,
+                _2_Level_Pin.class,
+                _2_Level_CameraKeyFrame.class,
+                _2_Level_TerrainBall.class
+        };
     }
 
 

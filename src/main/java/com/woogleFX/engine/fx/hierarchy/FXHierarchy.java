@@ -164,8 +164,9 @@ public class FXHierarchy {
         Tab items = new Tab("Items");
         Tab pins = new Tab("Pins");
         Tab camera = new Tab("Camera");
+        Tab addin = new Tab("Addin");
 
-        newHierarchySwitcherButtons.getTabs().addAll(terrain, balls, items, pins, camera);
+        newHierarchySwitcherButtons.getTabs().addAll(terrain, balls, items, pins, camera, addin);
         newHierarchySwitcherButtons.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         newHierarchySwitcherButtons.setMinHeight(30);
         newHierarchySwitcherButtons.setMaxHeight(30);
@@ -192,6 +193,8 @@ public class FXHierarchy {
                 else if (child.getType().equals("CameraKeyFrame") && t1 == camera) root.getChildren().add(child.getTreeItem());
 
             }
+
+            if (t1 == addin) root.getChildren().add(level.getAddin().get(0).getTreeItem());
 
             hierarchy.refresh();
             hierarchy.getRoot().setExpanded(true);

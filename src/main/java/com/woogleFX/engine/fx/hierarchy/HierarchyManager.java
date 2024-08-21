@@ -31,9 +31,9 @@ import java.util.stream.Stream;
 
 public class HierarchyManager {
 
-    public static Image getObjectIcon(String type, boolean terrain) {
+    public static Image getObjectIcon(Class<? extends EditorObject> type, boolean terrain) {
 
-        String iconName = switch (type) {
+        String iconName = switch (type.getName()) {
             case "addin", "Addin_addin", "Addin_id", "Addin_name",
                     "Addin_type", "Addin_version", "Addin_description",
                     "Addin_author", "Addin_levels", "Addin_level",
@@ -79,11 +79,9 @@ public class HierarchyManager {
             case "targetheight" -> "level/targetheight";
             case "Vertex" -> "level/Vertex";
 
-            // case "_2_Level_Ball" -> "level/BallInstance";
             case "CameraKeyFrame" -> "level/camera";
             case "Pin" -> "scene/hinge";
             case "Item" -> "scene/SceneLayer";
-            // case "Strand" -> "level/Strand";
             case "UserVariable" -> "addin/addin";
 
             default -> null;
@@ -170,7 +168,7 @@ public class HierarchyManager {
                 if (cell.getTableRow().getItem() instanceof _2_Level_BallInstance && cell.getTableRow().getItem().getAttribute("type").stringValue().equals("Terrain")) {
                     terrain = true;
                 }
-                imageView = new ImageView(getObjectIcon(cell.getTableRow().getItem().getType(), terrain));
+                imageView = new ImageView(getObjectIcon(cell.getTableRow().getItem().getClass(), terrain));
                 if (cell.getTableRow().getItem().getType().equals("Item")) {
                     cell.setText(cell.getTableRow().getItem().getAttribute("type").stringValue());
                     imageView.setImage(getItemIcon(cell.getTableRow().getItem().getAttribute("type").stringValue()));
@@ -187,10 +185,10 @@ public class HierarchyManager {
 
                 for (EditorAttribute attribute : editorObject.getAttributes()) {
                     if (attribute.stringValue().isEmpty()) {
-                        if (!InputField.verify(editorObject, attribute.getType(), attribute.getDefaultValue(), attribute.getRequiredInFile())) {
+                        if (!InputField.verify(editorObject, attribute.getType(), attribute.getDefaultValue(), attribute.getRequired())) {
                             valid = false;
                         }
-                    } else if (!InputField.verify(editorObject, attribute.getType(), attribute.actualValue(), attribute.getRequiredInFile())) {
+                    } else if (!InputField.verify(editorObject, attribute.getType(), attribute.actualValue(), attribute.getRequired())) {
                         valid = false;
                     }
                 }
@@ -370,10 +368,10 @@ public class HierarchyManager {
 
         // For every object that can be created as a child of this object:
         int i = 0;
-        for (String childToAdd : object.getPossibleChildren()) {
+        for (Class<? extends EditorObject> childToAdd : object.getPossibleChildren()) {
 
             // Create a menu item representing creating this child.
-            MenuItem addItemItem = new MenuItem("Add " + childToAdd);
+            MenuItem addItemItem = new MenuItem(" Add " + childToAdd.getName());
 
             // Attempt to set graphics for this menu item.
             addItemItem.setGraphic(new ImageView(getObjectIcon(childToAdd, false)));

@@ -5,6 +5,7 @@ import com.woogleFX.editorObjects.attributes.EditorAttribute;
 import com.woogleFX.editorObjects.attributes.InputField;
 import com.woogleFX.editorObjects.objectCreators.ObjectCreator;
 import com.woogleFX.gameData.level.GameVersion;
+import com.worldOfGoo2.level._2_Level_TerrainBall;
 
 import java.util.ArrayList;
 
@@ -16,9 +17,9 @@ public class GOOWriter {
 
         for (EditorAttribute editorAttribute : object.getAttributes()) {
 
-            if ((editorAttribute.actualValue().isEmpty() && (!object.getAttributeChildAlias().containsKey(editorAttribute.getName()) || object.getChildren(editorAttribute.getName()).isEmpty())) && !editorAttribute.getRequiredInFile()) continue;
+            if ((editorAttribute.actualValue().isEmpty() && (editorAttribute.getChildAlias() == null || object.getChildren(editorAttribute.getName()).isEmpty())) && !editorAttribute.getRequired()) continue;
 
-            if (object.getAttributeChildAlias().containsKey(editorAttribute.getName())) {
+            if (editorAttribute.getChildAlias() != null) {
 
                 exportBuilder.append("\"").append(editorAttribute.getName()).append("\":\t");
                 if (editorAttribute.getType() == InputField._2_LIST_CHILD || editorAttribute.getType() == InputField._2_LIST_CHILD_HIDDEN) exportBuilder.append("[");
@@ -26,7 +27,7 @@ public class GOOWriter {
                 ArrayList<EditorObject> children = object.getChildren(editorAttribute.getName());
                 if (editorAttribute.getName().equals("terrainBalls")) {
                     for (EditorObject ball : object.getChildren("balls")) {
-                        EditorObject terrainBall = ObjectCreator.create2("_2_Level_TerrainBall", null, GameVersion.VERSION_WOG2);
+                        EditorObject terrainBall = ObjectCreator.create2(_2_Level_TerrainBall.class, null, GameVersion.VERSION_WOG2);
                         terrainBall.setTypeID("terrainBalls");
                         terrainBall.setAttribute("group", ball.getAttribute("terrainGroup").stringValue());
                         children.add(terrainBall);

@@ -1,6 +1,7 @@
 package com.woogleFX.file.fileImport;
 
 import com.woogleFX.editorObjects.EditorObject;
+import com.woogleFX.editorObjects.attributes.EditorAttribute;
 import com.woogleFX.editorObjects.objectCreators.ObjectCreator;
 import com.woogleFX.gameData.level.GameVersion;
 import com.worldOfGoo2.misc._2_Point;
@@ -79,7 +80,7 @@ public class ObjectGOOParser {
     }
 
 
-    public static AssetObject readList(String type, Stack<String> tokens, EditorObject parent) {
+    public static AssetObject readList(Class<? extends EditorObject> type, Stack<String> tokens, EditorObject parent) {
 
         ArrayList<AssetObject> assetObjects = new ArrayList<>();
         while (true) {
@@ -101,7 +102,7 @@ public class ObjectGOOParser {
                 }
 
                 case "{" -> {
-                    assetObjects.add(readAsset(type, tokens, parent));
+                    if (type != null) assetObjects.add(readAsset(type, tokens, parent));
                 }
 
                 case "," -> {
@@ -118,11 +119,8 @@ public class ObjectGOOParser {
 
     }
 
-    public static AssetAssetObject readAsset(String type, Stack<String> tokens, EditorObject parent) {
+    public static AssetAssetObject readAsset(Class<? extends EditorObject> type, Stack<String> tokens, EditorObject parent) {
 
-        if (parent != null && parent.getAttributeChildAlias().containsKey(type)) {
-            type = parent.getAttributeChildAlias().get(type);
-        }
         EditorObject asset = ObjectCreator.create2(type, parent, GameVersion.VERSION_WOG2);
 
         String name = null;
@@ -138,8 +136,15 @@ public class ObjectGOOParser {
                 }
 
                 case "[" -> {
+                    Class<? extends EditorObject> typeClass = null;
+                    for (EditorAttribute editorAttribute : asset.getAttributes()) {
+                        if (editorAttribute.getChildAlias() != null && editorAttribute.getName().equals(name)) {
+                            typeClass = editorAttribute.getChildAlias();
+                            break;
+                        }
+                    }
                     String total = "";
-                    for (AssetObject assetObject : ((AssetArrayObject)readList(name, tokens, asset)).value) {
+                    for (AssetObject assetObject : ((AssetArrayObject) readList(typeClass, tokens, asset)).value) {
                         if (assetObject instanceof AssetStringObject assetStringObject) {
                             total += assetStringObject.value + ",";
                         } else if (assetObject instanceof AssetAssetObject assetAssetObject) {
@@ -166,9 +171,18 @@ public class ObjectGOOParser {
                 }
 
                 case "{" -> {
-                    AssetAssetObject assetAssetObject = readAsset(name, tokens, asset);
-                    //assetAssetObject.value.setParent(asset);
-                    assetAssetObject.value.setTypeID(name);
+                    Class<? extends EditorObject> typeClass = null;
+                    for (EditorAttribute editorAttribute : asset.getAttributes()) {
+                        if (editorAttribute.getChildAlias() != null && editorAttribute.getName().equals(name)) {
+                            typeClass = editorAttribute.getChildAlias();
+                            break;
+                        }
+                    }
+                    if (typeClass != null) {
+                        AssetAssetObject assetAssetObject = readAsset(typeClass, tokens, asset);
+                        //assetAssetObject.value.setParent(asset);
+                        assetAssetObject.value.setTypeID(name);
+                    }
                     name = null;
                 }
 
@@ -194,7 +208,7 @@ public class ObjectGOOParser {
     }
 
 
-    public static EditorObject read(String assetType, String text) {
+    public static EditorObject read(Class<? extends EditorObject> assetType, String text) {
 
         String currentWord = "";
 

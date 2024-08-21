@@ -8,6 +8,7 @@ import com.woogleFX.editorObjects.attributes.dataTypes.Position;
 import com.woogleFX.editorObjects.objectComponents.ImageComponent;
 import com.woogleFX.editorObjects.objectComponents.RectangleComponent;
 import com.woogleFX.engine.LevelManager;
+import com.woogleFX.engine.fx.FXEditorButtons;
 import com.woogleFX.engine.renderer.Renderer;
 import com.woogleFX.gameData.ball.AtlasManager;
 import com.woogleFX.gameData.ball.BallManager;
@@ -91,6 +92,12 @@ public class _2_Level_Strand extends EditorObject {
 
 
     @Override
+    public void onLoaded() {
+        update();
+    }
+
+
+    @Override
     public void update() {
 
         if (LevelManager.getLevel() == null) return;
@@ -108,106 +115,30 @@ public class _2_Level_Strand extends EditorObject {
 
         if (goo1 != null && goo1.getAttribute("type").stringValue().equals("Terrain")) setAttribute("type", "10");
 
-        if (strandImage == null) {
-            try {
-                String imageString = "";
-                if (goo2 == null || goo2.getBall() == null || goo2.getBall().getObjects().get(0).getChildren("strandImageId").get(0).getAttribute("imageId").stringValue().isEmpty()) {
-                    if (goo1.getBall() == null) return;
-                    for (EditorObject editorObject : goo1.getBall().getObjects())
-                        if (editorObject instanceof _2_ImageID ball_image && editorObject.getTypeID().equals("strandImageId"))
-                            if (!ball_image.getAttribute("imageId").stringValue().isEmpty())
-                                imageString = ball_image.getAttribute("imageId").stringValue();
-                } else {
-                    for (EditorObject editorObject : goo2.getBall().getObjects())
-                        if (editorObject instanceof _2_ImageID ball_image && editorObject.getTypeID().equals("strandImageId"))
-                            if (!ball_image.getAttribute("imageId").stringValue().isEmpty())
-                                imageString = ball_image.getAttribute("imageId").stringValue();
-                }
-
-                if (AtlasManager.atlas.containsKey(imageString))
-                    strandImage = SwingFXUtils.toFXImage(AtlasManager.atlas.get(imageString), null);
-
-            } catch (Exception e) {
-                e.printStackTrace();
+        try {
+            String imageString = "";
+            if (goo2 == null || goo2.getBall() == null || goo2.getBall().getObjects().get(0).getChildren("strandImageId").get(0).getAttribute("imageId").stringValue().isEmpty()) {
+                if (goo1.getBall() == null) return;
+                for (EditorObject editorObject : goo1.getBall().getObjects())
+                    if (editorObject instanceof _2_ImageID ball_image && editorObject.getTypeID().equals("strandImageId"))
+                        if (!ball_image.getAttribute("imageId").stringValue().isEmpty())
+                            imageString = ball_image.getAttribute("imageId").stringValue();
+            } else {
+                for (EditorObject editorObject : goo2.getBall().getObjects())
+                    if (editorObject instanceof _2_ImageID ball_image && editorObject.getTypeID().equals("strandImageId"))
+                        if (!ball_image.getAttribute("imageId").stringValue().isEmpty())
+                            imageString = ball_image.getAttribute("imageId").stringValue();
             }
+
+            if (AtlasManager.atlas.containsKey(imageString))
+                strandImage = SwingFXUtils.toFXImage(AtlasManager.atlas.get(imageString), null);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         addPartAsObjectPosition();
 
-    }
-
-
-    private static Point2D lineLineSegmentIntersection(double x1, double y1, double theta, double x2, double y2,
-                                                       double x3, double y3) {
-        // logger.info(x1 + ", " + y1 + ", " + theta + ", " + x2 + ", " + y2 + ",
-        // " + x3 + ", " + y3);
-        if (y3 == y2) {
-            y3 += 0.00001;
-        }
-        if (x3 == x2) {
-            x3 += 0.00001;
-        }
-        double m = (y3 - y2) / (x3 - x2);
-        double x = (y2 - x2 * m + x1 * Math.tan(theta) - y1) / (Math.tan(theta) - m);
-        double y = (x - x1) * Math.tan(theta) + y1;
-
-        double bruh = 0.01;
-        // logger.info(x + ", " + y);
-        // logger.info(y + ", " + ((x - x2) * m + y2));
-        // 385.94690307546693, 682.9469030754669
-        if (x > Math.min(x2, x3) - bruh && x < Math.max(x2, x3) + bruh && y > Math.min(y2, y3) - bruh
-                && y < Math.max(y2, y3) + bruh) {
-            // logger.info("e");
-            return new Point2D(x, y);
-        } else {
-            return null;
-        }
-    }
-
-    private static Point2D lineBoxIntersection(double x1, double y1, double theta, double x2, double y2, double sizeX,
-                                               double sizeY, double rotation) {
-
-        Point2D topLeft = ObjectUtil.rotate(new Point2D(x2 - sizeX / 2, y2 - sizeY / 2), rotation,
-                new Point2D(x2, y2));
-        Point2D topRight = ObjectUtil.rotate(new Point2D(x2 + sizeX / 2, y2 - sizeY / 2), rotation,
-                new Point2D(x2, y2));
-        Point2D bottomLeft = ObjectUtil.rotate(new Point2D(x2 - sizeX / 2, y2 + sizeY / 2), rotation,
-                new Point2D(x2, y2));
-        Point2D bottomRight = ObjectUtil.rotate(new Point2D(x2 + sizeX / 2, y2 + sizeY / 2), rotation,
-                new Point2D(x2, y2));
-
-        Point2D top = lineLineSegmentIntersection(x1, y1, theta, topLeft.getX(), topLeft.getY(), topRight.getX(),
-                topRight.getY());
-        Point2D bottom = lineLineSegmentIntersection(x1, y1, theta, bottomLeft.getX(), bottomLeft.getY(),
-                bottomRight.getX(), bottomRight.getY());
-        Point2D left = lineLineSegmentIntersection(x1, y1, theta, topLeft.getX(), topLeft.getY(), bottomLeft.getX(),
-                bottomLeft.getY());
-        Point2D right = lineLineSegmentIntersection(x1, y1, theta, topRight.getX(), topRight.getY(),
-                bottomRight.getX(), bottomRight.getY());
-
-        Point2D origin = new Point2D(x1, y1);
-
-        double topDistance = top == null ? 100000000 : top.distance(origin);
-        double bottomDistance = bottom == null ? 100000000 : bottom.distance(origin);
-        double leftDistance = left == null ? 100000000 : left.distance(origin);
-        double rightDistance = right == null ? 100000000 : right.distance(origin);
-
-        if (topDistance < bottomDistance && topDistance < leftDistance && topDistance < rightDistance) {
-            return top;
-        }
-
-        if (bottomDistance < leftDistance && bottomDistance < rightDistance) {
-            return bottom;
-        }
-
-        if (leftDistance < rightDistance) {
-            return left;
-        }
-
-        if (right == null) {
-            return new Point2D(0, 0);
-        }
-        return right;
     }
 
 
@@ -283,84 +214,17 @@ public class _2_Level_Strand extends EditorObject {
         addObjectComponent(new RectangleComponent() {
 
             public double getX() {
-
                 if (goo1 == null || goo2 == null) return 0;
-
                 double x1 = goo1.getAttribute("pos").positionValue().getX();
-                double y1 = -goo1.getAttribute("pos").positionValue().getY();
-                double rotation1 = -Math.toRadians(goo1.getAttribute("angle").doubleValue());
-
                 double x2 = goo2.getAttribute("pos").positionValue().getX();
-                double y2 = -goo2.getAttribute("pos").positionValue().getY();
-                double rotation2 = -Math.toRadians(goo2.getAttribute("angle").doubleValue());
-
-                Position size1 = new Position(0.4, 0.4); // goo1.getBall() == null ? new Position(30, 30) : new Position(goo1.getBall().getShapeSize(), goo1.getBall().getShapeSize2());
-                boolean circle1 = true; // goo1.getBall() == null || goo1.getBall().getShapeType().equals("circle");
-
-                Position size2 = new Position(0.4, 0.4); // goo2.getBall() == null ? new Position(30, 30) : new Position(goo2.getBall().getShapeSize(), goo2.getBall().getShapeSize2());
-                boolean circle2 = true; // goo2.getBall() == null || goo2.getBall().getShapeType().equals("circle");
-
-                double theta = Renderer.angleTo(new Point2D(x1, y1), new Point2D(x2, y2));
-
-                Point2D hit1;
-                Point2D hit2;
-
-                if (circle1) {
-                    double r1 = size1.getX() / 2;
-                    hit1 = new Point2D(x1 + r1 * Math.cos(theta), y1 + r1 * Math.sin(theta));
-                } else {
-                    hit1 = lineBoxIntersection(x2, y2, theta - Math.PI, x1, y1, size1.getX(), size1.getY(), rotation1);
-                }
-
-                if (circle2) {
-                    double r2 = size2.getX() / 2;
-                    hit2 = new Point2D(x2 - r2 * Math.cos(theta), y2 - r2 * Math.sin(theta));
-                } else {
-                    hit2 = lineBoxIntersection(x1, y1, theta, x2, y2, size2.getX(), size2.getY(), rotation2);
-                }
-
-                return (hit1.getX() + hit2.getX()) / 2;
-
+                return (x1 + x2) / 2;
             }
 
             public double getY() {
-
                 if (goo1 == null || goo2 == null) return 0;
-
-                double x1 = goo1.getAttribute("pos").positionValue().getX();
                 double y1 = -goo1.getAttribute("pos").positionValue().getY();
-                double rotation1 = -Math.toRadians(goo1.getAttribute("angle").doubleValue());
-
-                double x2 = goo2.getAttribute("pos").positionValue().getX();
                 double y2 = -goo2.getAttribute("pos").positionValue().getY();
-                double rotation2 = -Math.toRadians(goo2.getAttribute("angle").doubleValue());
-
-                Position size1 = new Position(0.1, 0.1); // goo1.getBall() == null ? new Position(30, 30) : new Position(goo1.getBall().getShapeSize(), goo1.getBall().getShapeSize2());
-                boolean circle1 = true; // goo1.getBall() == null || goo1.getBall().getShapeType().equals("circle");
-
-                Position size2 = new Position(0.1, 0.1); // goo2.getBall() == null ? new Position(30, 30) : new Position(goo2.getBall().getShapeSize(), goo2.getBall().getShapeSize2());
-                boolean circle2 = true; // goo2.getBall() == null || goo2.getBall().getShapeType().equals("circle");
-
-                double theta = Renderer.angleTo(new Point2D(x1, y1), new Point2D(x2, y2));
-
-                Point2D hit1;
-                Point2D hit2;
-                if (circle1) {
-                    double r1 = size1.getX() / 2;
-                    hit1 = new Point2D(x1 + r1 * Math.cos(theta), y1 + r1 * Math.sin(theta));
-                } else {
-                    hit1 = lineBoxIntersection(x2, y2, theta - Math.PI, x1, y1, size1.getX(), size1.getY(), rotation1);
-                }
-
-                if (circle2) {
-                    double r2 = size2.getX() / 2;
-                    hit2 = new Point2D(x2 - r2 * Math.cos(theta), y2 - r2 * Math.sin(theta));
-                } else {
-                    hit2 = lineBoxIntersection(x1, y1, theta, x2, y2, size2.getX(), size2.getY(), rotation2);
-                }
-
-                return (hit1.getY() + hit2.getY()) / 2;
-
+                return (y1 + y2) / 2;
             }
 
             public double getRotation() {
@@ -380,43 +244,12 @@ public class _2_Level_Strand extends EditorObject {
             }
 
             public double getHeight() {
-
                 if (goo1 == null || goo2 == null) return 0;
-
                 double x1 = goo1.getAttribute("pos").positionValue().getX();
                 double y1 = -goo1.getAttribute("pos").positionValue().getY();
-                double rotation1 = -Math.toRadians(goo1.getAttribute("angle").doubleValue());
-
                 double x2 = goo2.getAttribute("pos").positionValue().getX();
                 double y2 = -goo2.getAttribute("pos").positionValue().getY();
-                double rotation2 = -Math.toRadians(goo2.getAttribute("angle").doubleValue());
-
-                Position size1 = new Position(0.1, 0.1); // goo1.getBall() == null ? new Position(30, 30) : new Position(goo1.getBall().getShapeSize(), goo1.getBall().getShapeSize2());
-                boolean circle1 = true; // goo1.getBall() == null || goo1.getBall().getShapeType().equals("circle");
-
-                Position size2 = new Position(0.1, 0.1); // goo2.getBall() == null ? new Position(30, 30) : new Position(goo2.getBall().getShapeSize(), goo2.getBall().getShapeSize2());
-                boolean circle2 = true; // goo2.getBall() == null || goo2.getBall().getShapeType().equals("circle");
-
-                double theta = Renderer.angleTo(new Point2D(x1, y1), new Point2D(x2, y2));
-
-                Point2D hit1;
-                Point2D hit2;
-
-                if (circle1) {
-                    double r1 = size1.getX() / 2;
-                    hit1 = new Point2D(x1 + r1 * Math.cos(theta), y1 + r1 * Math.sin(theta));
-                } else {
-                    hit1 = lineBoxIntersection(x2, y2, theta - Math.PI, x1, y1, size1.getX(), size1.getY(), rotation1);
-                }
-
-                if (circle2) {
-                    double r2 = size2.getX() / 2;
-                    hit2 = new Point2D(x2 - r2 * Math.cos(theta), y2 - r2 * Math.sin(theta));
-                } else {
-                    hit2 = lineBoxIntersection(x1, y1, theta, x2, y2, size2.getX(), size2.getY(), rotation2);
-                }
-
-                return Math.hypot(hit2.getY() - hit1.getY(), hit2.getX() - hit1.getX()) - 0.2;
+                return Math.hypot(y2 - y1, x2 - x1) - 0.35;
 
             }
 
@@ -444,12 +277,23 @@ public class _2_Level_Strand extends EditorObject {
 
                 if (length > maxSize) return new Color(1.0, 0.0, 0.0, 1.0);
                 if (length < minSize) return new Color(0.0, 0.0, 1.0, 1.0);
-                else return new Color(0.5, 0.5, 0.5, 1.0);
+                if (goo1 != null && goo1.getAttribute("type").stringValue().equals("Terrain") && FXEditorButtons.comboBoxSelected == goo1.getAttribute("terrainGroup").intValue() && FXEditorButtons.comboBoxSelected != -1) {
+                    if (FXEditorButtons.comboBoxList.get(FXEditorButtons.comboBoxSelected)) {
+                        return new Color(1.0 ,0.0, 1.0, 1);
+                    } else {
+                        return new Color(0.0 ,0.0, 1.0, 1);
+                    }
+                } else {
+                    return new Color(0.5, 0.5, 0.5, 1);
+                }
 
             }
 
             public boolean isVisible() {
-                return LevelManager.getLevel().getVisibilitySettings().getShowGoos() > 0 && goo1.visibilityFunction() && goo2.visibilityFunction();
+                if (goo1.getAttribute("type").stringValue().equals("Terrain")) {
+                    return (LevelManager.getLevel().getVisibilitySettings().getShowGoos() == 1 || LevelManager.getLevel().getVisibilitySettings().getShowGoos() == 2 && goo1.visibilityFunction() && goo2.visibilityFunction()) || FXEditorButtons.comboBoxSelected == goo1.getAttribute("terrainGroup").intValue();
+                }
+                return LevelManager.getLevel().getVisibilitySettings().getShowGoos() == 1 && goo1.visibilityFunction() && goo2.visibilityFunction();
             }
             public boolean isDraggable() {
                 return false;

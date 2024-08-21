@@ -1,0 +1,82 @@
+<AttributeManifest>
+
+    <attributes>
+        <EditorAttribute name="version" type="_2_NUMBER" required="true"/>
+        <EditorAttribute name="type" type="_2_LEVEL_TYPE" required="true"/>
+        <EditorAttribute name="forceFadeEOL" type="_2_BOOLEAN"/>
+        <EditorAttribute name="skin" type="_2_SKIN"/>
+        <EditorAttribute name="uuid" type="_2_UUID" required="true"/>
+        <EditorAttribute name="title" type="_2_STRING" required="true"/>
+        <EditorAttribute name="gameLevel" type="_2_GAME_LEVEL"/>
+        <EditorAttribute name="startingUID" type="_2_UID"/>
+        <EditorAttribute name="island" type="_2_ISLAND_ID"/>
+        <EditorAttribute name="environmentId" type="_2_NUMBER" defaultValue = "" required="true"/>
+        <EditorAttribute name="backgroundId" type="_2_BACKGROUND_ID" defaultValue = "" required="true"/>
+        <EditorAttribute name="gravity" type="_2_CHILD_HIDDEN" childAlias="com.worldOfGoo2.misc._2_Point" required="true"/>
+        <EditorAttribute name="boundsTopRight" type="_2_CHILD_HIDDEN" childAlias="com.worldOfGoo2.misc._2_Point" required="true"/>
+        <EditorAttribute name="boundsBottomLeft" type="_2_CHILD_HIDDEN" childAlias="com.worldOfGoo2.misc._2_Point" required="true"/>
+        <EditorAttribute name="initialCameraPos" type="_2_CHILD_HIDDEN" childAlias="com.worldOfGoo2.misc._2_Point" required="true"/>
+        <EditorAttribute name="initialCameraZoom" type="_2_NUMBER" defaultValue = "1" required="true"/>
+        <EditorAttribute name="cameraAutoBounds" type="_2_BOOLEAN" required="true"/>
+        <EditorAttribute name="ballsRateRequired" type="_2_NUMBER" required="true"/>
+        <EditorAttribute name="musicId" type="_2_MUSIC_ID" defaultValue = "" required="true"/>
+        <EditorAttribute name="ambienceId" type="_2_SOUND_ID" defaultValue = "" required="true"/>
+        <EditorAttribute name="musicOffset" type="_2_NUMBER" required="true"/>
+        <EditorAttribute name="ambienceOffset" type="_2_NUMBER" required="true"/>
+        <EditorAttribute name="liquidScale" type="_2_NUMBER"/>
+        <EditorAttribute name="pretickSeconds" type="_2_NUMBER" required="true"/>
+        <EditorAttribute name="conduitSuckVolume" type="_2_NUMBER"/>
+        <EditorAttribute name="fireSfxVolume" type="_2_NUMBER"/>
+        <EditorAttribute name="balls" type="_2_LIST_CHILD_HIDDEN" childAlias="com.worldOfGoo2.level._2_Level_BallInstance" required="true"/>
+        <EditorAttribute name="strands" type="_2_LIST_CHILD_HIDDEN" childAlias="com.worldOfGoo2.level._2_Level_Strand" required="true"/>
+        <EditorAttribute name="terrainGroups" type="_2_LIST_CHILD_HIDDEN" childAlias="com.worldOfGoo2.level._2_Level_TerrainGroup" required="true"/>
+        <EditorAttribute name="items" type="_2_LIST_CHILD_HIDDEN" childAlias="com.worldOfGoo2.level._2_Level_Item" required="true"/>
+        <EditorAttribute name="pins" type="_2_LIST_CHILD_HIDDEN" childAlias="com.worldOfGoo2.level._2_Level_Pin" required="true"/>
+        <EditorAttribute name="initialCameraKeyframes" type="_2_LIST_CHILD_HIDDEN" childAlias="com.worldOfGoo2.level._2_Level_CameraKeyFrame" required="true"/>
+        <EditorAttribute name="terrainBalls" type="_2_LIST_CHILD" childAlias="com.worldOfGoo2.level._2_Level_TerrainBall"  required="true"/>
+        <EditorAttribute name="levelEnvironmentEffects" type="_2_LIST_STRING" required="true"/>
+        <EditorAttribute name="enableTimeBugs" type="_2_BOOLEAN" required="true"/>
+        <EditorAttribute name="timebugMoves" type="_2_NUMBER" />
+    </attributes>
+
+    <metaAttributes>
+        <MetaEditorAttribute name="version"/>
+        <MetaEditorAttribute name="type"/>
+        <MetaEditorAttribute name="uuid"/>
+        <MetaEditorAttribute name="title"/>
+        <MetaEditorAttribute name="gameLevel"/>
+        <MetaEditorAttribute name="startingUID"/>
+        <MetaEditorAttribute name="island"/>
+        <MetaEditorAttribute name="Visuals" openByDefault="false">
+            <MetaEditorAttribute name="environmentId"/>
+            <MetaEditorAttribute name="backgroundId"/>
+            <MetaEditorAttribute name="levelEnvironmentEffects"/>
+            <MetaEditorAttribute name="skin"/>
+            <MetaEditorAttribute name="liquidScale"/>
+        </MetaEditorAttribute>
+        <MetaEditorAttribute name="Sound" openByDefault="false">
+            <MetaEditorAttribute name="musicId"/>
+            <MetaEditorAttribute name="ambienceId"/>
+            <MetaEditorAttribute name="musicOffset"/>
+            <MetaEditorAttribute name="ambienceOffset"/>
+            <MetaEditorAttribute name="conduitSuckVolume"/>
+            <MetaEditorAttribute name="fireSfxVolume"/>
+        </MetaEditorAttribute>
+        <MetaEditorAttribute name="Camera" openByDefault="false">
+            <MetaEditorAttribute name="boundsTopRight"/>
+            <MetaEditorAttribute name="boundsBottomLeft"/>
+            <MetaEditorAttribute name="initialCameraPos"/>
+            <MetaEditorAttribute name="initialCameraZoom"/>
+            <MetaEditorAttribute name="cameraAutoBounds"/>
+            <MetaEditorAttribute name="forceFadeEOL"/>
+        </MetaEditorAttribute>
+        <MetaEditorAttribute name="Gameplay" openByDefault="false">
+            <MetaEditorAttribute name="gravity"/>
+            <MetaEditorAttribute name="ballsRateRequired"/>
+            <MetaEditorAttribute name="pretickSeconds"/>
+            <MetaEditorAttribute name="enableTimeBugs"/>
+            <MetaEditorAttribute name="timebugMoves"/>
+        </MetaEditorAttribute>
+    </metaAttributes>
+
+</AttributeManifest>

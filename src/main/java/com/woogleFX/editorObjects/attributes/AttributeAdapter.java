@@ -15,9 +15,9 @@ public abstract class AttributeAdapter {
     public abstract void setValue(String value);
 
 
-    public static AttributeAdapter pointAttributeAdapter(EditorObject object, String realName, String fakeName) {
+    public static AttributeAdapter pointAttributeAdapter(EditorObject object, String realName, String displayName) {
 
-        return new AttributeAdapter(fakeName) {
+        return new AttributeAdapter(displayName) {
 
             @Override
             public EditorAttribute getValue() {

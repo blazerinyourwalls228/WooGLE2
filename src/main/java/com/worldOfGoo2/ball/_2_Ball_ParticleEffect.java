@@ -16,8 +16,7 @@ public class _2_Ball_ParticleEffect extends EditorObject {
         addAttribute("thruster", InputField._2_STRING).assertRequired();
         addAttribute("depth", InputField._2_STRING).assertRequired();
 
-        addAttribute("particleEffectV2Id", InputField._2_STRING);
-        putAttributeChildAlias("particleEffectV2Id", "_2_Ball_ParticleEffectV2");
+        addAttribute("particleEffectV2Id", InputField._2_STRING).setChildAlias(_2_Ball_ParticleEffectV2.class);
 
     }
 

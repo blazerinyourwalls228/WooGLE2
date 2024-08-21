@@ -3,6 +3,7 @@ package com.worldOfGoo2.environments;
 import com.woogleFX.editorObjects.EditorObject;
 import com.woogleFX.editorObjects.attributes.InputField;
 import com.woogleFX.gameData.level.GameVersion;
+import com.worldOfGoo2.misc._2_Point;
 
 public class _2_Environment extends EditorObject {
 
@@ -12,13 +13,8 @@ public class _2_Environment extends EditorObject {
         addAttribute("name", InputField._2_STRING).assertRequired();
         addAttribute("id", InputField._2_STRING).assertRequired();
         addAttribute("clearColor", InputField._2_STRING);
-
-        addAttribute("layers", InputField._2_LIST_CHILD).assertRequired();
-        putAttributeChildAlias("layers", "_2_Environment_Layer");
-
-        addAttribute("bloomPosition", InputField._2_CHILD).assertRequired();
-        putAttributeChildAlias("bloomPosition", "_2_Point");
-
+        addAttribute("layers", InputField._2_LIST_CHILD).assertRequired().setChildAlias(_2_Environment_Layer.class);
+        addAttribute("bloomPosition", InputField._2_CHILD).assertRequired().setChildAlias(_2_Point.class);
         addAttribute("bloomRange", InputField._2_STRING).assertRequired();
         addAttribute("lightingColor", InputField._2_STRING).assertRequired();
         addAttribute("dynamicLighting", InputField._2_STRING).assertRequired();
@@ -39,27 +35,13 @@ public class _2_Environment extends EditorObject {
         addAttribute("waterFoamEndColor", InputField._2_STRING);
         addAttribute("waterColorBlend", InputField._2_STRING);
         addAttribute("waterBloomFactor", InputField._2_STRING);
-
-        addAttribute("waterRandomRippleTimeout", InputField._2_CHILD);
-        putAttributeChildAlias("waterRandomRippleTimeout", "_2_Point");
-
-        addAttribute("waterRandomRippleSize", InputField._2_CHILD);
-        putAttributeChildAlias("waterRandomRippleSize", "_2_Point");
-
-        addAttribute("waterRandomRippleTime", InputField._2_CHILD);
-        putAttributeChildAlias("waterRandomRippleTime", "_2_Point");
-
-        addAttribute("liquidOverrides", InputField._2_LIST_CHILD).assertRequired();
-        putAttributeChildAlias("liquidOverrides", "_2_Environment_LiquidOverride");
-
+        addAttribute("waterRandomRippleTimeout", InputField._2_CHILD).setChildAlias(_2_Point.class);
+        addAttribute("waterRandomRippleSize", InputField._2_CHILD).setChildAlias(_2_Point.class);
+        addAttribute("waterRandomRippleTime", InputField._2_CHILD).setChildAlias(_2_Point.class);
+        addAttribute("liquidOverrides", InputField._2_LIST_CHILD).setChildAlias(_2_Environment_LiquidOverride.class).assertRequired();
         addAttribute("backgroundBloomFactor", InputField._2_STRING).assertRequired();
-
-        addAttribute("stableFluidsBloomFactor", InputField._2_CHILD);
-        putAttributeChildAlias("stableFluidsBloomFactor", "_2_Environment_StableFluidsBloomFactor");
-
-        addAttribute("windForce", InputField._2_CHILD).assertRequired();
-        putAttributeChildAlias("windForce", "_2_Point");
-
+        addAttribute("stableFluidsBloomFactor", InputField._2_CHILD).setChildAlias(_2_Environment_StableFluidsBloomFactor.class);
+        addAttribute("windForce", InputField._2_CHILD).setChildAlias(_2_Point.class).assertRequired();
         addAttribute("windFactor", InputField._2_STRING);
         addAttribute("windAddFactor", InputField._2_STRING);
         addAttribute("windDecorationFactor", InputField._2_STRING);
@@ -67,38 +49,21 @@ public class _2_Environment extends EditorObject {
         addAttribute("shadowColor", InputField._2_STRING);
         addAttribute("inactiveStrandOverlayFactor", InputField._2_STRING);
         addAttribute("trajectoryOverlayFactor", InputField._2_STRING);
-
-        addAttribute("finalFx", InputField._2_CHILD).assertRequired();
-        putAttributeChildAlias("finalFx", "_2_Environment_ForegroundFX");
-
-        addAttribute("sound", InputField._2_CHILD).assertRequired();
-        putAttributeChildAlias("sound", "_2_Environment_Sound");
-
+        addAttribute("finalFx", InputField._2_CHILD).setChildAlias(_2_Environment_ForegroundFX.class).assertRequired();
+        addAttribute("sound", InputField._2_CHILD).setChildAlias(_2_Environment_Sound.class).assertRequired();
         addAttribute("fireBlendingType", InputField._2_STRING).assertRequired();
         addAttribute("fireLut", InputField._2_STRING).assertRequired();
         addAttribute("filmGrainBlend", InputField._2_STRING);
         addAttribute("vignetteBlendStart", InputField._2_STRING);
         addAttribute("vignetteBlendEnd", InputField._2_STRING);
-
-        addAttribute("vignetteShape", InputField._2_STRING);
-        putAttributeChildAlias("vignetteShape", "_2_Point");
-
+        addAttribute("vignetteShape", InputField._2_CHILD).setChildAlias(_2_Point.class);
         addAttribute("postProcessBlendingType", InputField._2_STRING);
         addAttribute("lowPerformanceLaserFactor", InputField._2_STRING);
         addAttribute("environmentName", InputField._2_STRING);
-
-        addAttribute("backgroundFx", InputField._2_STRING);
-        putAttributeChildAlias("backgroundFx", "_2_Environment_ForegroundFX");
-
-        addAttribute("preForegroundFx", InputField._2_STRING);
-        putAttributeChildAlias("preForegroundFx", "_2_Environment_ForegroundFX");
-
-        addAttribute("foregroundFx", InputField._2_STRING);
-        putAttributeChildAlias("foregroundFx", "_2_Environment_ForegroundFX");
-
-        addAttribute("postForegroundFx", InputField._2_STRING);
-        putAttributeChildAlias("postForegroundFx", "_2_Environment_ForegroundFX");
-
+        addAttribute("backgroundFx", InputField._2_CHILD).setChildAlias(_2_Environment_ForegroundFX.class);
+        addAttribute("preForegroundFx", InputField._2_CHILD).setChildAlias(_2_Environment_ForegroundFX.class);
+        addAttribute("foregroundFx", InputField._2_CHILD).setChildAlias(_2_Environment_ForegroundFX.class);
+        addAttribute("postForegroundFx", InputField._2_CHILD).setChildAlias(_2_Environment_ForegroundFX.class);
 
     }
 

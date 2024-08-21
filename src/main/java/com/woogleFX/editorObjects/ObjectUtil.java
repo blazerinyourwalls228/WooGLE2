@@ -4,6 +4,7 @@ import com.woogleFX.editorObjects.attributes.EditorAttribute;
 import com.woogleFX.editorObjects.attributes.InputField;
 import com.woogleFX.editorObjects.objectCreators.ObjectCreator;
 import com.woogleFX.gameData.level.GameVersion;
+import com.worldOfGoo2.level._2_Level;
 import javafx.geometry.Point2D;
 
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ public class ObjectUtil {
 
         EditorObject clone;
         if (editorObject.getVersion() == GameVersion.VERSION_WOG2)
-            clone = ObjectCreator.create2(parent == null ? "_2_Level" : parent.getAttributeChildAlias().get(editorObject.getTypeID()), parent, editorObject.getVersion());
+            clone = ObjectCreator.create2(parent == null ? _2_Level.class : parent.getAttribute(editorObject.getTypeID()).getChildAlias(), parent, editorObject.getVersion());
         else clone = ObjectCreator.create(editorObject.getType(), parent, editorObject.getVersion());
         clone.setTypeID(editorObject.getTypeID());
 

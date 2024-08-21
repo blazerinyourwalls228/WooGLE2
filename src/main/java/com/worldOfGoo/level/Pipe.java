@@ -129,8 +129,8 @@ public class Pipe extends EditorObject {
 
 
     @Override
-    public String[] getPossibleChildren() {
-        return new String[]{ "Vertex" };
+    public Class<? extends EditorObject>[] getPossibleChildren() {
+        return new Class[]{ Vertex.class };
     }
 
 }

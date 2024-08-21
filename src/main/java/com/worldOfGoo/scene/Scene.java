@@ -154,9 +154,9 @@ public class Scene extends EditorObject {
     }
 
 
-    @Override
-    public String[] getPossibleChildren() {
-        return new String[]{ "SceneLayer", "button", "buttongroup", "circle", "compositegeom", "hinge", "label", "line", "linearforcefield", "motor", "particles", "radialforcefield", "rectangle", "slider" };
-    }
+    //@Override
+    //public String[] getPossibleChildren() {
+    //    return new String[]{ "SceneLayer", "button", "buttongroup", "circle", "compositegeom", "hinge", "label", "line", "linearforcefield", "motor", "particles", "radialforcefield", "rectangle", "slider" };
+    ///}
 
 }

@@ -43,10 +43,12 @@ public class LevelSelector extends Application {
 
         ArrayList<String> levels = new ArrayList<>();
         for (File child : new File(FileManager.getGameDir(version) + "/res/levels").listFiles()) {
-            if (version == GameVersion.VERSION_WOG1_OLD || version == GameVersion.VERSION_WOG1_NEW) {
-                levels.add(child.getName());
-            } else {
-                levels.add(child.getName().substring(0, child.getName().length() - 5));
+            if (child.getName().endsWith(".wog2")) {
+                if (version == GameVersion.VERSION_WOG1_OLD || version == GameVersion.VERSION_WOG1_NEW) {
+                    levels.add(child.getName());
+                } else {
+                    levels.add(child.getName().substring(0, child.getName().length() - 5));
+                }
             }
         }
 

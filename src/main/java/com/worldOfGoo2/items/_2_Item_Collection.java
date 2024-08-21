@@ -8,11 +8,6 @@ public class _2_Item_Collection extends EditorObject {
 
     public _2_Item_Collection(EditorObject parent) {
         super(parent, "ItemCollection", GameVersion.VERSION_WOG2);
-
-        addAttribute("items", InputField._2_STRING);
-
-        putAttributeChildAlias("items", "_2_Item");
-
     }
 
 }

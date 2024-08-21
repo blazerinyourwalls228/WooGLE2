@@ -1,36 +1,63 @@
 package com.woogleFX.editorObjects.attributes;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+
 import java.util.ArrayList;
 
 public class MetaEditorAttribute {
 
-    private final String name;
-    private final MetaEditorAttribute parent;
-    private final ArrayList<MetaEditorAttribute> children = new ArrayList<>();
-
-    private final boolean openByDefault;
-
+    @JacksonXmlElementWrapper(localName = "name")
+    private String name;
+    @JacksonXmlProperty(localName = "name", isAttribute = true)
     public String getName() {
         return name;
     }
-
-    public MetaEditorAttribute getParent() {
-        return parent;
+    @JacksonXmlProperty(localName = "name", isAttribute = true)
+    public void setName(String name) {
+        this.name = name;
     }
 
+    @JacksonXmlElementWrapper(localName = "children", useWrapping = false)
+    @JacksonXmlProperty(localName = "MetaEditorAttribute")
+    private ArrayList<MetaEditorAttribute> children = new ArrayList<>();
+    @JacksonXmlProperty(localName = "MetaEditorAttribute")
     public ArrayList<MetaEditorAttribute> getChildren() {
         return children;
     }
+    @JacksonXmlProperty(localName = "MetaEditorAttribute")
+    public void setChildren(ArrayList<MetaEditorAttribute> children) {
+        this.children = children;
+    }
 
+    @JacksonXmlElementWrapper(localName = "openByDefault")
+    private boolean openByDefault;
+    @JacksonXmlProperty(localName = "openByDefault", isAttribute = true)
     public boolean getOpenByDefault() {
         return openByDefault;
     }
-
-    public MetaEditorAttribute(String name, MetaEditorAttribute parent, boolean hasAttributes, boolean openByDefault) {
-        this.name = name;
-        this.parent = parent;
+    @JacksonXmlProperty(localName = "openByDefault", isAttribute = true)
+    public void setOpenByDefault(boolean openByDefault) {
         this.openByDefault = openByDefault;
     }
+
+    public MetaEditorAttribute(String name, boolean openByDefault) {
+        this.name = name;
+        this.openByDefault = openByDefault;
+    }
+
+    public MetaEditorAttribute() {
+
+    }
+
+
+
+
+
+
+
+
+
 
     //a<b,c,d>e<f,g,h>i<k>,k<l>
     public static ArrayList<MetaEditorAttribute> parse(String str) {
@@ -48,22 +75,22 @@ public class MetaEditorAttribute {
             if (c == '<') {
                 parsingChildren = true;
                 if (currentAttribute.charAt(0) == '?') {
-                    currentAttributeObject = new MetaEditorAttribute(currentAttribute.substring(1), null, false, false);
+                    currentAttributeObject = new MetaEditorAttribute(currentAttribute.substring(1), false);
                 } else {
-                    currentAttributeObject = new MetaEditorAttribute(currentAttribute.toString(), null, false, true);
+                    currentAttributeObject = new MetaEditorAttribute(currentAttribute.toString(), true);
                 }
                 currentAttribute = new StringBuilder();
             } else if (c == ',') {
                 if (parsingChildren) {
-                    currentAttributeObject.getChildren().add(new MetaEditorAttribute(currentChildAttribute.toString(), currentAttributeObject, true, false));
+                    currentAttributeObject.getChildren().add(new MetaEditorAttribute(currentChildAttribute.toString(), false));
                     currentChildAttribute = new StringBuilder();
                 } else {
-                    output.add(new MetaEditorAttribute(currentAttribute.toString(), null, true, false));
+                    output.add(new MetaEditorAttribute(currentAttribute.toString(), false));
                     currentAttribute = new StringBuilder();
                 }
             } else if (c == '>') {
                 if (currentAttributeObject != null) {
-                    currentAttributeObject.getChildren().add(new MetaEditorAttribute(currentChildAttribute.toString(), currentAttributeObject, true, false));
+                    currentAttributeObject.getChildren().add(new MetaEditorAttribute(currentChildAttribute.toString(), false));
                 }
                 currentChildAttribute = new StringBuilder();
                 output.add(currentAttributeObject);

@@ -28,7 +28,6 @@ import javafx.scene.input.MouseEvent;
 import java.awt.geom.QuadCurve2D;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 public class MousePressedManager {
 
@@ -218,7 +217,7 @@ public class MousePressedManager {
 
                 if (attribute.getDefaultValue() != null) newAttribute.setDefaultValue(attribute.getDefaultValue());
                 newAttribute.setValue(attribute.stringValue());
-                if (attribute.getRequiredInFile()) newAttribute.assertRequired();
+                if (attribute.getRequired()) newAttribute.assertRequired();
                 output.add(newAttribute);
 
             }

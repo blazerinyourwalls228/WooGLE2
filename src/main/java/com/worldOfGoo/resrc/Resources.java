@@ -23,9 +23,9 @@ public class Resources extends EditorObject {
     }
 
 
-    @Override
-    public String[] getPossibleChildren() {
-        return new String[]{ "Image", "Sound", "font", "SetDefaults" };
-    }
+    //@Override
+    //public String[] getPossibleChildren() {
+    //    return new String[]{ "Image", "Sound", "font", "SetDefaults" };
+    //}
 
 }

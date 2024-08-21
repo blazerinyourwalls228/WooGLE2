@@ -8,6 +8,7 @@ import com.woogleFX.editorObjects.objectComponents.RectangleComponent;
 import com.woogleFX.engine.LevelManager;
 import com.woogleFX.engine.renderer.Depth;
 import com.woogleFX.gameData.level.GameVersion;
+import com.worldOfGoo2.misc._2_Point;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
@@ -16,8 +17,7 @@ public class _2_Level_CameraKeyFrame extends EditorObject {
     public _2_Level_CameraKeyFrame(EditorObject parent) {
         super(parent, "CameraKeyFrame", GameVersion.VERSION_WOG2);
 
-        addAttribute("position", InputField._2_CHILD).assertRequired();
-        putAttributeChildAlias("position", "_2_Point");
+        addAttribute("position", InputField._2_CHILD).setChildAlias(_2_Point.class).assertRequired();
         addAttributeAdapter("position", AttributeAdapter.pointAttributeAdapter(this, "position", "position"));
 
         addAttribute("zoom", InputField._2_NUMBER).assertRequired();

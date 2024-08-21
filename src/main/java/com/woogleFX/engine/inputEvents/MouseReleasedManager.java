@@ -24,6 +24,7 @@ import com.woogleFX.gameData.level.WOG2Level;
 import com.woogleFX.gameData.level._Level;
 import com.worldOfGoo.level.BallInstance;
 import com.worldOfGoo2.level._2_Level_BallInstance;
+import com.worldOfGoo2.level._2_Level_Strand;
 import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.control.SplitPane;
@@ -130,7 +131,7 @@ public class MouseReleasedManager {
                                 if (!objectComponent.isVisible()) continue;
                                 if (objectComponent.mouseIntersection(mouseX, mouseY) != DragSettings.NULL) {
 
-                                    EditorObject strand = ObjectCreator.create2("_2_Level_Strand", wog2Level.getLevel(), level.getVersion());
+                                    EditorObject strand = ObjectCreator.create2(_2_Level_Strand.class, wog2Level.getLevel(), level.getVersion());
                                     strand.setTypeID("strands");
                                     if (strand == null) continue;
 

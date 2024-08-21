@@ -18,14 +18,15 @@ import com.woogleFX.gameData.level.levelSaving.LevelUpdater;
 import com.worldOfGoo.ball.Part;
 import com.worldOfGoo2.ball._2_Ball_Image;
 import com.worldOfGoo2.ball._2_Ball_Part;
-import com.worldOfGoo2.misc._2_ImageID;
+import com.worldOfGoo2.level._2_Level_BallInstance;
+import com.worldOfGoo2.misc._2_Point;
 import com.worldOfGoo2.util.BallInstanceHelper;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.EventType;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -351,11 +352,14 @@ public class FXEditorButtons {
 
             String name = ball.getObjects().get(0).getAttribute("name").stringValue();
 
-            EditorObject ballInstance = ObjectCreator.create2("_2_Level_Ball", ((WOG2Level)LevelManager.getLevel()).getLevel(), ball.getVersion());
-            EditorObject point = ObjectCreator.create2("_2_Point", ballInstance, ball.getVersion());
+            EditorObject ballInstance = ObjectCreator.create2(_2_Level_BallInstance.class, ((WOG2Level)LevelManager.getLevel()).getLevel(), ball.getVersion());
+            EditorObject point = ObjectCreator.create2(_2_Point.class, ballInstance, ball.getVersion());
             point.setTypeID("pos");
+            point.setAttribute("x", 0);
+            point.setAttribute("y", 0);
             ballInstance.setAttribute("type", name);
             ballInstance.setTypeID("balls");
+            ballInstance.onLoaded();
 
             ((WOG2Level)LevelManager.getLevel()).getObjects().add(ballInstance);
 
@@ -619,6 +623,7 @@ public class FXEditorButtons {
     private static final Button buttonShowHideAnim = new Button();
     private static final Button buttonShowHideSceneBGColor = new Button();
     public static final Button buttonViewTerrainGroup = new Button();
+    private static final Button buttonResetCamera = new Button();
     public static void cameraGraphic(Image image) {
         buttonShowHideCamera.setGraphic(new ImageView(image));
     }
@@ -696,30 +701,68 @@ public class FXEditorButtons {
         buttonShowHideSceneBGColor.setTooltip(new DelayedTooltip("Show/Hide Scene Background Color"));
         toolBar.getItems().add(buttonShowHideSceneBGColor);
 
-        ComboBox<String> comboBox = new ComboBox<>();
-        buttonViewTerrainGroup.setGraphic(comboBox);
-        buttonViewTerrainGroup.setOnAction(e -> {
-
-        });
+        MenuButton menuButton = new MenuButton("Terrain Groups");
+        buttonViewTerrainGroup.setGraphic(menuButton);
         buttonViewTerrainGroup.setTooltip(new DelayedTooltip("Show/Hide Scene Background Color"));
         toolBar.getItems().add(buttonViewTerrainGroup);
 
+        setIcon(buttonResetCamera, prefix + "showhide_cam.png");
+        buttonResetCamera.setOnAction(e -> {
+            if (LevelManager.getLevel() instanceof WOG2Level wog2Level) {
+                wog2Level.setOffsetX(1000);
+                wog2Level.setOffsetY(500);
+                wog2Level.setZoom(300);
+            }
+        });
+        buttonResetCamera.setTooltip(new DelayedTooltip("Reset Camera"));
+        toolBar.getItems().add(buttonResetCamera);
+
     }
+
+    public static ArrayList<Boolean> comboBoxList = new ArrayList<>();
+    public static int comboBoxSelected = -1;
 
     public static void updateTerrainGroupSelector(WOG2Level level) {
 
-        int i = 0;
-        ComboBox<String> content = (ComboBox<String>) buttonViewTerrainGroup.getGraphic();
+        MenuButton content = (MenuButton) buttonViewTerrainGroup.getGraphic();
         content.getItems().clear();
-        content.getItems().add("All");
-        for (EditorObject object : level.getLevel().getChildren("terrainGroups")) {
+        comboBoxList.clear();
+        int i = 0;
+        for (EditorObject terrainGroup : level.getLevel().getChildren("terrainGroups")) {
 
-            // content.getItems().add(object.getAttribute("typeUuid").stringValue());
-            content.getItems().add(String.valueOf(i));
+            CheckBox checkBox = new CheckBox(i + (terrainGroup.getAttribute("foreground").booleanValue() ? "" : "*"));
+            checkBox.setSelected(true);
+            int finalI = i;
+            checkBox.selectedProperty().addListener((observable, oldValue, newValue) ->
+                    comboBoxList.set(finalI, newValue));
+
+            CustomMenuItem menuItem = new CustomMenuItem(checkBox);
+
+            menuItem.setHideOnClick(false);
+
+            checkBox.addEventHandler(EventType.ROOT, event -> {
+                if (event instanceof MouseEvent mouseEvent && mouseEvent.getEventType() == MouseEvent.MOUSE_ENTERED) {
+                    comboBoxSelected = finalI;
+                } else if (event instanceof MouseEvent mouseEvent && mouseEvent.getEventType() == MouseEvent.MOUSE_EXITED) {
+                    comboBoxSelected = -1;
+                }
+                if (event instanceof MouseEvent mouseEvent && event.getEventType() == MouseEvent.MOUSE_CLICKED) {
+                    if (mouseEvent.isControlDown()) {
+                        for (MenuItem menuItem1 : content.getItems()) {
+                            CheckBox checkBox1 = (CheckBox) ((CustomMenuItem)menuItem1).getContent();
+                            checkBox1.setSelected(mouseEvent.isShiftDown());
+                        }
+                        checkBox.setSelected(!mouseEvent.isShiftDown());
+                    }
+                }
+            });
+
+            content.getItems().add(menuItem);
+            comboBoxList.add(true);
+
             i++;
 
         }
-        content.getSelectionModel().select(0);
 
     }
 

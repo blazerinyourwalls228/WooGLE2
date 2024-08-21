@@ -62,9 +62,10 @@ public class ObjectManager {
                 case "Items" -> 2;
                 case "Pins" -> 3;
                 case "Camera" -> 4;
+                case "Addin" -> 5;
                 default -> -1;
             };
-            FXHierarchy.getNewHierarchySwitcherButtons().getSelectionModel().select((i + 1) % 5);
+            FXHierarchy.getNewHierarchySwitcherButtons().getSelectionModel().select((i + 1) % 6);
             FXHierarchy.getNewHierarchySwitcherButtons().getSelectionModel().select(i);
 
             FXHierarchy.getHierarchy().getSelectionModel().clearSelection();

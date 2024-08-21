@@ -1,10 +1,10 @@
 package com.woogleFX.gameData.level;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Stack;
 
 import com.woogleFX.editorObjects.EditorObject;
-import com.woogleFX.engine.LevelManager;
 import com.woogleFX.engine.SelectionManager;
 import com.woogleFX.engine.fx.FXContainers;
 import com.woogleFX.engine.fx.hierarchy.FXHierarchy;
@@ -139,8 +139,9 @@ public class _Level {
     }
 
 
-    public _Level(GameVersion version) {
+    public _Level(GameVersion version, ArrayList<EditorObject> addin) {
         this.version = version;
+        this.addin = addin;
     }
 
 
@@ -173,6 +174,15 @@ public class _Level {
     }
     public void setCurrentlySelectedSection(String s) {
         this.currentlySelectedSection = s;
+    }
+
+
+    private final ArrayList<EditorObject> addin;
+    public ArrayList<EditorObject> getAddin() {
+        return addin;
+    }
+    public EditorObject getAddinObject() {
+        return addin.get(0);
     }
 
 }

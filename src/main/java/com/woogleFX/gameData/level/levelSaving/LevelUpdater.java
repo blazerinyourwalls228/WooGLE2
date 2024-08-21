@@ -5,6 +5,8 @@ import com.woogleFX.engine.gui.alarms.AskForLevelNameAlarm;
 import com.woogleFX.engine.gui.alarms.ErrorAlarm;
 import com.woogleFX.engine.gui.alarms.LevelIssuesAlarm;
 import com.woogleFX.file.fileExport.GOOWriter;
+import com.woogleFX.file.fileExport.Goo2modExporter;
+import com.woogleFX.file.fileExport.XMLUtility;
 import com.woogleFX.gameData.ball._Ball;
 import com.woogleFX.engine.fx.hierarchy.FXHierarchy;
 import com.woogleFX.engine.fx.FXLevelSelectPane;
@@ -26,9 +28,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class LevelUpdater {
 
@@ -85,8 +89,11 @@ public class LevelUpdater {
 
             StringBuilder export = new StringBuilder();
             GOOWriter.recursiveGOOExport(export, ((WOG2Level) level).getLevel(), 0);
+            EditorObject addinObject = level.getAddinObject();
+            String addin = XMLUtility.fullAddinXMLExport("", addinObject, 0);
 
             try {
+                Files.write(Path.of(FileManager.getGameDir(version) + "/res/levels/" + level.getLevelName() + ".addin.xml"), Collections.singleton(addin), StandardCharsets.UTF_8);
                 Files.writeString(Path.of(FileManager.getGameDir(version) + "/res/levels/" + level.getLevelName() + ".wog2"), export.toString());
                 return true;
             } catch (IOException e) {
@@ -287,6 +294,14 @@ public class LevelUpdater {
                 } catch (IOException e) {
                     logger.error("", e);
                 }
+            }
+
+        } else if (level instanceof WOG2Level wog2Level) {
+
+            try {
+                Goo2modExporter.exportGoo2mod(wog2Level, includeAddinInfo);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
 
         }

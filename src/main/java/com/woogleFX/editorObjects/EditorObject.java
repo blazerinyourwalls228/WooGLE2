@@ -1,17 +1,15 @@
 package com.woogleFX.editorObjects;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
-import com.woogleFX.editorObjects.attributes.AttributeAdapter;
-import com.woogleFX.editorObjects.attributes.EditorAttribute;
-import com.woogleFX.editorObjects.attributes.InputField;
-import com.woogleFX.editorObjects.attributes.MetaEditorAttribute;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.woogleFX.editorObjects.attributes.*;
 import com.woogleFX.editorObjects.objectComponents.ObjectComponent;
 import com.woogleFX.gameData.level.GameVersion;
 
+import com.worldOfGoo2.level._2_Level_BallInstance;
 import javafx.scene.control.TreeItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,16 +46,21 @@ public class EditorObject {
 
     /** The name that World of Goo assigns to this object.
      * This is the same for every object of the same type. */
-    private final String type;
+    private String type;
     public final String getType() {
         return type;
     }
-
+    public final void setType(String type) {
+        this.type = type;
+    }
 
     /** The version of this object. */
-    private final GameVersion version;
-    public GameVersion getVersion() {
+    private GameVersion version;
+    public final GameVersion getVersion() {
         return version;
+    }
+    public final void setVersion(GameVersion version) {
+        this.version = version;
     }
 
 
@@ -65,6 +68,23 @@ public class EditorObject {
         this.parent = parent;
         this.type = type;
         this.version = version;
+
+        try {
+            String attributeManifestPath = "/" + getClass().getName().replace('.', '/') + ".xml";
+            InputStream inputStream = getClass().getResourceAsStream(attributeManifestPath);
+            AttributeManifest attributeManifest = new XmlMapper().readValue(inputStream, AttributeManifest.class);
+            setAttributes(attributeManifest.getAttributes());
+            for (EditorAttribute attribute : attributes) attribute.setObject(this);
+            setMetaAttributes(new ArrayList<>(List.of(attributeManifest.getMetaAttributes())));
+        } catch (Exception e) {
+            if (this instanceof _2_Level_BallInstance)
+                e.printStackTrace();
+        }
+
+    }
+
+    public EditorObject(EditorObject parent) {
+
     }
 
 
@@ -80,6 +100,9 @@ public class EditorObject {
     }
     public final void addObjectComponent(ObjectComponent c) {
         objectComponents.add(c);
+    }
+    public final void addObjectComponents(List<ObjectComponent> c) {
+        objectComponents.addAll(c);
     }
     public final void removeObjectPosition(ObjectComponent c) {
         objectComponents.remove(c);
@@ -101,8 +124,8 @@ public class EditorObject {
     }
 
 
-    public String[] getPossibleChildren() {
-        return new String[0];
+    public Class<? extends EditorObject>[] getPossibleChildren() {
+        return (Class<? extends EditorObject>[]) new Class[0];
     }
 
 
@@ -146,6 +169,9 @@ public class EditorObject {
     public final void setAttribute2(String name, Object value) {
         getAttribute2(name).setValue(String.valueOf(value));
     }
+    public final void setAttributes(EditorAttribute[] attributes) {
+        this.attributes = attributes;
+    }
     public final EditorAttribute addAttribute(String name, InputField inputFieldType) {
         EditorAttribute[] newAttributes = new EditorAttribute[attributes.length + 1];
         System.arraycopy(attributes, 0, newAttributes, 0, attributes.length);
@@ -165,20 +191,16 @@ public class EditorObject {
         this.metaAttributes = meta;
     }
 
-    private final Map<String, String> attributeChildAlias = new HashMap<>();
-    public Map<String, String> getAttributeChildAlias() {
-        return attributeChildAlias;
-    }
-    public void putAttributeChildAlias(String attributeName, String childType) {
-        attributeChildAlias.put(attributeName, childType);
-    }
 
     private final Map<String, AttributeAdapter> attributeAdapters = new HashMap<>();
-    public void addAttributeAdapter(String name, AttributeAdapter attributeAdapter) {
+    public final Map<String, AttributeAdapter> getAttributeAdapters() {
+        return attributeAdapters;
+    }
+    public final void addAttributeAdapter(String name, AttributeAdapter attributeAdapter) {
         attributeAdapters.put(name, attributeAdapter);
     }
 
-    public ArrayList<EditorObject> getChildren(String attributeName) {
+    public final ArrayList<EditorObject> getChildren(String attributeName) {
         ArrayList<EditorObject> children2 = new ArrayList<>();
         for (EditorObject child : children) if (child.getTypeID().equals(attributeName)) children2.add(child);
         return children2;
@@ -186,10 +208,10 @@ public class EditorObject {
 
 
     private String typeID = "";
-    public String getTypeID() {
+    public final String getTypeID() {
         return typeID;
     }
-    public void setTypeID(String typeID) {
+    public final void setTypeID(String typeID) {
         this.typeID = typeID;
         if (parent != null && parent.attributeExists(typeID) &&
                 (parent.getAttribute(typeID).getType() == InputField._2_CHILD_HIDDEN

@@ -41,7 +41,7 @@ public class SceneLayer extends EditorObject {
         addAttribute("rotation",   InputField._1_NUMBER)         .setDefaultValue("0");
         addAttribute("alpha",      InputField._1_NUMBER)         .setDefaultValue("1");
         addAttribute("colorize",   InputField._1_COLOR)          .setDefaultValue("255,255,255");
-        addAttribute("image",      InputField._1_IMAGE_REQUIRED)                                  .assertRequired();
+        addAttribute("image",      InputField._1_IMAGE)                                           .assertRequired();
         addAttribute("tilex",      InputField._1_FLAG)           .setDefaultValue("false");
         addAttribute("tiley",      InputField._1_FLAG)           .setDefaultValue("false");
         addAttribute("tilecountx", InputField._1_NUMBER)         .setDefaultValue("0");

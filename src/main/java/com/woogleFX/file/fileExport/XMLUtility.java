@@ -21,7 +21,7 @@ public class XMLUtility {
     private static void addAttributeToExport(StringBuilder exportBuilder, EditorAttribute attribute) {
 
         // If the attribute is both empty and not required, don't add it to the file.
-        if (attribute.actualValue().isEmpty() && !attribute.getRequiredInFile()) return;
+        if (attribute.actualValue().isEmpty() && !attribute.getRequired()) return;
 
         String name = attribute.getName();
         String value = handleDoubleQuotes(attribute.stringValue());
@@ -112,7 +112,7 @@ public class XMLUtility {
             export += "\t".repeat(spaces) + "<" + object.getType() + " ";
             StringBuilder exportBuilder = new StringBuilder(export);
             for (EditorAttribute attribute : object.getAttributes()) {
-                if (!attribute.stringValue().isEmpty() || attribute.getRequiredInFile() || attribute.getName().equals("tag") && !object.getAttribute("break").stringValue().isEmpty()) {
+                if (!attribute.stringValue().isEmpty() || attribute.getRequired() || attribute.getName().equals("tag") && !object.getAttribute("break").stringValue().isEmpty()) {
                     exportBuilder.append(attribute.getName()).append("=\"").append(attribute.stringValue()).append("\" ");
                 }
             }

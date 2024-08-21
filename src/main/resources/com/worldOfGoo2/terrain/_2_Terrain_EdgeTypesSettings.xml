@@ -1,0 +1,7 @@
+<AttributeManifest>
+
+    <attributes>
+        <EditorAttribute name="edgeTypeSettings" type="_2_STRING" childAlias="com.worldOfGoo2.terrain.EdgeTypeSettings"/>
+    </attributes>
+
+</AttributeManifest>

@@ -14,7 +14,7 @@ public class LevelVerifier {
 
     private static boolean verifySingleObject(EditorObject object) {
         for (EditorAttribute attribute : object.getAttributes())
-            if (!InputField.verify(object, attribute.getType(), attribute.stringValue(), attribute.getRequiredInFile()))
+            if (!InputField.verify(object, attribute.getType(), attribute.stringValue(), attribute.getRequired()))
                 return false;
         return true;
     }

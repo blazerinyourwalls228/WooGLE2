@@ -1,0 +1,15 @@
+<AttributeManifest>
+
+    <attributes>
+        <EditorAttribute name="typeUuid" type="_2_UUID"/>
+        <EditorAttribute name="typeIndex" type="_2_TERRAIN_GROUP_TYPE_INDEX"/>
+        <EditorAttribute name="sortOffset" type="_2_NUMBER"/>
+        <EditorAttribute name="depth" type="_2_NUMBER"/>
+        <EditorAttribute name="foreground" type="_2_BOOLEAN"/>
+        <EditorAttribute name="collision" type="_2_BOOLEAN"/>
+        <EditorAttribute name="destructable" type="_2_BOOLEAN"/>
+        <EditorAttribute name="buildable" type="_2_BOOLEAN"/>
+        <EditorAttribute name="occluder" type="_2_BOOLEAN"/>
+    </attributes>
+
+</AttributeManifest>

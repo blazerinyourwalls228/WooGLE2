@@ -30,6 +30,8 @@ import com.woogleFX.gameData.ball._2Ball;
 import com.woogleFX.gameData.level.GameVersion;
 import com.woogleFX.gameData.level.WOG1Level;
 import com.woogleFX.gameData.level.WOG2Level;
+import com.worldOfGoo2.ball._2_Ball;
+import com.worldOfGoo2.items._2_Item_Collection;
 import com.worldOfGoo2.level._2_Level;
 import javafx.stage.FileChooser;
 import org.slf4j.Logger;
@@ -222,7 +224,7 @@ public class FileManager {
                 String contents = Files.readString(Path.of(WOG2dir + "/res/levels/" + levelName + ".wog2"));
                 EditorObject levelObject;
                 try {
-                    levelObject = ObjectGOOParser.read("_2_Level", contents);
+                    levelObject = ObjectGOOParser.read(_2_Level.class, contents);
                 } catch (Exception e) {
                     throw new IOException("Failed to deserialize level " + levelName);
                 }
@@ -237,7 +239,12 @@ public class FileManager {
                     }
 
                 }
-                return new WOG2Level(objects);
+
+                File addinF = new File(WOG2dir + "/res/levels/" + levelName + ".addin.xml");
+                if (addinF.exists()) saxParser.parse(addinF, defaultHandler);
+                else supremeAddToList(addin, BlankObjectGenerator.generateBlankAddinObject(levelName, version));
+
+                return new WOG2Level(objects, addin);
 
             }
 
@@ -397,7 +404,7 @@ public class FileManager {
         for (File itemFile : new File(WOG2dir + "/res/items").listFiles()) {
 
             if (itemFile.getName().endsWith(".wog2")) {
-                items.addAll(ObjectGOOParser.read("_2_Item_Collection", Files.readString(itemFile.toPath())).getChildren());
+                items.addAll(ObjectGOOParser.read(_2_Item_Collection.class, Files.readString(itemFile.toPath())).getChildren());
             }
 
         }
@@ -426,7 +433,7 @@ public class FileManager {
 
         String contents = Files.readString(Path.of(WOG2dir + "/res/balls/" + ballName + "/ball.wog2"));
 
-        EditorObject levelObject = ObjectGOOParser.read("_2_Ball", contents);
+        EditorObject levelObject = ObjectGOOParser.read(_2_Ball.class, contents);
         ArrayList<EditorObject> objects = new ArrayList<>();
         Stack<EditorObject> toAdd = new Stack<>();
         toAdd.push(levelObject);

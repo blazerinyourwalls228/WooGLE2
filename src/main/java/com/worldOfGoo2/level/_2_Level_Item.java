@@ -11,7 +11,9 @@ import com.woogleFX.editorObjects.attributes.dataTypes.Color;
 import com.woogleFX.editorObjects.objectComponents.CircleComponent;
 import com.woogleFX.editorObjects.objectComponents.ImageComponent;
 import com.woogleFX.editorObjects.objectComponents.TextComponent;
+import com.woogleFX.editorObjects.objectCreators.ObjectCreator;
 import com.woogleFX.engine.LevelManager;
+import com.woogleFX.engine.fx.FXPropertiesView;
 import com.woogleFX.engine.renderer.Depth;
 import com.woogleFX.file.resourceManagers.GlobalResourceManager;
 import com.woogleFX.file.resourceManagers.ResourceManager;
@@ -50,42 +52,11 @@ public class _2_Level_Item extends EditorObject {
     }
 
 
+    private final AttributeAdapter[] attributeAdapters2;
+
+
     public _2_Level_Item(EditorObject parent) {
         super(parent, "Item", GameVersion.VERSION_WOG2);
-
-        addAttribute("id", InputField._2_STRING).setDefaultValue("").assertRequired();
-        addAttribute("type", InputField._2_ITEM_TYPE).assertRequired();
-        addAttribute("localizedStringId", InputField._2_STRING).setDefaultValue("").assertRequired();
-        addAttribute("uid", InputField._2_UID).setDefaultValue("0").assertRequired();
-
-        addAttribute("pos", InputField._2_CHILD_HIDDEN).assertRequired();
-        putAttributeChildAlias("pos", "_2_Point");
-
-        addAttribute("scale", InputField._2_CHILD_HIDDEN).assertRequired();
-        putAttributeChildAlias("scale", "_2_Point");
-
-        addAttribute("rotation", InputField._2_NUMBER).setDefaultValue("0").assertRequired();
-        addAttribute("depth", InputField._2_NUMBER).setDefaultValue("0").assertRequired();
-        addAttribute("flipHorizontal", InputField._2_BOOLEAN);
-        addAttribute("flipVertical", InputField._2_BOOLEAN);
-        addAttribute("rotSpeed", InputField._2_NUMBER).setDefaultValue("0").assertRequired();
-        addAttribute("collisionGroup", InputField._2_COLLISION_GROUP);
-        addAttribute("bodyUID", InputField._2_UID);
-        addAttribute("seed", InputField._2_NUMBER).setDefaultValue("0").assertRequired();
-        addAttribute("maxCount", InputField._2_NUMBER);
-        addAttribute("ratePps", InputField._2_NUMBER);
-        addAttribute("liquidType", InputField._2_LIQUID_TYPE).setDefaultValue("0").assertRequired();
-        addAttribute("adapterBallId", InputField._2_BALL_UID).setDefaultValue("0").assertRequired(); // Maybe?
-        addAttribute("invisible", InputField._2_BOOLEAN).setDefaultValue("false").assertRequired();
-        addAttribute("forcedRandomizationIndex", InputField._2_NUMBER).setDefaultValue("0").assertRequired();
-        addAttribute("particleEffectName", InputField._2_STRING).setDefaultValue("").assertRequired();
-        addAttribute("uid1", InputField._2_UID);
-        addAttribute("uid2", InputField._2_UID);
-
-        addAttribute("userVariables", InputField._2_LIST_CHILD_HIDDEN).assertRequired();
-        putAttributeChildAlias("userVariables", "_2_Level_UserVariable");
-
-        EditorObject obj = this;
 
         addAttributeAdapter("pos", new AttributeAdapter("pos") {
 
@@ -123,7 +94,7 @@ public class _2_Level_Item extends EditorObject {
 
         });
 
-        EditorAttribute temp = new EditorAttribute("type", InputField._2_ITEM_TYPE, obj).assertRequired();
+        EditorAttribute temp = new EditorAttribute("type", InputField._2_ITEM_TYPE, this).assertRequired();
         addAttributeAdapter("type", new AttributeAdapter("type") {
 
             @Override
@@ -143,6 +114,10 @@ public class _2_Level_Item extends EditorObject {
                         if (resource.getAttribute("name").stringValue().equals(value)) {
                             setAttribute2("type", resource.getAttribute("uuid").stringValue());
                             updateImage();
+                            refreshUserVariables();
+                            if (LevelManager.getLevel().getSelected().length > 0 && _2_Level_Item.this == LevelManager.getLevel().getSelected()[0]) {
+                                FXPropertiesView.changeTableView(LevelManager.getLevel().getSelected());
+                            }
                             return;
                         }
                     }
@@ -150,6 +125,8 @@ public class _2_Level_Item extends EditorObject {
             }
 
         });
+
+        attributeAdapters2 = getAttributeAdapters().values().toArray(new AttributeAdapter[0]);
 
     }
 
@@ -172,22 +149,55 @@ public class _2_Level_Item extends EditorObject {
                 setAttribute2("scale", getAttribute2("scale").positionValue().getX() + "," + newValue));
         setAttribute2("scale", scale.getAttribute("x").stringValue() + "," + scale.getAttribute("y").stringValue());
 
+        randomizationIndices.put(-1, 0);
         for (EditorObject object : getChildren("objects")) {
             int randGroup = object.getAttribute("randomizationGroup").intValue();
             randomizationIndices.merge(randGroup, 1, Integer::sum);
+            randomizationIndices.merge(-1, 1, Integer::sum);
         }
         randomizationIndices.replaceAll((k, v) -> (int) (Math.random() * randomizationIndices.get(k)));
 
-        String general = "id,type,localizedStringId,uid,pos,scale,rotation,depth,";
-        String ids = "?IDs<bodyUID,seed,forcedRandomizationIndex,uid1,uid2>";
-        String gameplay = "?Gameplay<rotSpeed,collisionGroup,maxCount,ratePps,liquidType,adapterBallId,invisible,flipHorizontal,flipVertical,particleEffectName>";
+        refreshUserVariables();
+
+    }
+
+
+    private void refreshUserVariables() {
+
         StringBuilder userVariables = new StringBuilder("?User Variables<");
         EditorObject obj = this;
-        boolean anyUserVariables = false;
-        for (EditorObject child : getChildren("userVariables")) {
-            anyUserVariables = true;
 
-            addAttribute(child.getName(), InputField._2_CHILD);
+        EditorAttribute[] attributes = new EditorAttribute[24];
+        System.arraycopy(getAttributes(), 0, attributes, 0, 24);
+        setAttributes(attributes);
+
+        getAttributeAdapters().clear();
+        addAttributeAdapter("pos", attributeAdapters2[0]);
+        addAttributeAdapter("scale", attributeAdapters2[1]);
+        addAttributeAdapter("type", attributeAdapters2[2]);
+
+        ArrayList<String> values = new ArrayList<>();
+        for (EditorObject userVariable : getChildren("userVariables")) {
+            values.add(userVariable.getAttribute("value").stringValue());
+            getChildren().remove(userVariable);
+        }
+
+        MetaEditorAttribute userVariablesAttribute = getMetaAttributes().get(10);
+        userVariablesAttribute.getChildren().clear();
+
+        if (item == null) return;
+
+        int i = 0;
+        for (EditorObject ignored : item.getChildren("userVariables")) {
+            EditorObject userVariable2 = ObjectCreator.create2(_2_Level_UserVariable.class, this, GameVersion.VERSION_WOG2);
+            if (i < values.size()) userVariable2.setAttribute("value", values.get(i));
+            i++;
+            userVariable2.setTypeID("userVariables");
+        }
+
+        for (EditorObject child : getChildren("userVariables")) {
+
+            addAttribute(child.getName(), InputField._2_CHILD_HIDDEN);
             addAttributeAdapter(child.getName(), new AttributeAdapter(child.getName()) {
                 @Override
                 public EditorAttribute getValue() {
@@ -202,12 +212,11 @@ public class _2_Level_Item extends EditorObject {
                 }
             });
 
-            userVariables.append(child.getName()).append(",");
+            MetaEditorAttribute userVariableAttribute = new MetaEditorAttribute();
+            userVariableAttribute.setName(child.getName());
+            userVariablesAttribute.getChildren().add(userVariableAttribute);
+
         }
-        userVariables.deleteCharAt(userVariables.length() - 1);
-        userVariables.append(">");
-        if (!anyUserVariables) userVariables = new StringBuilder();
-        setMetaAttributes(MetaEditorAttribute.parse(general + ids + gameplay + userVariables));
 
     }
 
@@ -455,8 +464,8 @@ public class _2_Level_Item extends EditorObject {
 
     private boolean addPartAsObjectPosition(_2_Item_Object part) {
 
-        double partX = 0; // part.getChildren("position").get(0).getAttribute("x").doubleValue();
-        double partY = 0; // -part.getChildren("position").get(0).getAttribute("y").doubleValue();
+        double partX = part.getChildren("position").get(0).getAttribute("x").doubleValue();
+        double partY = -part.getChildren("position").get(0).getAttribute("y").doubleValue();
         double partScaleX = part.getChildren("scale").get(0).getAttribute("x").doubleValue();
         double partScaleY = part.getChildren("scale").get(0).getAttribute("y").doubleValue();
         double partRotation = part.getAttribute("rotation").doubleValue();
@@ -466,6 +475,8 @@ public class _2_Level_Item extends EditorObject {
         Image img = part.getImage();
 
         if (img != null) {
+            double partPivotX = (part.getChildren("pivot").get(0).getAttribute("x").doubleValue() - 0.5) * img.getWidth() * 0.01;
+            double partPivotY = (0.5 - part.getChildren("pivot").get(0).getAttribute("y").doubleValue()) * img.getHeight() * 0.01;
 
             long color = Long.parseLong(part.getAttribute("color").stringValue());
 
@@ -476,11 +487,11 @@ public class _2_Level_Item extends EditorObject {
 
                     double x = getAttribute("pos").positionValue().getX();
                     double y = -getAttribute("pos").positionValue().getY();
-                    double scaleX = getAttribute("scale").positionValue().getX() * 0.01;
-                    double scaleY = getAttribute("scale").positionValue().getY() * 0.01;
+                    double scaleX = getAttribute("scale").positionValue().getX();
+                    double scaleY = getAttribute("scale").positionValue().getY();
                     double angle = -getAttribute("rotation").doubleValue();
 
-                    Point2D position = new Point2D(partX * scaleX, partY * scaleY);
+                    Point2D position = new Point2D((partX - partPivotX * partScaleX) * scaleX, (partY - partPivotY * partScaleY) * scaleY);
                     position = ObjectUtil.rotate(position, angle, new Point2D(0, 0));
                     position = position.add(x, y);
 
@@ -489,18 +500,18 @@ public class _2_Level_Item extends EditorObject {
                 }
                 public void setX(double x) {
                     double y = -getAttribute("pos").positionValue().getY();
-                    double scaleX = getAttribute("scale").positionValue().getX() * 0.01;
-                    setAttribute("pos", (x - partX * scaleX) + "," + y);
+                    double scaleX = getAttribute("scale").positionValue().getX();
+                    setAttribute("pos", (x - (partX - partPivotX * partScaleX) * scaleX) + "," + y);
                 }
                 public double getY() {
 
                     double x = getAttribute("pos").positionValue().getX();
                     double y = -getAttribute("pos").positionValue().getY();
-                    double scaleX = getAttribute("scale").positionValue().getX() * 0.01;
-                    double scaleY = getAttribute("scale").positionValue().getY() * 0.01;
+                    double scaleX = getAttribute("scale").positionValue().getX();
+                    double scaleY = getAttribute("scale").positionValue().getY();
                     double angle = -getAttribute("rotation").doubleValue();
 
-                    Point2D position = new Point2D(partX * scaleX, partY * scaleY);
+                    Point2D position = new Point2D((partX - partPivotX * partScaleX) * scaleX, (partY - partPivotY * partScaleY) * scaleY);
                     position = ObjectUtil.rotate(position, angle, new Point2D(0, 0));
                     position = position.add(x, y);
 
@@ -509,8 +520,8 @@ public class _2_Level_Item extends EditorObject {
                 }
                 public void setY(double y) {
                     double x = getAttribute("pos").positionValue().getX();
-                    double scaleY = getAttribute("scale").positionValue().getY() * 0.01;
-                    setAttribute("pos", x + "," + (-y + partY * scaleY));
+                    double scaleY = getAttribute("scale").positionValue().getY();
+                    setAttribute("pos", x + "," + (-y + (partY - partPivotY * partScaleY) * scaleY));
                 }
                 public double getRotation() {
                     return -getAttribute("rotation").doubleValue() - partRotation;
@@ -546,7 +557,9 @@ public class _2_Level_Item extends EditorObject {
                 public boolean isVisible() {
                     if (!LevelManager.getLevel().getVisibilitySettings().isShowGraphics()) return false;
                     if (!shouldShow()) return false;
-                    if (getAttribute("forcedRandomizationIndex").intValue() == -1) return true;
+                    if (getAttribute("forcedRandomizationIndex").intValue() == -1) {
+                        return randomizationIndices.get(-1) == null || item.getChildren("objects").indexOf(part) == randomizationIndices.get(-1);
+                    }
                     if (randomizationIndices.get(part.getAttribute("randomizationGroup").intValue()) == null) return false;
                     if (part.getAttribute("randomizationGroup").intValue() == getAttribute("forcedRandomizationIndex").intValue()) {
                         int index = 0;

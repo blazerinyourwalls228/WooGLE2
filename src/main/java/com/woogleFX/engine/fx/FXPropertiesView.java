@@ -113,10 +113,10 @@ public class FXPropertiesView {
                         boolean valid = true;
 
                         if (attribute.stringValue().isEmpty()) {
-                            if (!InputField.verify(attribute.getObject(), attribute.getType(), attribute.getDefaultValue(), attribute.getRequiredInFile())) {
+                            if (!InputField.verify(attribute.getObject(), attribute.getType(), attribute.getDefaultValue(), attribute.getRequired())) {
                                 valid = false;
                             }
-                        } else if (!InputField.verify(attribute.getObject(), attribute.getType(), attribute.actualValue(), attribute.getRequiredInFile())) {
+                        } else if (!InputField.verify(attribute.getObject(), attribute.getType(), attribute.actualValue(), attribute.getRequired())) {
                             valid = false;
                         }
                         if (valid) {
@@ -255,7 +255,7 @@ public class FXPropertiesView {
                     public void commitEdit(String s) {
                         InputField type = getTableRow().getItem().getType();
                         EditorObject object = getTableRow().getItem().getObject();
-                        super.commitEdit(InputField.verify(object, type, s, getTableRow().getItem().getRequiredInFile()) ? s : before);
+                        super.commitEdit(InputField.verify(object, type, s, getTableRow().getItem().getRequired()) ? s : before);
                     }
 
 
@@ -279,12 +279,12 @@ public class FXPropertiesView {
             // Change the actual attribute to reflect the edit.
             EditorAttribute attribute = propertiesView.getTreeItem(e.getTreeTablePosition().getRow()).getValue();
             String oldValue = attribute.stringValue();
-            if (InputField.verify(attribute.getObject(), attribute.getType(), e.getNewValue(), attribute.getRequiredInFile())) {
+            if (InputField.verify(attribute.getObject(), attribute.getType(), e.getNewValue(), attribute.getRequired())) {
                 attribute.getObject().setAttribute(attribute.getName(), e.getNewValue());
             }
 
             // If the edit was actually valid:
-            if (e.getNewValue().isEmpty() || InputField.verify(attribute.getObject(), attribute.getType(), e.getNewValue(), attribute.getRequiredInFile())) {
+            if (e.getNewValue().isEmpty() || InputField.verify(attribute.getObject(), attribute.getType(), e.getNewValue(), attribute.getRequired())) {
 
                 // Push an attribute change to the undo buffer.
                 UndoManager.registerChange(new AttributeChangeAction(attribute, oldValue,
@@ -382,7 +382,7 @@ public class FXPropertiesView {
         VBox vBox = new VBox();
 
         switch (attribute.getType()) {
-            case _1_IMAGE, _1_IMAGE_REQUIRED -> {
+            case _1_IMAGE -> {
                 for (EditorObject resource : ((WOG1Level)LevelManager.getLevel()).getResrc()) {
                     if (resource instanceof ResrcImage) {
                         Button setImageItem = new Button(resource.getAttribute("id").stringValue());
@@ -448,12 +448,9 @@ public class FXPropertiesView {
                         configureButton(setImageItem);
 
                         setImageItem.setOnAction(event -> {
-                            UndoManager.registerChange(new AttributeChangeAction(attribute,
-                                    attribute.stringValue(), ballFile.getName()));
-                            attribute.setValue(ballFile.getName());
-                            if (contextMenu.isFocused()) {
-                                cell.commitEdit(attribute.stringValue());
-                            }
+                            UndoManager.registerChange(new AttributeChangeAction(attribute.getObject().getAttribute("type"),
+                                    attribute.getObject().getAttribute("type").stringValue(), ballFile.getName()));
+                            attribute.getObject().setAttribute("type", ballFile.getName());
                         });
 
                         vBox.getChildren().add(setImageItem);
@@ -482,6 +479,28 @@ public class FXPropertiesView {
             case _2_ITEM_TYPE -> {
 
                 for (String itemType : ItemHelper.itemNameMap.values()) {
+                    if (!itemType.toLowerCase().contains(currentText.toLowerCase())) continue;
+                    Button setImageItem = new Button(itemType);
+
+                    configureButton(setImageItem);
+
+                    setImageItem.setOnAction(event -> {
+                        UndoManager.registerChange(new AttributeChangeAction(attribute,
+                                attribute.stringValue(), itemType));
+                        attribute.setValue(itemType);
+                        if (contextMenu.isFocused()) {
+                            cell.commitEdit(attribute.stringValue());
+                        }
+                    });
+
+                    vBox.getChildren().add(setImageItem);
+                }
+
+            }
+
+            case _2_TERRAIN_GROUP_TYPE -> {
+
+                for (String itemType : ItemHelper.terrainTypeNameMap.values()) {
                     if (!itemType.toLowerCase().contains(currentText.toLowerCase())) continue;
                     Button setImageItem = new Button(itemType);
 

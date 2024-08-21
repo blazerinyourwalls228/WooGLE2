@@ -22,10 +22,8 @@ import com.worldOfGoo.resrc.Sound;
 import com.worldOfGoo.scene.*;
 import com.worldOfGoo.text.TextString;
 import com.worldOfGoo.text.TextStrings;
-import com.worldOfGoo2.level._2_Level_BallInstance;
-import com.worldOfGoo2.level._2_Level_Item;
-import com.worldOfGoo2.level._2_Level_TerrainBall;
-import com.worldOfGoo2.level._2_Level_TerrainGroup;
+import com.worldOfGoo2.level.*;
+import com.worldOfGoo2.misc._2_Point;
 import com.worldOfGoo2.util.BallInstanceHelper;
 import javafx.geometry.Point2D;
 
@@ -100,6 +98,10 @@ public class ObjectAdder {
     }
 
 
+    public static EditorObject addObject(Class<? extends EditorObject> name, EditorObject parent) {
+        return addObject(name.getName(), parent);
+    }
+
     public static EditorObject addObject(String name) {
         return addObject(name, null);
     }
@@ -158,31 +160,45 @@ public class ObjectAdder {
     }
 
 
-    public static EditorObject addObject2(String name, String typeID, EditorObject parent) {
+    public static EditorObject addObject2(Class<? extends EditorObject> name, String typeID, EditorObject parent) {
 
         WOG2Level level = (WOG2Level) LevelManager.getLevel();
         if (level == null) return null;
 
         EditorObject obj = ObjectCreator.create2(name, parent, level.getVersion());
-        adjustObject(obj);
         obj.setTypeID(typeID);
 
         level.getObjects().add(obj);
 
         if (obj instanceof _2_Level_TerrainGroup) {
-            EditorObject point = ObjectCreator.create2("_2_Point", obj, GameVersion.VERSION_WOG2);
+            EditorObject point = ObjectCreator.create2(_2_Point.class, obj, GameVersion.VERSION_WOG2);
             point.setAttribute("x", 0);
             point.setAttribute("y", 0);
             point.setTypeID("textureOffset");
         } else if (obj instanceof _2_Level_Item) {
-            EditorObject pos = ObjectCreator.create2("_2_Point", obj, GameVersion.VERSION_WOG2);
+            EditorObject pos = ObjectCreator.create2(_2_Point.class, obj, GameVersion.VERSION_WOG2);
             pos.setAttribute("x", 0);
             pos.setAttribute("y", 0);
             pos.setTypeID("pos");
-            EditorObject scale = ObjectCreator.create2("_2_Point", obj, GameVersion.VERSION_WOG2);
+            EditorObject scale = ObjectCreator.create2(_2_Point.class, obj, GameVersion.VERSION_WOG2);
             scale.setAttribute("x", 1);
             scale.setAttribute("y", 1);
             scale.setTypeID("scale");
+        } else if (obj instanceof _2_Level_BallInstance) {
+            EditorObject pos = ObjectCreator.create2(_2_Point.class, obj, GameVersion.VERSION_WOG2);
+            pos.setAttribute("x", 0);
+            pos.setAttribute("y", 0);
+            pos.setTypeID("pos");
+        } else if (obj instanceof _2_Level_CameraKeyFrame) {
+            EditorObject position = ObjectCreator.create2(_2_Point.class, obj, GameVersion.VERSION_WOG2);
+            position.setAttribute("x", 0);
+            position.setAttribute("y", 0);
+            position.setTypeID("position");
+        } else if (obj instanceof _2_Level_Pin) {
+            EditorObject pos = ObjectCreator.create2(_2_Point.class, obj, GameVersion.VERSION_WOG2);
+            pos.setAttribute("x", 0);
+            pos.setAttribute("y", 0);
+            pos.setTypeID("pos");
         }
 
         addAnything(obj);
@@ -193,9 +209,10 @@ public class ObjectAdder {
             case "Items" -> 2;
             case "Pins" -> 3;
             case "Camera" -> 4;
+            case "Addin" -> 5;
             default -> -1;
         };
-        FXHierarchy.getNewHierarchySwitcherButtons().getSelectionModel().select((i + 1) % 5);
+        FXHierarchy.getNewHierarchySwitcherButtons().getSelectionModel().select((i + 1) % 6);
         FXHierarchy.getNewHierarchySwitcherButtons().getSelectionModel().select(i);
 
         FXHierarchy.getHierarchy().getSelectionModel().clearSelection();
@@ -210,10 +227,15 @@ public class ObjectAdder {
         adjustObject(obj);
 
         FXHierarchy.getHierarchy().getSelectionModel().select(obj.getTreeItem());
+        obj.onLoaded();
         obj.update();
         EditorObject[] selected = new EditorObject[]{obj};
         LevelManager.getLevel().setSelected(selected);
         FXPropertiesView.changeTableView(selected);
+
+        if (obj instanceof _2_Level_BallInstance) {
+            fixGooBall(obj);
+        }
 
         UndoManager.registerChange(new ObjectCreationAction(obj, obj.getParent().getChildren().indexOf(obj)));
     }
@@ -274,8 +296,8 @@ public class ObjectAdder {
 
             // Find the smallest available number to use as an ID and set the ball's ID
             // attribute accordingly.
-            int count = 0;
-            if (!taken.contains(obj.getAttribute("uid").stringValue())) return;
+            int count = 1;
+            if (!taken.contains(obj.getAttribute("uid").stringValue()) && !obj.getAttribute("uid").stringValue().equals("0")) return;
             while (taken.contains(String.valueOf(count))) {
                 count++;
             }

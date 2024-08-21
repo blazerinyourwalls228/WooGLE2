@@ -1,0 +1,9 @@
+<AttributeManifest>
+
+    <attributes>
+        <EditorAttribute name="material" type="_2_STRING" childAlias="com.worldOfGoo2.ball._2_Ball_Material"/>
+        <EditorAttribute name="collisionHeight" type="_2_STRING"/>
+        <EditorAttribute name="edgeCollisionHeight" type="_2_STRING"/>
+    </attributes>
+
+</AttributeManifest>

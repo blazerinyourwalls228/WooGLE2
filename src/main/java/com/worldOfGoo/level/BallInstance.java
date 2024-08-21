@@ -49,7 +49,7 @@ public class BallInstance extends EditorObject {
 
         setMetaAttributes(MetaEditorAttribute.parse("id,type,x,y,angle,discovered,"));
 
-        getAttribute("type").addChangeListener((observable, oldValue, newValue) -> setType(newValue));
+        getAttribute("type").addChangeListener((observable, oldValue, newValue) -> setBallType(newValue));
         getAttribute("id").addChangeListener((observable, oldValue, newValue) -> updateStrands());
         getAttribute("discovered").addChangeListener((observable, oldValue, newValue) -> refreshObjectPositions());
 
@@ -85,7 +85,7 @@ public class BallInstance extends EditorObject {
     }
 
 
-    private void setType(String type) {
+    private void setBallType(String type) {
 
         if (LevelManager.getLevel() == null) return;
 
@@ -114,7 +114,7 @@ public class BallInstance extends EditorObject {
     @Override
     public void update() {
 
-        setType(getAttribute("type").stringValue());
+        setBallType(getAttribute("type").stringValue());
 
         updateStrands();
 

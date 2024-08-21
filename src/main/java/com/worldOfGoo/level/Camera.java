@@ -97,8 +97,8 @@ public class Camera extends EditorObject {
 
 
     @Override
-    public String[] getPossibleChildren() {
-        return new String[]{ "poi" };
+    public Class<? extends EditorObject>[] getPossibleChildren() {
+        return new Class[]{ Poi.class };
     }
 
 }

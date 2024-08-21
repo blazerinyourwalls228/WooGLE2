@@ -1,0 +1,10 @@
+<AttributeManifest>
+
+    <attributes>
+        <EditorAttribute name="probability" type="_2_STRING"/>
+        <EditorAttribute name="lightAngleLimit" type="_2_STRING"/>
+        <EditorAttribute name="edgeAngleLimit" type="_2_STRING"/>
+        <EditorAttribute name="minLighting" type="_2_STRING"/>
+    </attributes>
+
+</AttributeManifest>

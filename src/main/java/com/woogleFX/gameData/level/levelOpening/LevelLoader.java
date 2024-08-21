@@ -21,6 +21,8 @@ import com.worldOfGoo.resrc.Resources;
 import com.worldOfGoo.resrc.ResrcImage;
 import com.worldOfGoo.resrc.Sound;
 import com.worldOfGoo.scene.SceneLayer;
+import com.worldOfGoo2.level._2_Level;
+import com.worldOfGoo2.misc._2_Point;
 import javafx.scene.control.Tab;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
@@ -191,12 +193,12 @@ public class LevelLoader {
         } else if (version == GameVersion.VERSION_WOG2) {
 
             ArrayList<EditorObject> objects = new ArrayList<>();
-            EditorObject levelObject = ObjectCreator.create2("_2_Level", null, version);
-            EditorObject topRight = ObjectCreator.create2("_2_Point", levelObject, version);
+            EditorObject levelObject = ObjectCreator.create2(_2_Level.class, null, version);
+            EditorObject topRight = ObjectCreator.create2(_2_Point.class, levelObject, version);
             topRight.setAttribute("x", 5);
             topRight.setAttribute("y", 5);
             topRight.setTypeID("boundsTopRight");
-            EditorObject bottomLeft = ObjectCreator.create2("_2_Point", levelObject, version);
+            EditorObject bottomLeft = ObjectCreator.create2(_2_Point.class, levelObject, version);
             bottomLeft.setAttribute("x", -5);
             bottomLeft.setAttribute("y", -5);
             bottomLeft.setTypeID("boundsBottomLeft");
@@ -212,13 +214,13 @@ public class LevelLoader {
             levelObject.setAttribute("environmentId", 0);
             levelObject.setAttribute("backgroundId", "");
 
-            EditorObject gravity = ObjectCreator.create2("_2_Point", levelObject, version);
+            EditorObject gravity = ObjectCreator.create2(_2_Point.class, levelObject, version);
             gravity.setAttribute("x", 0);
             gravity.setAttribute("y", -10);
             gravity.setTypeID("gravity");
             levelObject.setAttribute("gravity", "0,-10");
 
-            EditorObject initialCameraPos = ObjectCreator.create2("_2_Point", levelObject, version);
+            EditorObject initialCameraPos = ObjectCreator.create2(_2_Point.class, levelObject, version);
             initialCameraPos.setAttribute("x", 0);
             initialCameraPos.setAttribute("y", 0);
             initialCameraPos.setTypeID("initialCameraPos");
@@ -234,7 +236,10 @@ public class LevelLoader {
             levelObject.setAttribute("pretickSeconds", 0);
             levelObject.setAttribute("enableTimeBugs", false);
 
-            WOG2Level level = new WOG2Level(objects);
+            ArrayList<EditorObject> addinList = new ArrayList<>();
+            addinList.add(BlankObjectGenerator.generateBlankAddinObject(name, version));
+
+            WOG2Level level = new WOG2Level(objects, addinList);
             level.setLevelName(name);
             FXEditorButtons.updateAllButtons();
             FXMenu.updateAllButtons();
@@ -319,14 +324,6 @@ public class LevelLoader {
             // Add items from the Scene to it
             FXPropertiesView.getPropertiesView().setRoot(FXPropertiesView.makePropertiesViewTreeItem(new EditorObject[]{wog1Level.getSceneObject()}));
 
-            if (!failedResources.isEmpty()) {
-                StringBuilder fullError = new StringBuilder();
-                for (String resource : failedResources) {
-                    fullError.append("\n").append(resource);
-                }
-                LoadingResourcesAlarm.show(fullError.substring(1));
-            }
-
         } else if (level instanceof WOG2Level wog2Level) {
 
             new Thread(() -> {
@@ -342,6 +339,14 @@ public class LevelLoader {
 
             FXHierarchy.getNewHierarchySwitcherButtons().getSelectionModel().select(0);
 
+        }
+
+        if (!failedResources.isEmpty()) {
+            StringBuilder fullError = new StringBuilder();
+            for (String resource : failedResources) {
+                fullError.append("\n").append(resource);
+            }
+            LoadingResourcesAlarm.show(fullError.substring(1));
         }
 
         finishOpeningLevel(level);
@@ -416,7 +421,7 @@ public class LevelLoader {
 
             StringBuilder levelExport = new StringBuilder();
             GOOWriter.recursiveGOOExport(levelExport, before.getLevel(), 0);
-            EditorObject levelObject = ObjectGOOParser.read("_2_Level", levelExport.toString());
+            EditorObject levelObject = ObjectGOOParser.read(_2_Level.class, levelExport.toString());
             ArrayList<EditorObject> objects = new ArrayList<>();
             Stack<EditorObject> toAdd = new Stack<>();
             toAdd.push(levelObject);
@@ -428,7 +433,12 @@ public class LevelLoader {
                 }
 
             }
-            WOG2Level level = new WOG2Level(objects);
+
+            ArrayList<EditorObject> addinList = new ArrayList<>();
+            // Generate new addin object. IDK why cloning it doesn't work, but this is arguably better anyway
+            FileManager.supremeAddToList(addinList, BlankObjectGenerator.generateBlankAddinObject(name, version));
+
+            WOG2Level level = new WOG2Level(objects, addinList);
 
             for (EditorObject object : level.getObjects()) {
                 object.update();

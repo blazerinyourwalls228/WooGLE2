@@ -8,6 +8,7 @@ import com.woogleFX.editorObjects.objectComponents.RectangleComponent;
 import com.woogleFX.engine.LevelManager;
 import com.woogleFX.engine.renderer.Depth;
 import com.woogleFX.gameData.level.GameVersion;
+import com.worldOfGoo2.misc._2_Point;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
@@ -18,8 +19,7 @@ public class _2_Level_Pin extends EditorObject {
 
         addAttribute("uid", InputField._2_UID);
 
-        addAttribute("pos", InputField._2_CHILD_HIDDEN);
-        putAttributeChildAlias("pos", "_2_Point");
+        addAttribute("pos", InputField._2_CHILD_HIDDEN).setChildAlias(_2_Point.class);
         addAttributeAdapter("pos", AttributeAdapter.pointAttributeAdapter(this, "pos", "pos"));
 
         addAttribute("damping", InputField._2_NUMBER);

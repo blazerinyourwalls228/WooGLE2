@@ -20,6 +20,7 @@ public class _2_Level_UserVariable extends EditorObject {
     @Override
     public String getName() {
 
+        if (((_2_Level_Item)getParent()).getItem().getChildren("userVariables").size() <= (getParent().getChildren("userVariables").indexOf(this))) return "";
         return ((_2_Level_Item)getParent()).getItem().getChildren("userVariables").get(getParent().getChildren("userVariables").indexOf(this)).getAttribute("name").stringValue();
 
     }

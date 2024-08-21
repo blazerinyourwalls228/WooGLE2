@@ -24,6 +24,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -81,6 +82,13 @@ public class GlobalResourceManager {
             openResources(GameVersion.VERSION_WOG2);
             openItems();
             AtlasManager.reloadAtlas();
+            new Thread(() -> {
+                try {
+                    ResourceManager.findTerrainTypes(null, GameVersion.VERSION_WOG2);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }).start();
             //openParticles(GameVersion.VERSION_WOG2);
             //openAnimations(GameVersion.VERSION_WOG2);
             //openText(GameVersion.VERSION_WOG2);

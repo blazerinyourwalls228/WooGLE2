@@ -15,6 +15,10 @@ import com.worldOfGoo.resrc.Sound;
 import com.worldOfGoo.text.TextString;
 import com.worldOfGoo2.environments._2_Environment;
 import com.worldOfGoo2.items._2_Item;
+import com.worldOfGoo2.items._2_Item_Collection;
+import com.worldOfGoo2.terrain._2_Terrain_Collection;
+import com.worldOfGoo2.terrain._2_Terrain_TerrainType;
+import com.worldOfGoo2.util.ItemHelper;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 
@@ -87,7 +91,7 @@ public class ResourceManager {
         if (resource == null) {
             try {
                 File itemFile = new File(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "/res/items/" + id + ".wog2");
-                ArrayList<EditorObject> items = ObjectGOOParser.read("_2_Item_Collection", Files.readString(itemFile.toPath())).getChildren();
+                ArrayList<EditorObject> items = ObjectGOOParser.read(_2_Item_Collection.class, Files.readString(itemFile.toPath())).getChildren();
                 for (EditorObject item : items) {
                     // System.out.println(item.getAttribute("name").stringValue());
                     // System.out.println(item.getAttribute("uuid").stringValue());
@@ -117,13 +121,44 @@ public class ResourceManager {
     }
 
 
+    /** Returns a terrain type corresponding with the given ID. */
+    public static void findTerrainTypes(ArrayList<EditorObject> resources, GameVersion version) throws FileNotFoundException {
+        try {
+            File itemFile = new File(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "/res/terrain/terrain.wog2");
+            ArrayList<EditorObject> items = ObjectGOOParser.read(_2_Terrain_Collection.class, Files.readString(itemFile.toPath())).getChildren();
+            for (EditorObject item : items) {
+                // System.out.println(item.getAttribute("name").stringValue());
+                // System.out.println(item.getAttribute("uuid").stringValue());
+                item.update();
+                for (EditorObject child : item.getChildren()) {
+                    child.update();
+                    for (EditorObject child1 : child.getChildren()) {
+                        child1.update();
+                        for (EditorObject child2 : child1.getChildren()) {
+                            child2.update();
+                            for (EditorObject child3 : child2.getChildren()) {
+                                child3.update();
+                            }
+                        }
+                    }
+
+                }
+                ItemHelper.terrainTypeNameMap.put(item.getAttribute("uuid").stringValue(), item.getAttribute("name").stringValue());
+            }
+            GlobalResourceManager.getSequelResources().addAll(items);
+        } catch (IOException e) {
+            ErrorAlarm.show(e);
+        }
+    }
+
+
     /** Returns an environment corresponding with the given ID. */
     public static _2_Environment getEnvironment(ArrayList<EditorObject> resources, String id, GameVersion version) throws FileNotFoundException {
         EditorObject resource = findResource(resources, id, version);
         if (resource == null) {
             try {
                 File itemFile = new File(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "/res/environments/" + id + ".wog2");
-                EditorObject item = ObjectGOOParser.read("_2_Environment", Files.readString(itemFile.toPath()));
+                EditorObject item = ObjectGOOParser.read(_2_Environment.class, Files.readString(itemFile.toPath()));
                 item.update();
                 for (EditorObject child : item.getChildren()) {
                     child.update();

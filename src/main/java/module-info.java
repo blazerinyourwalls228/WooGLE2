@@ -1,4 +1,5 @@
 module com.example.WOGAnniversaryEditor {
+
   requires javafx.controls;
   requires java.desktop;
   requires javafx.swing;
@@ -8,6 +9,9 @@ module com.example.WOGAnniversaryEditor {
   requires java.xml;
   requires org.slf4j;
   requires com.github.luben.zstd_jni;
+  requires com.fasterxml.jackson.databind;
+  requires com.fasterxml.jackson.dataformat.xml;
+
 
   exports com.worldOfGoo.scene;
   exports com.worldOfGoo.level;
@@ -15,6 +19,14 @@ module com.example.WOGAnniversaryEditor {
   exports com.worldOfGoo.ball;
   exports com.worldOfGoo.particle;
   exports com.worldOfGoo.text;
+
+  exports com.worldOfGoo2.level;
+  exports com.worldOfGoo2.ball;
+  exports com.worldOfGoo2.util;
+  exports com.worldOfGoo2.items;
+  exports com.worldOfGoo2.misc;
+  exports com.worldOfGoo2.environments;
+
   exports com.woogleFX.engine.gui;
   exports com.woogleFX.file;
   exports com.woogleFX.editorObjects;

@@ -66,8 +66,8 @@ public class ClipboardHandler {
 
                         if (okayToBeChild) {
                             okayToBeChild = false;
-                            for (String possibleChild : selected.getParent().getPossibleChildren()) {
-                                if (possibleChild.contentEquals(currentWord)) {
+                            for (Class<? extends EditorObject> possibleChild : selected.getParent().getPossibleChildren()) {
+                                if (possibleChild.getName().contentEquals(currentWord)) {
                                     okayToBeChild = true;
                                     break;
                                 }
@@ -89,7 +89,11 @@ public class ClipboardHandler {
             String type = clipboard.substring(10, clipboard.indexOf(";"));
             String type2 = clipboard.substring(clipboard.indexOf(";") + 1, clipboard.indexOf("<"));
             String content = clipboard.substring(clipboard.indexOf("<") + 1);
-            selectionBuilder.add(ObjectGOOParser.read(type, content));
+            try {
+                selectionBuilder.add(ObjectGOOParser.read((Class<? extends EditorObject>) Class.forName(type), content));
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
             selectionBuilder.get(0).setTypeID(type2);
             return selectionBuilder.toArray(new EditorObject[0]);
 
@@ -105,7 +109,7 @@ public class ClipboardHandler {
 
             StringBuilder export = new StringBuilder();
             GOOWriter.recursiveGOOExport(export, selectedList[0], 0);
-            return "WOGEditor:" + selectedList[0].getParent().getAttributeChildAlias().get(selectedList[0].getTypeID()) + ";" + selectedList[0].getTypeID() + "<" + export;
+            return "WOGEditor:" + selectedList[0].getParent().getAttribute(selectedList[0].getTypeID()).getChildAlias().getName() + ";" + selectedList[0].getTypeID() + "<" + export;
 
         } else {
 
@@ -113,7 +117,7 @@ public class ClipboardHandler {
 
             for (EditorObject object : selectedList) {
 
-                clipboard.append(object.getParent().getAttributeChildAlias().get(object.getTypeID()));
+                clipboard.append(object.getParent().getAttribute(object.getTypeID()).getChildAlias());
 
                 clipboard.append("<");
 

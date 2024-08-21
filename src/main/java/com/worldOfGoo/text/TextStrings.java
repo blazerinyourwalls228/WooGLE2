@@ -11,8 +11,8 @@ public class TextStrings extends EditorObject {
 
 
     @Override
-    public String[] getPossibleChildren() {
-        return new String[]{ "textstring" };
+    public Class<? extends EditorObject>[] getPossibleChildren() {
+        return new Class[]{ TextString.class };
     }
 
 

@@ -1,5 +1,7 @@
 package com.woogleFX.editorObjects.attributes;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.woogleFX.editorObjects.EditorObject;
 import com.woogleFX.editorObjects.attributes.dataTypes.Color;
 import com.woogleFX.editorObjects.attributes.dataTypes.Position;
@@ -18,9 +20,13 @@ public class EditorAttribute {
     public static final EditorAttribute NULL = new EditorAttribute(null, null, null);
 
 
-    private final EditorObject object;
+    @JsonIgnore
+    private EditorObject object;
     public EditorObject getObject() {
         return object;
+    }
+    public void setObject(EditorObject object) {
+        this.object = object;
     }
 
 
@@ -28,8 +34,13 @@ public class EditorAttribute {
     public StringProperty getNameProperty() {
         return name;
     }
+    @JacksonXmlProperty(localName = "name", isAttribute = true)
     public String getName() {
         return name.getValue();
+    }
+    @JacksonXmlProperty(localName = "name", isAttribute = true)
+    public void setName(String name) {
+        this.name.setValue(name);
     }
 
 
@@ -100,18 +111,46 @@ public class EditorAttribute {
     }
 
 
-    private final InputField type;
+    private InputField type;
     public InputField getType() {
         return type;
     }
 
+    public void setType(InputField type) {
+        this.type = type;
+    }
+    public void setType(String type) {
+        this.type = InputField.valueOf(type);
+    }
 
-    private boolean requiredInFile;
-    public boolean getRequiredInFile() {
-        return requiredInFile;
+    private boolean required;
+    public boolean getRequired() {
+        return required;
     }
     public EditorAttribute assertRequired() {
-        requiredInFile = true;
+        required = true;
+        return this;
+    }
+
+    public void setRequired(boolean required) {
+        this.required = required;
+    }
+
+    private Class<? extends EditorObject> childAlias = null;
+    public Class<? extends EditorObject> getChildAlias() {
+        return childAlias;
+    }
+    public EditorAttribute setChildAlias(Class<? extends EditorObject> childAlias) {
+        this.childAlias = childAlias;
+        return this;
+    }
+    public EditorAttribute setChildAlias(String childAlias) {
+        try {
+            Object object = Class.forName(childAlias);
+            this.childAlias = (Class<? extends EditorObject>) object;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         return this;
     }
 
@@ -120,6 +159,10 @@ public class EditorAttribute {
         this.name.setValue(name);
         this.type = type;
         this.object = object;
+    }
+
+    public EditorAttribute() {
+        this.object = null;
     }
 
 }

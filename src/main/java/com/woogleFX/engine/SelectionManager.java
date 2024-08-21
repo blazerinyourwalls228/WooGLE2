@@ -154,7 +154,10 @@ public class SelectionManager {
                 case "level" -> FXHierarchy.getHierarchySwitcherButtons().getSelectionModel().select(1);
                 case "resourcemanifest" -> FXHierarchy.getHierarchySwitcherButtons().getSelectionModel().select(2);
                 case "strings" -> FXHierarchy.getHierarchySwitcherButtons().getSelectionModel().select(3);
-                case "addin" -> FXHierarchy.getHierarchySwitcherButtons().getSelectionModel().select(4);
+                case "addin" -> {
+                    FXHierarchy.getHierarchySwitcherButtons().getSelectionModel().select(4);
+                    FXHierarchy.getNewHierarchySwitcherButtons().getSelectionModel().select(5);
+                }
 
                 case "BallInstance" -> {
                     if (absoluteParent.getAttribute("type").stringValue().equals("Terrain"))

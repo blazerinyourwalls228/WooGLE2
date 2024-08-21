@@ -21,8 +21,8 @@ public class WOG2Level extends _Level {
         return objects;
     }
 
-    public WOG2Level(ArrayList<EditorObject> objects) {
-        super(GameVersion.VERSION_WOG2);
+    public WOG2Level(ArrayList<EditorObject> objects, ArrayList<EditorObject> addin) {
+        super(GameVersion.VERSION_WOG2, addin);
 
         this.objects = objects;
 

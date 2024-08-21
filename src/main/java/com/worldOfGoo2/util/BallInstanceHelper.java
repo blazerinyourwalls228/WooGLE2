@@ -1,8 +1,13 @@
 package com.worldOfGoo2.util;
 
 import com.woogleFX.editorObjects.EditorObject;
+import com.woogleFX.editorObjects.objectComponents.CircleComponent;
+import com.woogleFX.editorObjects.objectComponents.ImageComponent;
+import com.woogleFX.editorObjects.objectComponents.ObjectComponent;
+import com.woogleFX.editorObjects.objectComponents.RectangleComponent;
 import com.woogleFX.editorObjects.objectCreators.ObjectCreator;
 import com.woogleFX.engine.LevelManager;
+import com.woogleFX.engine.fx.FXEditorButtons;
 import com.woogleFX.gameData.ball.AtlasManager;
 import com.woogleFX.gameData.ball._2Ball;
 import com.woogleFX.gameData.level.GameVersion;
@@ -15,13 +20,62 @@ import com.worldOfGoo2.level._2_Level_TerrainBall;
 import com.worldOfGoo2.misc._2_ImageID;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class BallInstanceHelper {
+
+    public static final Map<Integer, String> typeEnumToTypeMap = new HashMap<>();
+    public static final Map<String, Integer> typeToTypeEnumMap = new HashMap<>();
+
+    static {
+
+        typeEnumToTypeMap.put(1, "Common");
+        typeEnumToTypeMap.put(2, "CommonAlbino");
+        typeEnumToTypeMap.put(3, "Ivy");
+        typeEnumToTypeMap.put(4, "Balloon");
+        typeEnumToTypeMap.put(5, "GoolfSingle");
+        typeEnumToTypeMap.put(6, "Anchor");
+        typeEnumToTypeMap.put(7, "LauncherL2B");
+        typeEnumToTypeMap.put(8, "GooProduct");
+        typeEnumToTypeMap.put(9, "Thruster");
+        typeEnumToTypeMap.put(10, "Terrain");
+        typeEnumToTypeMap.put(11, "BalloonEye");
+        typeEnumToTypeMap.put(12, "Conduit");
+        typeEnumToTypeMap.put(13, "LauncherL2L");
+        typeEnumToTypeMap.put(14, "GooProductWhite");
+        typeEnumToTypeMap.put(15, "Grow");
+        typeEnumToTypeMap.put(16, "BombSticky");
+        typeEnumToTypeMap.put(17, "Rope");
+        typeEnumToTypeMap.put(18, "Bouncy");
+        typeEnumToTypeMap.put(19, "Fish");
+        typeEnumToTypeMap.put(20, "TimeBug");
+        typeEnumToTypeMap.put(23, "MatchStick");
+        typeEnumToTypeMap.put(25, "Fireworks");
+        typeEnumToTypeMap.put(26, "LightBall");
+        typeEnumToTypeMap.put(27, "TwuBit");
+        typeEnumToTypeMap.put(28, "TwuBitBit");
+        typeEnumToTypeMap.put(29, "Adapter");
+        typeEnumToTypeMap.put(30, "Winch");
+        typeEnumToTypeMap.put(32, "Shrink");
+        typeEnumToTypeMap.put(33, "Jelly");
+        typeEnumToTypeMap.put(34, "Goolf");
+        typeEnumToTypeMap.put(35, "ThisWayUp");
+        typeEnumToTypeMap.put(36, "LiquidLevelExit");
+        typeEnumToTypeMap.put(37, "Eye");
+        typeEnumToTypeMap.put(38, "UtilAttachWalkable");
+
+        // CommonBlack LightBall CommonWorld
+
+        for (int key : typeEnumToTypeMap.keySet()) typeToTypeEnumMap.put(typeEnumToTypeMap.get(key), key);
+
+    }
 
 
     private static boolean part2CanBeUsed(_2_Level_BallInstance ballInstance, _2_Ball_Part part) {
@@ -29,7 +83,7 @@ public class BallInstanceHelper {
         String state = "0";
 
         if (!ballInstance.getAttribute("discovered").booleanValue()) {
-            state = "6";
+            if (!part.getAttribute("isActiveWhenUndiscovered").booleanValue()) return false;
         } else {
             for (EditorObject obj : ((WOG2Level) LevelManager.getLevel()).getObjects()) {
                 if (obj instanceof _2_Level_Strand strand) {
@@ -114,8 +168,6 @@ public class BallInstanceHelper {
         boolean thereWasABody = false;
         for (_2_Ball_Part part : parts) {
 
-            if (ballInstance != null && !part2CanBeUsed(ballInstance, part)) continue;
-
             double sizeVariance = ball.getObjects().get(0).getAttribute("sizeVariance").doubleValue();
 
             Random machine2 = new Random(1);
@@ -137,10 +189,11 @@ public class BallInstanceHelper {
 
             BufferedImage partImage = getPartImageWoG2(part, machine);
             if (partImage == null) continue;
-            partPositions.add(new PartPosition(partX, partY, scaleX, scaleY, partImage));
+            if ((ballInstance == null || part2CanBeUsed(ballInstance, part)))
+                partPositions.add(new PartPosition(partX, partY, scaleX, scaleY, partImage));
 
             BufferedImage pupilImage = getPartPupilImageWoG2(part, machine);
-            if (pupilImage != null)
+            if (pupilImage != null && (ballInstance == null || part2CanBeUsed(ballInstance, part)))
                 partPositions.add(new PartPosition(partX, partY, scaleX, scaleY, pupilImage));
 
             double partImageMinX = partX - partImage.getWidth() * scaleX / 2.0;
@@ -205,6 +258,220 @@ public class BallInstanceHelper {
         drawGraphics.dispose();
 
         return SwingFXUtils.toFXImage(image, null);
+
+    }
+
+
+    public static ArrayList<ObjectComponent> generateBallObjectComponents(_2_Level_BallInstance ballInstance) {
+
+        _2Ball ball = ballInstance.getBall();
+
+        ArrayList<ObjectComponent> objectComponents = new ArrayList<>();
+
+        if (ball != null) {
+
+            ArrayList<_2_Ball_Image> images = new ArrayList<>();
+            for (EditorObject editorObject : ball.getObjects()) if (editorObject instanceof _2_Ball_Part && editorObject.getAttribute("name").stringValue().equals(ball.getObjects().get(0).getChildren("bodyPart").get(0).getAttribute("partName").stringValue())) for (EditorObject child : editorObject.getChildren())
+                if (child instanceof _2_Ball_Image ball_image) images.add(ball_image);
+
+            double _scaleX = 1;
+            double _scaleY = 1;
+            if (!images.isEmpty()) {
+
+                String imageString = images.get(0).getChildren().get(0).getAttribute("imageId").stringValue();
+
+                BufferedImage image = AtlasManager.atlas.get(imageString);
+
+                int _width = image.getWidth();
+                int _height = image.getHeight();
+
+                double width = ball.getObjects().get(0).getAttribute("width").doubleValue();
+                double height = ball.getObjects().get(0).getAttribute("height").doubleValue();
+
+                _scaleX = width / _width;
+                _scaleY = height / _height;
+
+            }
+
+            Image image = createBallImageWoG2(ballInstance, ball, _scaleX, _scaleY, new Random(ballInstance.getRandomSeed()));
+
+            EditorObject pos = ballInstance.getChildren("pos").get(0);
+
+            double final_scaleX = _scaleX;
+            double final_scaleY = _scaleY;
+            objectComponents.add(new ImageComponent() {
+                public double getX() {
+                    return pos.getAttribute("x").doubleValue();
+                }
+                public void setX(double x) {
+                    pos.setAttribute("x", x);
+                }
+                public double getY() {
+                    return -pos.getAttribute("y").doubleValue();
+                }
+                public void setY(double y) {
+                    pos.setAttribute("y", -y);
+                }
+                public double getRotation() {
+                    return -Math.toRadians(ballInstance.getAttribute("angle").doubleValue());
+                }
+                public void setRotation(double rotation) {
+                    ballInstance.setAttribute("angle", -Math.toDegrees(rotation));
+                }
+                public double getScaleX() {
+                    return final_scaleX;
+                }
+                public double getScaleY() {
+                    return final_scaleY;
+                }
+                public double getDepth() {
+                    return 0.000001;
+                }
+                public Image getImage() {
+                    return image;
+                }
+                public boolean isVisible() {
+                    return !ballInstance.getAttribute("type").stringValue().equals("Terrain") && LevelManager.getLevel().getVisibilitySettings().getShowGoos() == 2;
+                }
+                public boolean isResizable() {
+                    return false;
+                }
+            });
+
+        }
+        boolean isCircle = true; //ball == null || ball.getShapeType().equals("circle");
+
+        EditorObject pos = ballInstance.getChildren("pos").get(0);
+
+        if (isCircle) objectComponents.add(new CircleComponent() {
+            public double getX() {
+                return pos.getAttribute("x").doubleValue();
+            }
+            public void setX(double x) {
+                pos.setAttribute("x", x);
+            }
+            public double getY() {
+                return -pos.getAttribute("y").doubleValue();
+            }
+            public void setY(double y) {
+                pos.setAttribute("y", -y);
+            }
+            public double getRotation() {
+                return -Math.toRadians(ballInstance.getAttribute("angle").doubleValue());
+            }
+            public void setRotation(double rotation) {
+                ballInstance.setAttribute("angle", -Math.toDegrees(rotation));
+            }
+            public double getRadius() {
+                return 0.2;
+                // return ball.getShapeSize() / 2;
+            }
+            public double getEdgeSize() {
+                return 0.05;
+            }
+            public boolean isEdgeOnly() {
+                return false;
+            }
+            public javafx.scene.paint.Paint getBorderColor() {
+                if (ball == null) {
+                    return new javafx.scene.paint.Color(0.5, 0.25, 0.25, 1.0);
+                } else {
+                    if (ballInstance.getAttribute("type").stringValue().equals("Terrain") && FXEditorButtons.comboBoxSelected == ballInstance.getAttribute("terrainGroup").intValue() && FXEditorButtons.comboBoxSelected != -1) {
+                        if (FXEditorButtons.comboBoxList.get(FXEditorButtons.comboBoxSelected)) {
+                            return new javafx.scene.paint.Color(1.0 ,0.0, 1.0, 1);
+                        } else {
+                            return new javafx.scene.paint.Color(0.0 ,1.0, 1.0, 1);
+                        }
+                    } else {
+                        return new javafx.scene.paint.Color(0.5, 0.5, 0.5, 1);
+                    }
+                }
+            }
+            public javafx.scene.paint.Paint getColor() {
+                return new javafx.scene.paint.Color(0, 0, 0, 0);
+            }
+            public double getDepth() {
+                return 0.000001;
+            }
+            public boolean isVisible() {
+                if (LevelManager.getLevel().getVisibilitySettings().getShowGoos() == 0) return false;
+                return (ball == null || ballInstance.getAttribute("type").stringValue().equals("Terrain") && ballInstance.visibilityFunction()) || LevelManager.getLevel().getVisibilitySettings().getShowGoos() == 1 || (ballInstance.getAttribute("type").stringValue().equals("Terrain") && FXEditorButtons.comboBoxSelected == ballInstance.getAttribute("terrainGroup").intValue());
+            }
+            public boolean isResizable() {
+                return false;
+            }
+        });
+
+        else objectComponents.add(new RectangleComponent() {
+            public double getX() {
+                return pos.getAttribute("x").doubleValue();
+            }
+
+            public void setX(double x) {
+                double y = pos.getAttribute("y").doubleValue();
+                pos.setAttribute("x", x + "," + y);
+            }
+
+            public double getY() {
+                return -pos.getAttribute("y").doubleValue();
+            }
+
+            public void setY(double y) {
+                pos.setAttribute("y", -y);
+            }
+
+            public double getRotation() {
+                return -Math.toRadians(ballInstance.getAttribute("angle").doubleValue());
+            }
+
+            public void setRotation(double rotation) {
+                ballInstance.setAttribute("angle", -Math.toDegrees(rotation));
+            }
+
+            public double getWidth() {
+                return 0.2;
+                //return ball.getShapeSize();
+            }
+
+            public double getHeight() {
+                return 0.2;
+                //return ball.getShapeSize2();
+            }
+
+            public double getEdgeSize() {
+                return 0.05;
+            }
+
+            public boolean isEdgeOnly() {
+                return true;
+            }
+
+            public javafx.scene.paint.Paint getBorderColor() {
+                if (ball == null) {
+                    return new javafx.scene.paint.Color(0.5, 0.25, 0.25, 1.0);
+                } else {
+                    return new javafx.scene.paint.Color(0.5, 0.5, 0.5, 1);
+                }
+            }
+
+            public javafx.scene.paint.Paint getColor() {
+                return new Color(0, 0, 0, 0);
+            }
+
+            public double getDepth() {
+                return 0.000001;
+            }
+
+            public boolean isVisible() {
+                return (ball == null || ballInstance.getAttribute("type").stringValue().equals("Terrain") && ballInstance.visibilityFunction()) || LevelManager.getLevel().getVisibilitySettings().getShowGoos() == 1;
+            }
+
+            public boolean isResizable() {
+                return false;
+            }
+        });
+
+        return objectComponents;
 
     }
 

@@ -2,30 +2,58 @@ package com.worldOfGoo2.level;
 
 import com.woogleFX.editorObjects.EditorObject;
 import com.woogleFX.editorObjects.attributes.AttributeAdapter;
+import com.woogleFX.editorObjects.attributes.EditorAttribute;
 import com.woogleFX.editorObjects.attributes.InputField;
 import com.woogleFX.editorObjects.attributes.MetaEditorAttribute;
+import com.woogleFX.engine.LevelManager;
+import com.woogleFX.engine.fx.FXPropertiesView;
+import com.woogleFX.file.resourceManagers.GlobalResourceManager;
 import com.woogleFX.gameData.level.GameVersion;
+import com.worldOfGoo2.misc._2_Point;
+import com.worldOfGoo2.terrain._2_Terrain_TerrainType;
+import com.worldOfGoo2.util.ItemHelper;
 
 public class _2_Level_TerrainGroup extends EditorObject {
 
     public _2_Level_TerrainGroup(EditorObject parent) {
         super(parent, "TerrainGroup", GameVersion.VERSION_WOG2);
 
-        addAttribute("textureOffset", InputField._2_CHILD_HIDDEN);
-        putAttributeChildAlias("textureOffset", "_2_Point");
+        addAttribute("textureOffset", InputField._2_CHILD_HIDDEN).setChildAlias(_2_Point.class);
         addAttributeAdapter("textureOffset", AttributeAdapter.pointAttributeAdapter(this, "textureOffset", "textureOffset"));
 
-        addAttribute("typeUuid", InputField._2_UUID);
-        addAttribute("typeIndex", InputField._2_TERRAIN_GROUP_TYPE_INDEX);
-        addAttribute("sortOffset", InputField._2_NUMBER);
-        addAttribute("depth", InputField._2_NUMBER);
-        addAttribute("foreground", InputField._2_BOOLEAN);
-        addAttribute("collision", InputField._2_BOOLEAN);
-        addAttribute("destructable", InputField._2_BOOLEAN);
-        addAttribute("buildable", InputField._2_BOOLEAN);
-        addAttribute("occluder", InputField._2_BOOLEAN);
 
         setMetaAttributes(MetaEditorAttribute.parse("textureOffset,typeUuid,typeIndex,sortOffset,depth,foreground,collision,destructable,buildable,occluder,"));
+
+        EditorAttribute temp = new EditorAttribute("type", InputField._2_TERRAIN_GROUP_TYPE, this).assertRequired();
+        addAttributeAdapter("typeUuid", new AttributeAdapter("type") {
+
+            @Override
+            public EditorAttribute getValue() {
+
+                if (getAttribute2("typeUuid").stringValue().isEmpty()) return temp;
+                temp.setValue(ItemHelper.getTerrainTypeActualName(getAttribute2("typeUuid").stringValue()));
+                return temp;
+
+            }
+
+            @Override
+            public void setValue(String value) {
+                temp.setValue(value);
+                // TODO: Show a preview of the terrain types... and render them I guess
+                for (EditorObject resource : GlobalResourceManager.getSequelResources()) {
+                    if (resource instanceof _2_Terrain_TerrainType) {
+                        if (resource.getAttribute("name").stringValue().equals(value)) {
+                            setAttribute2("typeUuid", resource.getAttribute("uuid").stringValue());
+                            if (LevelManager.getLevel().getSelected().length > 0 && _2_Level_TerrainGroup.this == LevelManager.getLevel().getSelected()[0]) {
+                                FXPropertiesView.changeTableView(LevelManager.getLevel().getSelected());
+                            }
+                            return;
+                        }
+                    }
+                }
+            }
+
+        });
 
     }
 

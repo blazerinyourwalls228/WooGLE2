@@ -137,8 +137,6 @@ public class Renderer {
 
     public static void drawLevelToCanvas(_Level level, Canvas canvas) {
 
-        if (level instanceof WOG2Level wog2Level) clampLevelCamera(wog2Level, canvas);
-
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
 
         ArrayList<ObjectComponent> objectPositionsOrderedByDepth = orderObjectPositionsByDepth(level);
@@ -178,27 +176,6 @@ public class Renderer {
             graphicsContext.restore();
 
         }
-
-    }
-
-
-    private static void clampLevelCamera(WOG2Level level, Canvas canvas) {
-
-        EditorObject boundsBottomLeft = level.getLevel().getChildren("boundsBottomLeft").get(0);
-        EditorObject boundsTopRight = level.getLevel().getChildren("boundsTopRight").get(0);
-
-        SplitPane splitPane = FXContainers.getSplitPane();
-        double cameraWidth = (splitPane.getDividerPositions()[0] * splitPane.getWidth() - 6) / level.getZoom();
-        double cameraHeight = (FXCanvas.getCanvas().getHeight() - FXLevelSelectPane.getLevelSelectPane().getHeight()) / level.getZoom();
-
-        if (-level.getOffsetX() / level.getZoom() + cameraWidth < boundsBottomLeft.getAttribute("x").doubleValue())
-            level.setOffsetX(-(boundsBottomLeft.getAttribute("x").doubleValue() - cameraWidth) * level.getZoom());
-        if (-level.getOffsetX() / level.getZoom() > boundsTopRight.getAttribute("x").doubleValue())
-            level.setOffsetX(-(boundsTopRight.getAttribute("x").doubleValue()) * level.getZoom());
-        if (-level.getOffsetY() / level.getZoom() + cameraHeight < -boundsTopRight.getAttribute("y").doubleValue())
-            level.setOffsetY(-(-boundsBottomLeft.getAttribute("y").doubleValue() - cameraHeight) * level.getZoom());
-        if (-level.getOffsetY() / level.getZoom() > -boundsBottomLeft.getAttribute("y").doubleValue())
-            level.setOffsetY(-(-boundsTopRight.getAttribute("y").doubleValue()) * level.getZoom());
 
     }
 

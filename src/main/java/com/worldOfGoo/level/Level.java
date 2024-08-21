@@ -31,9 +31,9 @@ public class Level extends EditorObject {
     }
 
 
-    @Override
-    public String[] getPossibleChildren() {
-        return new String[]{"BallInstance", "Strand", "camera", "endoncollision", "endonmessage", "endonnogeom", "fire", "levelexit", "loopsound", "music", "pipe", "signpost", "targetheight"};
-    }
+    //@Override
+    //public String[] getPossibleChildren() {
+    //    return new String[]{"BallInstance", "Strand", "camera", "endoncollision", "endonmessage", "endonnogeom", "fire", "levelexit", "loopsound", "music", "pipe", "signpost", "targetheight"};
+    //}
 
 }

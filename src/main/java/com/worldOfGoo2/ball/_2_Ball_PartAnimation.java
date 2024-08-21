@@ -9,15 +9,9 @@ public class _2_Ball_PartAnimation extends EditorObject {
     public _2_Ball_PartAnimation(EditorObject parent) {
         super(parent, "PartAnimation", GameVersion.VERSION_WOG2);
 
-        addAttribute("parts", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("parts", "_2_Ball_BodyPart");
-
-        addAttribute("axis", InputField._2_STRING);
-        putAttributeChildAlias("axis", "_2_Ball_Axis");
-
-        addAttribute("type", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("type", "_2_Ball_BallType");
-
+        addAttribute("parts", InputField._2_CHILD).setChildAlias(_2_BodyPart.class).assertRequired();
+        addAttribute("axis", InputField._2_CHILD).setChildAlias(_2_Ball_Axis.class);
+        addAttribute("type", InputField._2_CHILD).setChildAlias(_2_Ball_BallType.class).assertRequired();
         addAttribute("frequency", InputField._2_STRING).assertRequired();
         addAttribute("amplitude", InputField._2_STRING).assertRequired();
         addAttribute("phaseShift", InputField._2_STRING).assertRequired();

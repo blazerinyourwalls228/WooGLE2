@@ -3,6 +3,7 @@ package com.worldOfGoo2.ball;
 import com.woogleFX.editorObjects.EditorObject;
 import com.woogleFX.editorObjects.attributes.InputField;
 import com.woogleFX.gameData.level.GameVersion;
+import com.worldOfGoo2.misc.*;
 
 public class _2_Ball extends EditorObject {
 
@@ -13,8 +14,7 @@ public class _2_Ball extends EditorObject {
         addAttribute("width", InputField._2_STRING).assertRequired();
         addAttribute("height", InputField._2_STRING).assertRequired();
 
-        addAttribute("shape", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("shape", "_2_Ball_BallShape");
+        addAttribute("shape", InputField._2_STRING).assertRequired().setChildAlias(_2_Ball_Shape.class);
 
         addAttribute("sizeVariance", InputField._2_STRING).assertRequired();
         addAttribute("mass", InputField._2_STRING).assertRequired();
@@ -47,8 +47,7 @@ public class _2_Ball extends EditorObject {
         addAttribute("unattachedMarginSS", InputField._2_STRING);
         addAttribute("health", InputField._2_STRING).assertRequired();
 
-        addAttribute("blinkColor", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("blinkColor", "_2_Color");
+        addAttribute("blinkColor", InputField._2_STRING).assertRequired().setChildAlias(_2_Color.class);
 
         addAttribute("jumpMultiplierMin", InputField._2_STRING).assertRequired();
         addAttribute("jumpMultiplierMax", InputField._2_STRING).assertRequired();
@@ -69,32 +68,25 @@ public class _2_Ball extends EditorObject {
         addAttribute("detonateKillItems", InputField._2_STRING);
         addAttribute("detonateKillTerrain", InputField._2_STRING);
 
-        addAttribute("detonateParticleEffect", InputField._2_STRING);
-        putAttributeChildAlias("detonateParticleEffect", "_2_UUID");
+        addAttribute("detonateParticleEffect", InputField._2_STRING).setChildAlias(_2_UUID.class);
 
         addAttribute("autoAttach", InputField._2_STRING).assertRequired();
         addAttribute("isClimber", InputField._2_STRING).assertRequired();
         addAttribute("attachedParticleBarrierFactor", InputField._2_STRING).assertRequired();
 
-        addAttribute("material", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("material", "_2_Ball_Material");
+        addAttribute("material", InputField._2_STRING).assertRequired().setChildAlias(_2_Ball_Material.class);
 
         addAttribute("contains", InputField._2_STRING).assertRequired();
 
-        addAttribute("popSoundId", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("popSoundId", "_2_SoundID");
+        addAttribute("popSoundId", InputField._2_STRING).assertRequired().setChildAlias(_2_SoundID.class);
 
-        addAttribute("popParticlesId", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("popParticlesId", "_2_UUID");
+        addAttribute("popParticlesId", InputField._2_STRING).assertRequired().setChildAlias(_2_UUID.class);
 
-        addAttribute("fireworksParticleEffect", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("fireworksParticleEffect", "_2_UUID");
+        addAttribute("fireworksParticleEffect", InputField._2_STRING).assertRequired().setChildAlias(_2_UUID.class);
 
-        addAttribute("trailEffectId", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("trailEffectId", "_2_UUID");
+        addAttribute("trailEffectId", InputField._2_STRING).assertRequired().setChildAlias(_2_UUID.class);
 
-        addAttribute("trailParticleEffect", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("trailParticleEffect", "_2_UUID");
+        addAttribute("trailParticleEffect", InputField._2_STRING).assertRequired().setChildAlias(_2_UUID.class);
 
         addAttribute("trailEffectEnabled", InputField._2_STRING).assertRequired();
         addAttribute("popDuration", InputField._2_STRING).assertRequired();
@@ -105,8 +97,7 @@ public class _2_Ball extends EditorObject {
         addAttribute("isBehindStrands", InputField._2_STRING).assertRequired();
         addAttribute("wakeOtherBallsAtDistance", InputField._2_STRING).assertRequired();
 
-        addAttribute("spawnType", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("spawnType", "_2_Ball_Type");
+        addAttribute("spawnType", InputField._2_STRING).assertRequired().setChildAlias(_2_Ball_Type.class);
 
         addAttribute("decay", InputField._2_STRING).assertRequired();
         addAttribute("flingForceFactor", InputField._2_STRING).assertRequired();
@@ -133,13 +124,11 @@ public class _2_Ball extends EditorObject {
         addAttribute("strandSuckLiquidParticlesPerSecond", InputField._2_STRING).assertRequired();
         addAttribute("hitVelocityAccumulationLimit", InputField._2_STRING).assertRequired();
 
-        addAttribute("shadowImageId", InputField._2_STRING);
-        putAttributeChildAlias("shadowImageId", "_2_ImageID");
+        addAttribute("shadowImageId", InputField._2_STRING).setChildAlias(_2_ImageID.class);
 
         addAttribute("shadowImageIsAdditive", InputField._2_STRING);
 
-        addAttribute("strandType", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("strandType", "_2_Ball_StrandType");
+        addAttribute("strandType", InputField._2_STRING).assertRequired().setChildAlias(_2_Ball_StrandType.class);
 
         addAttribute("springConstMin", InputField._2_STRING).assertRequired();
         addAttribute("springConstMax", InputField._2_STRING).assertRequired();
@@ -160,113 +149,84 @@ public class _2_Ball extends EditorObject {
         addAttribute("isStrandWalkable", InputField._2_STRING).assertRequired();
         addAttribute("canShrinkStrand", InputField._2_STRING).assertRequired();
 
-        addAttribute("strandImageId", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("strandImageId", "_2_ImageID");
+        addAttribute("strandImageId", InputField._2_STRING).assertRequired().setChildAlias(_2_ImageID.class);
 
-        addAttribute("strandInactiveImageId", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("strandInactiveImageId", "_2_ImageID");
+        addAttribute("strandInactiveImageId", InputField._2_STRING).assertRequired().setChildAlias(_2_ImageID.class);
 
-        addAttribute("strandInactiveOverlayImageId", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("strandInactiveOverlayImageId", "_2_ImageID");
+        addAttribute("strandInactiveOverlayImageId", InputField._2_STRING).assertRequired().setChildAlias(_2_ImageID.class);
 
         addAttribute("strandIgniteDelay", InputField._2_STRING).assertRequired();
         addAttribute("strandBurnSpeed", InputField._2_STRING).assertRequired();
         addAttribute("strandFireParticlesId", InputField._2_STRING).assertRequired();
 
-        addAttribute("strandBurntImageId", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("strandBurntImageId", "_2_ImageID");
+        addAttribute("strandBurntImageId", InputField._2_STRING).assertRequired().setChildAlias(_2_ImageID.class);
 
-        addAttribute("strandBackgroundImageId", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("strandBackgroundImageId", "_2_ImageID");
+        addAttribute("strandBackgroundImageId", InputField._2_STRING).assertRequired().setChildAlias(_2_ImageID.class);
 
-        addAttribute("detachStrandImageId", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("detachStrandImageId", "_2_ImageID");
+        addAttribute("detachStrandImageId", InputField._2_STRING).assertRequired().setChildAlias(_2_ImageID.class);
 
         addAttribute("detachStrandMaxLength", InputField._2_STRING).assertRequired();
 
-        addAttribute("dragMarkerImageId", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("dragMarkerImageId", "_2_ImageID");
+        addAttribute("dragMarkerImageId", InputField._2_STRING).assertRequired().setChildAlias(_2_ImageID.class);
 
-        addAttribute("detachMarkerImageId", InputField._2_STRING);
-        putAttributeChildAlias("detachMarkerImageId", "_2_ImageID");
+        addAttribute("detachMarkerImageId", InputField._2_STRING).setChildAlias(_2_ImageID.class);
 
         addAttribute("markerRotSpeed", InputField._2_STRING).assertRequired();
 
-        addAttribute("stainLiquidType", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("stainLiquidType", "_2_LiquidType");
+        addAttribute("stainLiquidType", InputField._2_STRING).assertRequired().setChildAlias(_2_LiquidType.class);
 
-        addAttribute("deselectAttenuationFunc", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("deselectAttenuationFunc", "_2_Ball_AttenuationFunction");
+        addAttribute("deselectAttenuationFunc", InputField._2_STRING).assertRequired().setChildAlias(_2_Ball_AttenuationFunction.class);
 
-        addAttribute("selectAttenuationFunc", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("selectAttenuationFunc", "_2_Ball_AttenuationFunction");
+        addAttribute("selectAttenuationFunc", InputField._2_STRING).assertRequired().setChildAlias(_2_Ball_AttenuationFunction.class);
 
-        addAttribute("dropAttenuationFunc", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("dropAttenuationFunc", "_2_Ball_AttenuationFunction");
+        addAttribute("dropAttenuationFunc", InputField._2_STRING).assertRequired().setChildAlias(_2_Ball_AttenuationFunction.class);
 
-        addAttribute("dragAttenuationFunc", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("dragAttenuationFunc", "_2_Ball_AttenuationFunction");
+        addAttribute("dragAttenuationFunc", InputField._2_STRING).assertRequired().setChildAlias(_2_Ball_AttenuationFunction.class);
 
-        addAttribute("spawnAttenuationFunc", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("spawnAttenuationFunc", "_2_Ball_AttenuationFunction");
+        addAttribute("spawnAttenuationFunc", InputField._2_STRING).assertRequired().setChildAlias(_2_Ball_AttenuationFunction.class);
 
-        addAttribute("ballParts", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("ballParts", "_2_Ball_Part");
+        addAttribute("ballParts", InputField._2_STRING).assertRequired().setChildAlias(_2_Ball_Part.class);
 
-        addAttribute("bodyPart", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("bodyPart", "_2_Ball_BodyPart");
+        addAttribute("bodyPart", InputField._2_STRING).assertRequired().setChildAlias(_2_BodyPart.class);
 
-        addAttribute("stateAnimations", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("stateAnimations", "_2_Ball_StateAnimation");
+        addAttribute("stateAnimations", InputField._2_STRING).assertRequired().setChildAlias(_2_Ball_StateAnimation.class);
 
-        addAttribute("splatImageIds", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("splatImageIds", "_2_ImageID");
+        addAttribute("splatImageIds", InputField._2_STRING).assertRequired().setChildAlias(_2_ImageID.class);
 
-        addAttribute("soundEvents", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("soundEvents", "_2_Ball_SoundEvent");
+        addAttribute("soundEvents", InputField._2_STRING).assertRequired().setChildAlias(_2_Ball_SoundEvent.class);
 
-        addAttribute("flashAnimation", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("flashAnimation", "_2_Ball_FlashAnimation");
+        addAttribute("flashAnimation", InputField._2_STRING).assertRequired().setChildAlias(_2_Ball_FlashAnimation.class);
 
         addAttribute("stateScales", InputField._2_STRING).assertRequired();
 
-        addAttribute("particleEffects", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("particleEffects", "_2_Ball_ParticleEffect");
+        addAttribute("particleEffects", InputField._2_STRING).assertRequired().setChildAlias(_2_Ball_ParticleEffect.class);
 
-        addAttribute("stableFluidsDensityFactor", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("stableFluidsDensityFactor", "_2_Color");
+        addAttribute("stableFluidsDensityFactor", InputField._2_STRING).assertRequired().setChildAlias(_2_Color.class);
 
         addAttribute("stableFluidsMinTrailVelocity", InputField._2_STRING).assertRequired();
 
-        addAttribute("stableFluidsDensityRange", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("stableFluidsDensityRange", "_2_Point");
+        addAttribute("stableFluidsDensityRange", InputField._2_STRING).assertRequired().setChildAlias(_2_Point.class);
 
         addAttribute("isLauncher", InputField._2_STRING).assertRequired();
         addAttribute("canBeSuckedByLauncher", InputField._2_STRING).assertRequired();
         addAttribute("whenAttachedRenderOnTop", InputField._2_STRING).assertRequired();
         addAttribute("lighting", InputField._2_STRING).assertRequired();
 
-        addAttribute("popSpawnItems", InputField._2_STRING);
-        putAttributeChildAlias("popSpawnItems", "_2_UUID");
+        addAttribute("popSpawnItems", InputField._2_STRING).setChildAlias(_2_UUID.class);
 
         addAttribute("popSpawnItemProbability", InputField._2_STRING);
 
-        addAttribute("popSpawnItemCountRange", InputField._2_STRING);
-        putAttributeChildAlias("popSpawnItemCountRange", "_2_Point");
+        addAttribute("popSpawnItemCountRange", InputField._2_STRING).setChildAlias(_2_Point.class);
 
-        addAttribute("popSpawnItemRadiusRange", InputField._2_STRING);
-        putAttributeChildAlias("popSpawnItemRadiusRange", "_2_Point");
+        addAttribute("popSpawnItemRadiusRange", InputField._2_STRING).setChildAlias(_2_Point.class);
 
-        addAttribute("popSpawnItemScaleRange", InputField._2_STRING);
-        putAttributeChildAlias("popSpawnItemScaleRange", "_2_Point");
+        addAttribute("popSpawnItemScaleRange", InputField._2_STRING).setChildAlias(_2_Point.class);
 
-        addAttribute("strandShatterItem", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("strandShatterItem", "_2_UUID");
+        addAttribute("strandShatterItem", InputField._2_STRING).assertRequired().setChildAlias(_2_UUID.class);
 
         addAttribute("strandShatterItemProbability", InputField._2_STRING).assertRequired();
 
-        addAttribute("strandShatterParticleEffect", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("strandShatterParticleEffect", "_2_UUID");
+        addAttribute("strandShatterParticleEffect", InputField._2_STRING).assertRequired().setChildAlias(_2_UUID.class);
 
         addAttribute("strandShatterParticleEffectProbability", InputField._2_STRING).assertRequired();
         addAttribute("strandShatterFragmentSize", InputField._2_STRING).assertRequired();
@@ -284,19 +244,16 @@ public class _2_Ball extends EditorObject {
         addAttribute("inactiveStrandCollideWithJelly", InputField._2_STRING);
         addAttribute("renderInJellyBackground", InputField._2_STRING);
 
-        addAttribute("thrusterStableFluidsImage", InputField._2_STRING);
-        putAttributeChildAlias("thrusterStableFluidsImage", "_2_ImageID");
+        addAttribute("thrusterStableFluidsImage", InputField._2_STRING).setChildAlias(_2_ImageID.class);
 
-        addAttribute("markerColor", InputField._2_STRING).assertRequired();
-        putAttributeChildAlias("markerColor", "_2_Color");
+        addAttribute("markerColor", InputField._2_STRING).assertRequired().setChildAlias(_2_Color.class);
 
         addAttribute("zoomFactorAttached", InputField._2_STRING);
         addAttribute("zoomFactorUnattached", InputField._2_STRING);
         addAttribute("zoomSpeed", InputField._2_STRING);
         addAttribute("liquidParticlesRadiusScale", InputField._2_STRING);
 
-        addAttribute("structureFillingLayers", InputField._2_STRING);
-        putAttributeChildAlias("structureFillingLayers", "_2_Ball_StructureFillingLayer");
+        addAttribute("structureFillingLayers", InputField._2_STRING).setChildAlias(_2_Ball_StructureFillingLayer.class);
 
         addAttribute("ropeOffsetRadiusScale", InputField._2_STRING);
         addAttribute("ropeStiffness", InputField._2_STRING);
@@ -313,21 +270,17 @@ public class _2_Ball extends EditorObject {
         addAttribute("collisionGroup", InputField._2_STRING);
         addAttribute("despawnTriggersFullDeath", InputField._2_STRING);
 
-        addAttribute("deathParticleEffect", InputField._2_CHILD);
-        putAttributeChildAlias("deathParticleEffect", "_2_UUID");
+        addAttribute("deathParticleEffect", InputField._2_CHILD).setChildAlias(_2_UUID.class);
 
         addAttribute("flashAnimationPreLiquidLayerTextureIndices", InputField._2_STRING);
         addAttribute("inputPipeForceVariation", InputField._2_STRING);
         addAttribute("laserCount", InputField._2_STRING);
 
-        addAttribute("laserGradientStart", InputField._2_STRING);
-        putAttributeChildAlias("laserGradientStart", "_2_Color");
+        addAttribute("laserGradientStart", InputField._2_STRING).setChildAlias(_2_Color.class);
 
-        addAttribute("laserGradientEnd", InputField._2_STRING);
-        putAttributeChildAlias("laserGradientEnd", "_2_Color");
+        addAttribute("laserGradientEnd", InputField._2_STRING).setChildAlias(_2_Color.class);
 
-        addAttribute("laserOverrideImage", InputField._2_STRING);
-        putAttributeChildAlias("laserOverrideImage", "_2_ImageID");
+        addAttribute("laserOverrideImage", InputField._2_STRING).setChildAlias(_2_ImageID.class);
 
         addAttribute("countMoveOnUnatachedRelease", InputField._2_STRING);
         addAttribute("maxStrandAngle", InputField._2_STRING);

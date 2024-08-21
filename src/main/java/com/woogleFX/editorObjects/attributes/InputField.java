@@ -25,27 +25,33 @@ import com.worldOfGoo.scene.Rectangle;
 
 public enum InputField {
 
+    // World of Goo 1
+
+    // Data types
     _1_STRING,
     _1_NUMBER,
     _1_NUMBER_NON_NEGATIVE,
     _1_NUMBER_POSITIVE,
     _1_POSITION,
-    _1_IMAGE,
-    _1_IMAGE_REQUIRED,
     _1_COLOR,
-    _1_ANIMATION,
     _1_FLAG,
+
+    // Level objects
+    _1_GOOBALL_ID,
+    _1_UNIQUE_GOOBALL_ID,
+    _1_IMAGE,
+    _1_GEOMETRY,
+
+
+    _1_ANIMATION,
     _1_RANGE,
     _1_MATERIAL,
     _1_TAG,
-    _1_GEOMETRY,
     _1_TEXT,
     _1_PARTICLES,
     _1_BALL,
     _1_OCD_TYPE,
     _1_IMAGE_TYPE,
-    _1_GOOBALL_ID,
-    _1_UNIQUE_GOOBALL_ID,
     _1_IMAGE_PATH,
     _1_SOUND_PATH,
     _1_FONT,
@@ -82,14 +88,14 @@ public enum InputField {
     _2_LIST_CHILD,
     _2_LIST_CHILD_HIDDEN,
 
-    ;
+    _2_TERRAIN_GROUP_TYPE;
 
     public static boolean verify(EditorObject object, InputField type, String potential, boolean required) {
 
         if (type == null) return true;
         if (type == _2_LIST_STRING || type == _2_LIST_NUMBER || type == _2_LIST_CHILD || type == _2_LIST_CHILD_HIDDEN) return true;
 
-        if (potential == null) return !(type == _1_IMAGE_REQUIRED || required);
+        if (potential == null) return !required;
 
         switch (type) {
 
@@ -101,7 +107,7 @@ public enum InputField {
                 return verifyDataType(type, potential);
             }
 
-            case _1_GOOBALL_ID, _1_UNIQUE_GOOBALL_ID, _1_IMAGE, _1_IMAGE_REQUIRED, _1_GEOMETRY -> {
+            case _1_GOOBALL_ID, _1_UNIQUE_GOOBALL_ID, _1_IMAGE, _1_GEOMETRY -> {
                 return verifyLevelObject(object, type, potential);
             }
 
@@ -205,7 +211,7 @@ public enum InputField {
                 return true;
             }
 
-            case _1_IMAGE, _1_IMAGE_REQUIRED -> {
+            case _1_IMAGE -> {
                 WOG1Level level = (WOG1Level)LevelManager.getLevel();
                 for (EditorObject resrc : level.getResrc())
                     if (resrc instanceof ResrcImage image &&
