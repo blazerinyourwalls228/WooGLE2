@@ -20,6 +20,7 @@ import com.woogleFX.gameData.level.levelOpening.LevelLoader;
 import com.worldOfGoo.ball.BallStrand;
 import com.worldOfGoo.level.BallInstance;
 import com.worldOfGoo2.misc._2_ImageID;
+import com.worldOfGoo2.util.TerrainHelper;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
@@ -283,6 +284,9 @@ public class _2_Level_Strand extends EditorObject {
                     } else {
                         return new Color(0.0 ,0.0, 1.0, 1);
                     }
+                }
+                if (goo1 != null && goo1.getAttribute("type").stringValue().equals("Terrain") && goo1.getAttribute("terrainGroup").intValue() > -1) {
+                    return TerrainHelper.averageColor(goo1.getAttribute("terrainGroup").intValue());
                 } else {
                     return new Color(0.5, 0.5, 0.5, 1);
                 }

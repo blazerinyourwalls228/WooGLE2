@@ -19,6 +19,7 @@ import com.worldOfGoo.resrc.Sound;
 import com.worldOfGoo.text.TextString;
 import com.worldOfGoo2.items._2_Item;
 import com.worldOfGoo2.util.ItemHelper;
+import com.worldOfGoo2.util.TerrainHelper;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -85,6 +86,7 @@ public class GlobalResourceManager {
             new Thread(() -> {
                 try {
                     ResourceManager.findTerrainTypes(null, GameVersion.VERSION_WOG2);
+                    TerrainHelper.buildImageMap();
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }

@@ -9,6 +9,7 @@ import com.woogleFX.engine.LevelManager;
 import com.woogleFX.engine.fx.FXPropertiesView;
 import com.woogleFX.file.resourceManagers.GlobalResourceManager;
 import com.woogleFX.gameData.level.GameVersion;
+import com.woogleFX.gameData.level.WOG2Level;
 import com.worldOfGoo2.misc._2_Point;
 import com.worldOfGoo2.terrain._2_Terrain_TerrainType;
 import com.worldOfGoo2.util.ItemHelper;
@@ -57,6 +58,17 @@ public class _2_Level_TerrainGroup extends EditorObject {
 
     }
 
+    @Override
+    public String getName() {
+        if (LevelManager.getLevel() != null && LevelManager.getLevel() instanceof WOG2Level level) {
+            for (int i = 0; i < level.getLevel().getChildren("terrainGroups").size(); i++) {
+                if (level.getLevel().getChildren("terrainGroups").get(i) == this) {
+                    return i + ", " + this.getAttribute("type").stringValue();
+                }
+            }
+        }
+        return "";
+    }
 
     @Override
     public void onLoaded() {

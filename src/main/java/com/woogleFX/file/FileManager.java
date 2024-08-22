@@ -318,6 +318,8 @@ public class FileManager {
             saxParser.parse(ballFile, defaultHandler);
             ballFile = new File(dir + "/res/environments/images/_resources.xml");
             saxParser.parse(ballFile, defaultHandler);
+            ballFile = new File(dir + "/res/terrain/images/_resources.xml");
+            saxParser.parse(ballFile, defaultHandler);
         }
         return resources;
     }
