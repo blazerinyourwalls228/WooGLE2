@@ -16,9 +16,11 @@ import com.worldOfGoo.text.TextString;
 import com.worldOfGoo2.environments._2_Environment;
 import com.worldOfGoo2.items._2_Item;
 import com.worldOfGoo2.items._2_Item_Collection;
+import com.worldOfGoo2.misc._2_ImageID;
+import com.worldOfGoo2.terrain.BaseSettings;
 import com.worldOfGoo2.terrain._2_Terrain_Collection;
-import com.worldOfGoo2.terrain._2_Terrain_TerrainType;
 import com.worldOfGoo2.util.ItemHelper;
+import com.worldOfGoo2.util.TerrainHelper;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 

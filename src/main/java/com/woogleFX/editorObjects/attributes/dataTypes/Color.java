@@ -38,6 +38,13 @@ public class Color {
         this.b = b;
     }
 
+    public Color(double a, double r, double g, double b){
+        this.a = (int) Math.round(255 * a);
+        this.r = (int) Math.round(255 * r);
+        this.g = (int) Math.round(255 * g);
+        this.b = (int) Math.round(255 * b);
+    }
+
     public static Color parse(String input){
 
         if (input.equals("1")) return new Color(255, 255, 255, 255);

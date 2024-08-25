@@ -1,6 +1,7 @@
 package com.worldOfGoo2.util;
 
 import com.woogleFX.editorObjects.EditorObject;
+import com.woogleFX.editorObjects.ImageUtility;
 import com.woogleFX.gameData.level.GameVersion;
 import com.worldOfGoo2.environments._2_Environment;
 import com.worldOfGoo2.environments._2_Environment_ForegroundFX;
@@ -13,8 +14,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
-import java.awt.*;
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 
@@ -56,20 +55,30 @@ public class EnvironmentHelper {
             try {
                 var color = new BigInteger(layer.getAttribute("color").stringValue()).toString(16);
                 Image image = layer.getAttribute("imageName").imageValue(null, GameVersion.VERSION_WOG2);
+
+                var jfxColor = hex2ARGB(color);
+
+                image = ImageUtility.colorize(image,
+                        new com.woogleFX.editorObjects.attributes.dataTypes.Color(jfxColor.getOpacity(), jfxColor.getRed(), jfxColor.getGreen(), jfxColor.getBlue()));
+
                 ImageView view = getEffectsView(image, monochrome, color);
 
                 int blendMode = 2;
                 try {
-                    Integer.parseInt(layer.getAttribute("blendingType").stringValue()); // very very sorry to whoever finds this
-                } catch (Exception ignore) {}
+                    blendMode = layer.getAttribute("blendingType").intValue();
+                } catch (Exception e) { e.printStackTrace();}
 
                 gc.save();
 
-                gc.setGlobalAlpha(hex2ARGB(color).getOpacity());
+                gc.setGlobalAlpha(jfxColor.getOpacity());
+                var blend = new Blend();
 
                 switch(blendMode) {
                     case 3: { // ADD
                         gc.setGlobalBlendMode(BlendMode.ADD);
+
+                        blend.setMode(BlendMode.ADD);
+                        gc.setEffect(blend);
                     }
                     default: {
                         gc.setGlobalBlendMode(BlendMode.SRC_OVER);
@@ -90,19 +99,6 @@ public class EnvironmentHelper {
             }
         }
 
-        for (EditorObject part : environment.getChildren()) if (part instanceof _2_Environment_ForegroundFX fx) {
-            //if (fx.getName().equalsIgnoreCase("finalFx")) {
-
-                var blend = new Blend(BlendMode.MULTIPLY, monochrome,
-                        new ColorInput(0, 0, canvas.getWidth(), canvas.getHeight(),
-                                new javafx.scene.paint.Color(
-                                        part.getAttribute("layerRed").doubleValue(),
-                                        part.getAttribute("layerGreen").doubleValue(),
-                                        part.getAttribute("layerBlue").doubleValue(), 0f)));
-                gc.setEffect(blend);
-            //}
-        }
-
         WritableImage writableImage = new WritableImage((int)canvas.getWidth(), (int)canvas.getHeight());
         canvas.snapshot(null, writableImage);
 
@@ -114,48 +110,23 @@ public class EnvironmentHelper {
         view.setFitWidth(image.getWidth());
         view.setFitHeight(image.getHeight());
         view.setImage(image);
-        /*
-        var blend = new Blend(BlendMode.MULTIPLY, monochrome,
-                new ColorInput(0, 0, view.getImage().getWidth(), view.getImage().getHeight(),
-                        new javafx.scene.paint.Color(color.getRed() / 255d, color.getGreen() / 255d, color.getBlue() / 255d, color.getAlpha() / 255d)));
-        view.setEffect(blend);
-        */
-        /*
-        Lighting lighting = new Lighting(new Light.Distant(45, 90, hex2ARGB(color)));
-        ColorAdjust bright = new ColorAdjust(0, 1, 1, 1);
-        lighting.setContentInput(bright);
-        lighting.setSurfaceScale(0.0);
-
-        view.setEffect(lighting);
-
-         */
-
-        var c = hex2ARGB(color);
-
-        ColorAdjust bright = new ColorAdjust();
-
-        bright.setSaturation(c.getSaturation());
-        bright.setHue(c.getHue());
-
-        view.setEffect(bright);
 
         return view;
     }
 
     public static javafx.scene.paint.Color hex2ARGB(String h) {
         try {
-            if (h.length() == 8) { // AARRGGBB
-                var a = Integer.valueOf(h.substring(0, 2), 16);
-                var r = Integer.valueOf(h.substring(2, 4), 16);
-                var g = Integer.valueOf(h.substring(4, 6), 16);
-                var b = Integer.valueOf(h.substring(6, 8), 16);
-                return new Color(r / 255d, g / 255d, b / 255d, a / 255d);
-            } else { // RRGGBB
+            if (h.length() < 8) {
                 var r = Integer.valueOf(h.substring(0, 2), 16);
                 var g = Integer.valueOf(h.substring(2, 4), 16);
                 var b = Integer.valueOf(h.substring(4, 6), 16);
-                return new Color(r / 255d, g / 255d, b / 255d, 1.0);
+                return new Color(r / 255d, g / 255d, b / 255d, 1);
             }
+            var a = Integer.valueOf(h.substring(0, 2), 16);
+            var r = Integer.valueOf(h.substring(2, 4), 16);
+            var g = Integer.valueOf(h.substring(4, 6), 16);
+            var b = Integer.valueOf(h.substring(6, 8), 16);
+            return new Color(r / 255d, g / 255d, b / 255d, a / 255d);
         } catch(Exception e) { // If a color is invalid we'll just use white
             System.out.println("Error while loading color " + h);
             e.printStackTrace();

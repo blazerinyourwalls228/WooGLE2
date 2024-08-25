@@ -26,7 +26,7 @@ public class _2_Environment_Layer extends EditorObject {
         addAttribute("anchorsTakeDepthIntoAccount", InputField._2_STRING);
         addAttribute("bloom", InputField._2_STRING);
         addAttribute("color", InputField._2_STRING);
-        addAttribute("blendingType", InputField._2_STRING);
+        addAttribute("blendingType", InputField._2_NUMBER);
         addAttribute("flashAnimationName", InputField._2_STRING);
         addAttribute("isFlashAnimation", InputField._2_STRING);
         addAttribute("animScroll", InputField._2_STRING).setChildAlias(_2_Point.class);

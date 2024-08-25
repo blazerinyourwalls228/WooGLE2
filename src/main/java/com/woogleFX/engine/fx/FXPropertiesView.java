@@ -16,6 +16,7 @@ import com.woogleFX.editorObjects.attributes.MetaEditorAttribute;
 import com.woogleFX.engine.undoHandling.userActions.AttributeChangeAction;
 import com.worldOfGoo.resrc.ResrcImage;
 import com.worldOfGoo2.util.ItemHelper;
+import com.worldOfGoo2.util.TerrainHelper;
 import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
@@ -29,7 +30,10 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FXPropertiesView {
 
@@ -37,6 +41,8 @@ public class FXPropertiesView {
     public static TreeTableView<EditorAttribute> getPropertiesView() {
         return propertiesView;
     }
+
+    public static Map<String, Button> terrainTypeElements = new HashMap<>();
 
 
     public static void init() {
@@ -502,19 +508,38 @@ public class FXPropertiesView {
 
                 for (String itemType : ItemHelper.terrainTypeNameMap.values()) {
                     if (!itemType.toLowerCase().contains(currentText.toLowerCase())) continue;
-                    Button setImageItem = new Button(itemType);
+                    Button setImageItem;
+                    if (terrainTypeElements.containsKey(itemType)) {
+                        setImageItem = terrainTypeElements.get(itemType);
 
-                    configureButton(setImageItem);
+                        setImageItem.setOnAction(event -> {
+                            UndoManager.registerChange(new AttributeChangeAction(attribute,
+                                    attribute.stringValue(), itemType));
+                            attribute.setValue(itemType);
+                            if (contextMenu.isFocused()) {
+                                cell.commitEdit(attribute.stringValue());
+                                TerrainHelper.terrainColorCache.clear();
+                            }
+                        });
 
-                    setImageItem.setOnAction(event -> {
-                        UndoManager.registerChange(new AttributeChangeAction(attribute,
-                                attribute.stringValue(), itemType));
-                        attribute.setValue(itemType);
-                        if (contextMenu.isFocused()) {
-                            cell.commitEdit(attribute.stringValue());
-                        }
-                    });
+                    } else {
+                        setImageItem = new Button(itemType);
 
+                        configureButton(setImageItem);
+
+                        setImageItem.setOnAction(event -> {
+                            UndoManager.registerChange(new AttributeChangeAction(attribute,
+                                    attribute.stringValue(), itemType));
+                            attribute.setValue(itemType);
+                            if (contextMenu.isFocused()) {
+                                cell.commitEdit(attribute.stringValue());
+                                TerrainHelper.terrainColorCache.clear();
+                            }
+                        });
+                        setImageItem.setGraphic(TerrainHelper.terrainPreviewImage(itemType));
+
+                        terrainTypeElements.put(itemType, setImageItem);
+                    }
                     vBox.getChildren().add(setImageItem);
                 }
 
