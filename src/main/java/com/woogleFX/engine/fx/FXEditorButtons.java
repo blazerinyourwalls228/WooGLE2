@@ -321,11 +321,20 @@ public class FXEditorButtons {
 
         double _scaleX = 1;
         double _scaleY = 1;
+        Button idk = new Button();
         if (!images.isEmpty()) {
 
             String imageString = images.get(0).getChildren().get(0).getAttribute("imageId").stringValue();
 
             BufferedImage image = AtlasManager.atlas.get(imageString);
+            if (image == null) {
+                try {
+                    image = SwingFXUtils.fromFXImage(ResourceManager.getImage(ball.getResources(), imageString, GameVersion.VERSION_WOG2), null);
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            if (image == null) return idk;
 
             int _width = image.getWidth();
             int _height = image.getHeight();
@@ -340,7 +349,6 @@ public class FXEditorButtons {
 
         Image image = BallInstanceHelper.createBallImageWoG2(null, ball, _scaleX, _scaleY, new Random(0));
 
-        Button idk = new Button();
         if (image == null) return idk;
         ImageView imageView = new ImageView(image);
         imageView.setPreserveRatio(true);

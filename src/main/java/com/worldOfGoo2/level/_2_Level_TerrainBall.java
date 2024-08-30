@@ -10,7 +10,7 @@ public class _2_Level_TerrainBall extends EditorObject {
     public _2_Level_TerrainBall(EditorObject parent) {
         super(parent, "TerrainBall", GameVersion.VERSION_WOG2);
 
-        addAttribute("group", InputField._2_TERRAIN_GROUP);
+        addAttribute("group", InputField._2_TERRAIN_GROUP).setDefaultValue("-1").assertRequired();
 
         setMetaAttributes(MetaEditorAttribute.parse("group,"));
 

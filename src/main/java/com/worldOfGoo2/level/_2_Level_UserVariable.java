@@ -10,7 +10,7 @@ public class _2_Level_UserVariable extends EditorObject {
     public _2_Level_UserVariable(EditorObject parent) {
         super(parent, "UserVariable", GameVersion.VERSION_WOG2);
 
-        addAttribute("value", InputField._2_NUMBER);
+        addAttribute("value", InputField._2_NUMBER).setDefaultValue("0").assertRequired();
 
         setMetaAttributes(MetaEditorAttribute.parse("value,"));
 

@@ -14,6 +14,7 @@ import com.worldOfGoo2.terrain.BaseSettings;
 import com.worldOfGoo2.terrain._2_Terrain_Collection;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
@@ -53,6 +54,9 @@ public class TerrainHelper {
             view.setFitWidth(32);
             view.setFitHeight(32);
             view.setImage(img);
+            WritableImage image = new WritableImage(32, 32);
+            view.snapshot(null, image);
+            view.setImage(image);
 
             terrainImageCache.put(itemType, view);
 

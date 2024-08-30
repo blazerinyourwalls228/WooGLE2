@@ -543,7 +543,7 @@ public class _2_Level_Item extends EditorObject {
                 }
                 public void setScaleY(double _scaleY) {
                     double scaleX = getAttribute("scale").positionValue().getX();
-                    setAttribute("scale", scaleX * 100.0 + "," + _scaleY / partScaleY);
+                    setAttribute("scale", scaleX + "," + _scaleY * 100.0 / partScaleY);
                 }
                 public double getDepth() {
                     return getAttribute("depth").doubleValue();

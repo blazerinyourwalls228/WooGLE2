@@ -536,9 +536,11 @@ public class FXPropertiesView {
                                 TerrainHelper.terrainColorCache.clear();
                             }
                         });
-                        setImageItem.setGraphic(TerrainHelper.terrainPreviewImage(itemType));
-
-                        terrainTypeElements.put(itemType, setImageItem);
+                        ImageView imageView = TerrainHelper.terrainPreviewImage(itemType);
+                        if (imageView != null && imageView.getImage() != null) {
+                            setImageItem.setGraphic(imageView);
+                            terrainTypeElements.put(itemType, setImageItem);
+                        }
                     }
                     vBox.getChildren().add(setImageItem);
                 }

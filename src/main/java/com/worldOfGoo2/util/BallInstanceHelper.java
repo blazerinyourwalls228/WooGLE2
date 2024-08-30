@@ -8,6 +8,7 @@ import com.woogleFX.editorObjects.objectComponents.RectangleComponent;
 import com.woogleFX.editorObjects.objectCreators.ObjectCreator;
 import com.woogleFX.engine.LevelManager;
 import com.woogleFX.engine.fx.FXEditorButtons;
+import com.woogleFX.file.resourceManagers.ResourceManager;
 import com.woogleFX.gameData.ball.AtlasManager;
 import com.woogleFX.gameData.ball._2Ball;
 import com.woogleFX.gameData.level.GameVersion;
@@ -24,6 +25,7 @@ import javafx.scene.paint.Color;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -111,7 +113,7 @@ public class BallInstanceHelper {
     }
 
 
-    private static BufferedImage getPartImageWoG2(_2_Ball_Part part, Random machine) {
+    private static BufferedImage getPartImageWoG2(_2Ball ball, _2_Ball_Part part, Random machine) {
 
         ArrayList<_2_Ball_Image> images = new ArrayList<>();
         for (EditorObject editorObject : part.getChildren()) if (editorObject instanceof _2_Ball_Image ball_image) images.add(ball_image);
@@ -119,7 +121,15 @@ public class BallInstanceHelper {
 
         String imageString = images.get((int)(images.size() * machine.nextDouble())).getChildren().get(0).getAttribute("imageId").stringValue();
 
-        return AtlasManager.atlas.get(imageString);
+        BufferedImage image = AtlasManager.atlas.get(imageString);
+        if (image == null) {
+            try {
+                image = SwingFXUtils.fromFXImage(ResourceManager.getImage(ball.getResources(), imageString, GameVersion.VERSION_WOG2), null);
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return image;
 
     }
 
@@ -187,7 +197,7 @@ public class BallInstanceHelper {
             double partX = partMinX + (partMaxX - partMinX) * machine.nextDouble();
             double partY = partMinY + (partMaxY - partMinY) * machine.nextDouble();
 
-            BufferedImage partImage = getPartImageWoG2(part, machine);
+            BufferedImage partImage = getPartImageWoG2(ball, part, machine);
             if (partImage == null) continue;
             if ((ballInstance == null || part2CanBeUsed(ballInstance, part)))
                 partPositions.add(new PartPosition(partX, partY, scaleX, scaleY, partImage));
@@ -281,6 +291,14 @@ public class BallInstanceHelper {
                 String imageString = images.get(0).getChildren().get(0).getAttribute("imageId").stringValue();
 
                 BufferedImage image = AtlasManager.atlas.get(imageString);
+                if (image == null) {
+                    try {
+                        image = SwingFXUtils.fromFXImage(ResourceManager.getImage(ball.getResources(), imageString, GameVersion.VERSION_WOG2), null);
+                    } catch (FileNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                if (image == null) return objectComponents;
 
                 int _width = image.getWidth();
                 int _height = image.getHeight();

@@ -119,7 +119,7 @@ public class _2_Level_Strand extends EditorObject {
         try {
             String imageString = "";
             if (goo2 == null || goo2.getBall() == null || goo2.getBall().getObjects().get(0).getChildren("strandImageId").get(0).getAttribute("imageId").stringValue().isEmpty()) {
-                if (goo1.getBall() == null) return;
+                if (goo1 == null || goo1.getBall() == null) return;
                 for (EditorObject editorObject : goo1.getBall().getObjects())
                     if (editorObject instanceof _2_ImageID ball_image && editorObject.getTypeID().equals("strandImageId"))
                         if (!ball_image.getAttribute("imageId").stringValue().isEmpty())

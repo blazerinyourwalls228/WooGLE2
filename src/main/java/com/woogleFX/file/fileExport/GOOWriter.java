@@ -44,7 +44,7 @@ public class GOOWriter {
 
                 }
 
-                if (any) {
+                if (any && exportBuilder.charAt(exportBuilder.length() - 1) != '{') {
                     exportBuilder.deleteCharAt(exportBuilder.length() - 1);
                     exportBuilder.deleteCharAt(exportBuilder.length() - 1);
                 }
