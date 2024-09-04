@@ -11,6 +11,10 @@ module com.example.WOGAnniversaryEditor {
   requires com.github.luben.zstd_jni;
   requires com.fasterxml.jackson.databind;
   requires com.fasterxml.jackson.dataformat.xml;
+  requires org.lwjgl.opengl;
+  requires org.lwjgl.glfw;
+  requires org.lwjgl.jawt;
+  requires lwjgl3.awt;
 
 
   exports com.worldOfGoo.scene;

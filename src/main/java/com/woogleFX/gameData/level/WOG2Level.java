@@ -39,10 +39,6 @@ public class WOG2Level extends _Level {
             ball.setAttribute("terrainGroup", terrainBall.getAttribute("group").stringValue());
         }
 
-        //for (EditorObject object : objects) {
-        //    object.update();
-        //}
-
         setOffsetX(1000);
         setOffsetY(500);
         setZoom(30);

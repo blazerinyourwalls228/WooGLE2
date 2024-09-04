@@ -19,6 +19,7 @@ import com.worldOfGoo2.items._2_Item_Collection;
 import com.worldOfGoo2.misc._2_ImageID;
 import com.worldOfGoo2.terrain.BaseSettings;
 import com.worldOfGoo2.terrain._2_Terrain_Collection;
+import com.worldOfGoo2.terrain._2_Terrain_TerrainType;
 import com.worldOfGoo2.util.ItemHelper;
 import com.worldOfGoo2.util.TerrainHelper;
 import javafx.embed.swing.SwingFXUtils;
@@ -43,6 +44,8 @@ public class ResourceManager {
         else if (resource instanceof TextString text) return text.getAttribute("id").stringValue().equals(id);
         else if (resource instanceof Material mat) return mat.getAttribute("id").stringValue().equals(id);
         else if (resource instanceof _2_Item item) return item.getAttribute("uuid").stringValue().equals(id);
+        if (resource instanceof _2_Terrain_TerrainType terrainTerrainType)
+            return terrainTerrainType.getAttribute("name").stringValue().equals(id);
         else return false;
 
     }
@@ -183,6 +186,40 @@ public class ResourceManager {
         }
         if (resource instanceof _2_Environment item) return item;
         else throw new FileNotFoundException("Invalid environment resource ID: \"" + id + "\" (version " + version + ")");
+    }
+
+
+    /** Returns a terrain type corresponding with the given ID. */
+    public static _2_Terrain_TerrainType getTerrainType(ArrayList<EditorObject> resources, String id, GameVersion version) throws FileNotFoundException {
+        EditorObject resource = findResource(resources, id, version);
+        if (resource == null) {
+            try {
+                File itemFile = new File(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "/res/terrain/terrain.wog2");
+                EditorObject collection = ObjectGOOParser.read(_2_Terrain_Collection.class, Files.readString(itemFile.toPath()));
+                for (EditorObject item : collection.getChildren()) {
+                    item.update();
+                    for (EditorObject child : item.getChildren()) {
+                        child.update();
+                        for (EditorObject child1 : child.getChildren()) {
+                            child1.update();
+                            for (EditorObject child2 : child1.getChildren()) {
+                                child2.update();
+                                for (EditorObject child3 : child2.getChildren()) {
+                                    child3.update();
+                                }
+                            }
+                        }
+
+                    }
+                    GlobalResourceManager.getSequelResources().add(item);
+                }
+            } catch (IOException e) {
+                ErrorAlarm.show(e);
+            }
+            resource = findResource(resources, id, version);
+        }
+        if (resource instanceof _2_Terrain_TerrainType item) return item;
+        else throw new FileNotFoundException("Invalid terrain type resource ID: \"" + id + "\" (version " + version + ")");
     }
 
 

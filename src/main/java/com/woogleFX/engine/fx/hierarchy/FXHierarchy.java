@@ -11,6 +11,7 @@ import com.worldOfGoo.level.Level;
 import com.worldOfGoo.resrc.ResourceManifest;
 import com.worldOfGoo.scene.Scene;
 import com.worldOfGoo.text.TextStrings;
+import com.worldOfGoo2.level._2_Level_TerrainGroup;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -160,13 +161,14 @@ public class FXHierarchy {
 
         // Create the three buttons.
         Tab terrain = new Tab("Terrain");
+        Tab terrainGroups = new Tab("Terrain Groups");
         Tab balls = new Tab("Balls");
         Tab items = new Tab("Items");
         Tab pins = new Tab("Pins");
         Tab camera = new Tab("Camera");
         Tab addin = new Tab("Addin");
 
-        newHierarchySwitcherButtons.getTabs().addAll(terrain, balls, items, pins, camera, addin);
+        newHierarchySwitcherButtons.getTabs().addAll(terrain, terrainGroups, balls, items, pins, camera, addin);
         newHierarchySwitcherButtons.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         newHierarchySwitcherButtons.setMinHeight(30);
         newHierarchySwitcherButtons.setMaxHeight(30);
@@ -186,7 +188,8 @@ public class FXHierarchy {
 
             for (EditorObject child : level.getLevel().getChildren()) {
 
-                if ((child.getType().equals("BallInstance") && child.getAttribute("type").stringValue().equals("Terrain") || child.getType().equals("TerrainGroup")) && t1 == terrain) root.getChildren().add(child.getTreeItem());
+                if ((child.getType().equals("BallInstance") && child.getAttribute("type").stringValue().equals("Terrain")) && t1 == terrain) root.getChildren().add(child.getTreeItem());
+                else if (child instanceof _2_Level_TerrainGroup && t1 == terrainGroups) root.getChildren().add(child.getTreeItem());
                 else if (((child.getType().equals("BallInstance") && !child.getAttribute("type").stringValue().equals("Terrain")) || child.getType().equals("Strand")) && t1 == balls) root.getChildren().add(child.getTreeItem());
                 else if (child.getType().equals("Item") && t1 == items) root.getChildren().add(child.getTreeItem());
                 else if (child.getType().equals("Pin") && t1 == pins) root.getChildren().add(child.getTreeItem());

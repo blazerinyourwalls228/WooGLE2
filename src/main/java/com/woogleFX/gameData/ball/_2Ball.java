@@ -41,30 +41,28 @@ public class _2Ball {
     }
 
 
-    private double shapeSize;
-    public double getShapeSize() {
-        return shapeSize;
+    private double width;
+    public double getWidth() {
+        return width;
     }
-    public void setShapeSize(double shapeSize) {
-        this.shapeSize = shapeSize;
-    }
-
-
-    private double shapeSize2;
-    public double getShapeSize2() {
-        return shapeSize2;
-    }
-    public void setShapeSize2(double shapeSize2) {
-        this.shapeSize2 = shapeSize2;
+    public void setWidth(double width) {
+        this.width = width;
     }
 
-
-    private double shapeVariance;
-    public double getShapeVariance() {
-        return shapeVariance;
+    private double height;
+    public double getHeight() {
+        return height;
     }
-    public void setShapeVariance(double shapeVariance) {
-        this.shapeVariance = shapeVariance;
+    public void setHeight(double height) {
+        this.height = height;
+    }
+
+    private double sizeVariance;
+    public double getSizeVariance() {
+        return sizeVariance;
+    }
+    public void setSizeVariance(double sizeVariance) {
+        this.sizeVariance = sizeVariance;
     }
 
 
@@ -73,6 +71,10 @@ public class _2Ball {
         this.resources = resources;
 
         shapeType = "circle";
+
+        width = _objects.get(0).getAttribute("width").doubleValue();
+        height = _objects.get(0).getAttribute("height").doubleValue();
+        sizeVariance = _objects.get(0).getAttribute("sizeVariance").doubleValue();
 
         /*
 

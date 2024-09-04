@@ -900,7 +900,7 @@ public class FXEditorButtons {
         nullGooballsToolbar = new ToolBar();
         nullGooballsToolbar.setMinHeight(27);
         nullGooballsToolbar.setOnMouseClicked(e -> showPaletteConfigurator(e, nullGooballsToolbar));
-        addBallsTo();
+        // addBallsTo();
         vBox.getChildren().add(2, nullGooballsToolbar);
 
         addObjectsToolbar = new ToolBar();

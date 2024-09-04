@@ -15,6 +15,7 @@ import com.woogleFX.editorObjects.attributes.InputField;
 import com.woogleFX.editorObjects.attributes.MetaEditorAttribute;
 import com.woogleFX.engine.undoHandling.userActions.AttributeChangeAction;
 import com.worldOfGoo.resrc.ResrcImage;
+import com.worldOfGoo2.level._2_Level_Item;
 import com.worldOfGoo2.util.ItemHelper;
 import com.worldOfGoo2.util.TerrainHelper;
 import javafx.application.Platform;
@@ -445,22 +446,20 @@ public class FXPropertiesView {
             case _2_BALL_TYPE -> {
                 String path = FileManager.getGameDir(version);
                 File[] ballFiles = new File(path + "/res/balls").listFiles();
-                if (ballFiles != null) {
-                    for (File ballFile : ballFiles) {
-                        if (ballFile.getName().contains(".")) continue;
-                        if (!(ballFile.getName().toLowerCase().contains(currentText.toLowerCase()))) continue;
-                        Button setImageItem = new Button(ballFile.getName());
+                if (ballFiles != null)  for (File ballFile : ballFiles) {
 
-                        configureButton(setImageItem);
+                    if (ballFile.getName().contains(".")) continue;
+                    if (!(ballFile.getName().toLowerCase().contains(currentText.toLowerCase()))) continue;
 
-                        setImageItem.setOnAction(event -> {
-                            UndoManager.registerChange(new AttributeChangeAction(attribute.getObject().getAttribute("type"),
-                                    attribute.getObject().getAttribute("type").stringValue(), ballFile.getName()));
-                            attribute.getObject().setAttribute("type", ballFile.getName());
-                        });
+                    Button setImageItem = new Button(ballFile.getName());
+                    configureButton(setImageItem);
+                    setImageItem.setOnAction(event -> {
+                        UndoManager.registerChange(new AttributeChangeAction(attribute.getObject().getAttribute("type"),
+                                attribute.getObject().getAttribute("type").stringValue(), ballFile.getName()));
+                        attribute.getObject().setAttribute("type", ballFile.getName());
+                    });
+                    vBox.getChildren().add(setImageItem);
 
-                        vBox.getChildren().add(setImageItem);
-                    }
                 }
             }
             case _1_PARTICLES -> {

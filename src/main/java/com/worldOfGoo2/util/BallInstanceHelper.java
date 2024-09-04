@@ -5,7 +5,6 @@ import com.woogleFX.editorObjects.objectComponents.CircleComponent;
 import com.woogleFX.editorObjects.objectComponents.ImageComponent;
 import com.woogleFX.editorObjects.objectComponents.ObjectComponent;
 import com.woogleFX.editorObjects.objectComponents.RectangleComponent;
-import com.woogleFX.editorObjects.objectCreators.ObjectCreator;
 import com.woogleFX.engine.LevelManager;
 import com.woogleFX.engine.fx.FXEditorButtons;
 import com.woogleFX.file.resourceManagers.ResourceManager;
@@ -17,10 +16,10 @@ import com.worldOfGoo2.ball._2_Ball_Image;
 import com.worldOfGoo2.ball._2_Ball_Part;
 import com.worldOfGoo2.level._2_Level_BallInstance;
 import com.worldOfGoo2.level._2_Level_Strand;
-import com.worldOfGoo2.level._2_Level_TerrainBall;
 import com.worldOfGoo2.misc._2_ImageID;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
 import java.awt.*;
@@ -60,7 +59,7 @@ public class BallInstanceHelper {
         typeEnumToTypeMap.put(20, "TimeBug");
         typeEnumToTypeMap.put(23, "MatchStick");
         typeEnumToTypeMap.put(25, "Fireworks");
-        typeEnumToTypeMap.put(26, "LightBall");
+        typeEnumToTypeMap.put(26, "Lightball");
         typeEnumToTypeMap.put(27, "TwuBit");
         typeEnumToTypeMap.put(28, "TwuBitBit");
         typeEnumToTypeMap.put(29, "Adapter");
@@ -357,68 +356,131 @@ public class BallInstanceHelper {
             });
 
         }
-        boolean isCircle = true; //ball == null || ball.getShapeType().equals("circle");
+        boolean isCircle = ball == null || !ball.getObjects().get(0).getChildren("shape").get(0).getAttribute("ballShape").stringValue().equals("1");
 
         EditorObject pos = ballInstance.getChildren("pos").get(0);
 
-        if (isCircle) objectComponents.add(new CircleComponent() {
-            public double getX() {
-                return pos.getAttribute("x").doubleValue();
+        if (isCircle) {
+
+            if (ballInstance.getAttribute("type").stringValue().equals("Terrain")) {
+
+                objectComponents.add(new CircleComponent() {
+                    public double getX() {
+                        return pos.getAttribute("x").doubleValue();
+                    }
+                    public void setX(double x) {
+                        pos.setAttribute("x", x);
+                    }
+                    public double getY() {
+                        return -pos.getAttribute("y").doubleValue();
+                    }
+                    public double getRotation() {
+                        return -Math.toRadians(ballInstance.getAttribute("angle").doubleValue());
+                    }
+                    public void setY(double y) {
+                        pos.setAttribute("y", -y);
+                    }
+                    public double getRadius() {
+                        if (ball == null) return 0.2;
+                        return ball.getWidth() / 2;
+                    }
+                    public double getEdgeSize() {
+                        return 100;
+                    }
+                    public boolean isEdgeOnly() {
+                        return true;
+                    }
+                    public javafx.scene.paint.Paint getBorderColor() {
+                        return new javafx.scene.paint.Color(0.0, 0.0, 0.0, 1.0);
+                    }
+                    public javafx.scene.paint.Paint getColor() {
+                        return new javafx.scene.paint.Color(0.0, 0.0, 0.0, 0.0);
+                    }
+                    public double getDepth() {
+                        return 0.000001;
+                    }
+                    public boolean isVisible() {
+                        if (LevelManager.getLevel().getVisibilitySettings().getShowGoos() == 0) return false;
+                        return (ball == null || ballInstance.getAttribute("type").stringValue().equals("Terrain") && ballInstance.visibilityFunction()) || LevelManager.getLevel().getVisibilitySettings().getShowGoos() == 1 || (ballInstance.getAttribute("type").stringValue().equals("Terrain") && FXEditorButtons.comboBoxSelected == ballInstance.getAttribute("terrainGroup").intValue());
+                    }
+                    public boolean isRotatable() {
+                        return false;
+                    }
+                    public boolean isResizable() {
+                        return false;
+                    }
+                });
+
             }
-            public void setX(double x) {
-                pos.setAttribute("x", x);
-            }
-            public double getY() {
-                return -pos.getAttribute("y").doubleValue();
-            }
-            public void setY(double y) {
-                pos.setAttribute("y", -y);
-            }
-            public double getRotation() {
-                return -Math.toRadians(ballInstance.getAttribute("angle").doubleValue());
-            }
-            public void setRotation(double rotation) {
-                ballInstance.setAttribute("angle", -Math.toDegrees(rotation));
-            }
-            public double getRadius() {
-                return 0.2;
-                // return ball.getShapeSize() / 2;
-            }
-            public double getEdgeSize() {
-                return 0.05;
-            }
-            public boolean isEdgeOnly() {
-                return false;
-            }
-            public javafx.scene.paint.Paint getBorderColor() {
-                if (ball == null) {
-                    return new javafx.scene.paint.Color(0.5, 0.25, 0.25, 1.0);
-                } else {
-                    if (ballInstance.getAttribute("type").stringValue().equals("Terrain") && FXEditorButtons.comboBoxSelected == ballInstance.getAttribute("terrainGroup").intValue() && FXEditorButtons.comboBoxSelected != -1) {
-                        if (FXEditorButtons.comboBoxList.get(FXEditorButtons.comboBoxSelected)) {
-                            return new javafx.scene.paint.Color(1.0 ,0.0, 1.0, 1);
-                        } else {
-                            return new javafx.scene.paint.Color(0.0 ,1.0, 1.0, 1);
-                        }
+            objectComponents.add(new CircleComponent() {
+                public double getX() {
+                    return pos.getAttribute("x").doubleValue();
+                }
+                public void setX(double x) {
+                    pos.setAttribute("x", x);
+                }
+                public double getY() {
+                    return -pos.getAttribute("y").doubleValue();
+                }
+                public void setY(double y) {
+                    pos.setAttribute("y", -y);
+                }
+                public double getRotation() {
+                    return -Math.toRadians(ballInstance.getAttribute("angle").doubleValue());
+                }
+                public void setRotation(double rotation) {
+                    ballInstance.setAttribute("angle", -Math.toDegrees(rotation));
+                }
+                public double getRadius() {
+                    if (ball == null) return 0.2;
+                    return ball.getWidth() / 2;
+                }
+                public double getEdgeSize() {
+                    return 0.05;
+                }
+                public boolean isEdgeOnly() {
+                    return false;
+                }
+                public javafx.scene.paint.Paint getBorderColor() {
+                    if (ball == null) {
+                        return new javafx.scene.paint.Color(0.5, 0.25, 0.25, 1.0);
                     } else {
-                        return new javafx.scene.paint.Color(0.5, 0.5, 0.5, 1);
+                        if (ballInstance.getAttribute("type").stringValue().equals("Terrain") && FXEditorButtons.comboBoxSelected == ballInstance.getAttribute("terrainGroup").intValue() && FXEditorButtons.comboBoxSelected != -1) {
+                            if (FXEditorButtons.comboBoxList.get(FXEditorButtons.comboBoxSelected)) {
+                                return new javafx.scene.paint.Color(1.0 ,0.0, 1.0, 1);
+                            } else {
+                                return new javafx.scene.paint.Color(0.0 ,1.0, 1.0, 1);
+                            }
+                        } else {
+                            if (ballInstance.getAttribute("type").stringValue().equals("Terrain")) {
+                                return new javafx.scene.paint.Color(1.0, 1.0, 1.0, 1);
+                            } else {
+                                return new javafx.scene.paint.Color(0.5, 0.5, 0.5, 1);
+                            }
+                        }
                     }
                 }
-            }
-            public javafx.scene.paint.Paint getColor() {
-                return new javafx.scene.paint.Color(0, 0, 0, 0);
-            }
-            public double getDepth() {
-                return 0.000001;
-            }
-            public boolean isVisible() {
-                if (LevelManager.getLevel().getVisibilitySettings().getShowGoos() == 0) return false;
-                return (ball == null || ballInstance.getAttribute("type").stringValue().equals("Terrain") && ballInstance.visibilityFunction()) || LevelManager.getLevel().getVisibilitySettings().getShowGoos() == 1 || (ballInstance.getAttribute("type").stringValue().equals("Terrain") && FXEditorButtons.comboBoxSelected == ballInstance.getAttribute("terrainGroup").intValue());
-            }
-            public boolean isResizable() {
-                return false;
-            }
-        });
+                @Override
+                public javafx.scene.paint.Paint getColor() {
+                    if (ballInstance.getAttribute("type").stringValue().equals("Terrain")) {
+                        return new javafx.scene.paint.Color(1.0, 1.0, 1.0, 1);
+                    } else {
+                        return new javafx.scene.paint.Color(0, 0, 0, 0);
+                    }
+                }
+                public double getDepth() {
+                    return 0.000001;
+                }
+                public boolean isVisible() {
+                    if (LevelManager.getLevel().getVisibilitySettings().getShowGoos() == 0) return false;
+                    return (ball == null || ballInstance.getAttribute("type").stringValue().equals("Terrain") && ballInstance.visibilityFunction()) || LevelManager.getLevel().getVisibilitySettings().getShowGoos() == 1 || (ballInstance.getAttribute("type").stringValue().equals("Terrain") && FXEditorButtons.comboBoxSelected == ballInstance.getAttribute("terrainGroup").intValue());
+                }
+                public boolean isResizable() {
+                    return false;
+                }
+            });
+
+        }
 
         else objectComponents.add(new RectangleComponent() {
             public double getX() {
@@ -447,13 +509,11 @@ public class BallInstanceHelper {
             }
 
             public double getWidth() {
-                return 0.2;
-                //return ball.getShapeSize();
+                return ball.getWidth();
             }
 
             public double getHeight() {
-                return 0.2;
-                //return ball.getShapeSize2();
+                return ball.getHeight();
             }
 
             public double getEdgeSize() {
@@ -461,7 +521,7 @@ public class BallInstanceHelper {
             }
 
             public boolean isEdgeOnly() {
-                return true;
+                return !ballInstance.getAttribute("type").stringValue().equals("Terrain");
             }
 
             public javafx.scene.paint.Paint getBorderColor() {
@@ -473,7 +533,11 @@ public class BallInstanceHelper {
             }
 
             public javafx.scene.paint.Paint getColor() {
-                return new Color(0, 0, 0, 0);
+                if (ballInstance.getAttribute("type").stringValue().equals("Terrain")) {
+                    return new javafx.scene.paint.Color(0.5, 0.5, 0.5, 1.0);
+                } else {
+                    return new javafx.scene.paint.Color(0, 0, 0, 0);
+                }
             }
 
             public double getDepth() {

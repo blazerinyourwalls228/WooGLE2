@@ -27,6 +27,7 @@ import com.worldOfGoo2.util.ItemHelper;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -196,7 +197,6 @@ public class _2_Level_Item extends EditorObject {
         }
 
         for (EditorObject child : getChildren("userVariables")) {
-
             addAttribute(child.getName(), InputField._2_CHILD_HIDDEN);
             addAttributeAdapter(child.getName(), new AttributeAdapter(child.getName()) {
                 @Override
@@ -350,6 +350,9 @@ public class _2_Level_Item extends EditorObject {
             public _Font getFont() {
                 return null;
             }
+            public Font getOtherFont() {
+                return new Font("Consolas", 0.5);
+            }
             public String getText() {
                 return getAttribute("type").stringValue();
             }
@@ -377,10 +380,10 @@ public class _2_Level_Item extends EditorObject {
                 return new javafx.scene.paint.Color(1.0, 1.0, 1.0, 1.0);
             }
             public double getEdgeSize() {
-                return 0.0125;
+                return 0.1;
             }
             public Paint getBorderColor() {
-                return new javafx.scene.paint.Color(0.0, 0.0, 0.0, 1.0);
+                return new javafx.scene.paint.Color(1.0, 1.0, 1.0, 1.0);
             }
             public boolean isEdgeOnly() {
                 return false;
@@ -420,10 +423,10 @@ public class _2_Level_Item extends EditorObject {
                 return new javafx.scene.paint.Color(1.0, 1.0, 1.0, 1.0);
             }
             public double getEdgeSize() {
-                return 0.1;
+                return 0.0125;
             }
             public Paint getBorderColor() {
-                return new javafx.scene.paint.Color(1.0, 1.0, 1.0, 1.0);
+                return new javafx.scene.paint.Color(0.0, 0.0, 0.0, 1.0);
             }
             public boolean isEdgeOnly() {
                 return false;
@@ -486,42 +489,28 @@ public class _2_Level_Item extends EditorObject {
                 public double getX() {
 
                     double x = getAttribute("pos").positionValue().getX();
-                    double y = -getAttribute("pos").positionValue().getY();
                     double scaleX = getAttribute("scale").positionValue().getX();
-                    double scaleY = getAttribute("scale").positionValue().getY();
-                    double angle = -getAttribute("rotation").doubleValue();
 
-                    Point2D position = new Point2D((partX - partPivotX * partScaleX) * scaleX, (partY - partPivotY * partScaleY) * scaleY);
-                    position = ObjectUtil.rotate(position, angle, new Point2D(0, 0));
-                    position = position.add(x, y);
-
-                    return position.getX();
+                    return x + (partX - partPivotX * partScaleX) * scaleX;
 
                 }
                 public void setX(double x) {
-                    double y = -getAttribute("pos").positionValue().getY();
+                    double y = getAttribute("pos").positionValue().getY();
                     double scaleX = getAttribute("scale").positionValue().getX();
                     setAttribute("pos", (x - (partX - partPivotX * partScaleX) * scaleX) + "," + y);
                 }
                 public double getY() {
 
-                    double x = getAttribute("pos").positionValue().getX();
                     double y = -getAttribute("pos").positionValue().getY();
-                    double scaleX = getAttribute("scale").positionValue().getX();
                     double scaleY = getAttribute("scale").positionValue().getY();
-                    double angle = -getAttribute("rotation").doubleValue();
 
-                    Point2D position = new Point2D((partX - partPivotX * partScaleX) * scaleX, (partY - partPivotY * partScaleY) * scaleY);
-                    position = ObjectUtil.rotate(position, angle, new Point2D(0, 0));
-                    position = position.add(x, y);
-
-                    return position.getY();
+                    return y + (partY - partPivotY * partScaleY) * scaleY;
 
                 }
                 public void setY(double y) {
                     double x = getAttribute("pos").positionValue().getX();
                     double scaleY = getAttribute("scale").positionValue().getY();
-                    setAttribute("pos", x + "," + (-y + (partY - partPivotY * partScaleY) * scaleY));
+                    setAttribute("pos", x + "," + -(y - (partY - partPivotY * partScaleY) * scaleY));
                 }
                 public double getRotation() {
                     return -getAttribute("rotation").doubleValue() - partRotation;

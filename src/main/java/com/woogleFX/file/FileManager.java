@@ -223,11 +223,13 @@ public class FileManager {
 
                 String contents = Files.readString(Path.of(WOG2dir + "/res/levels/" + levelName + ".wog2"));
                 EditorObject levelObject;
+
                 try {
                     levelObject = ObjectGOOParser.read(_2_Level.class, contents);
                 } catch (Exception e) {
                     throw new IOException("Failed to deserialize level " + levelName);
                 }
+
                 ArrayList<EditorObject> objects = new ArrayList<>();
                 Stack<EditorObject> toAdd = new Stack<>();
                 toAdd.push(levelObject);

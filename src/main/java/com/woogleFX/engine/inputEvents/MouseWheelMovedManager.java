@@ -60,7 +60,7 @@ public class MouseWheelMovedManager {
         level.setZoom(newScaleX);
 
         // Redraw the canvas.
-        Renderer.drawLevelToCanvas(level, FXCanvas.getCanvas());
+        // Renderer.drawLevelToCanvas(level, FXCanvas.getCanvas());
 
     }
 

@@ -5,6 +5,7 @@ import com.woogleFX.editorObjects.objectCreators.ObjectCreator;
 import com.woogleFX.editorObjects.ObjectUtil;
 import com.woogleFX.engine.fx.*;
 import com.woogleFX.engine.fx.hierarchy.FXHierarchy;
+import com.woogleFX.engine.gui.LoadingScreen;
 import com.woogleFX.engine.gui.alarms.AskForLevelNameAlarm;
 import com.woogleFX.engine.gui.alarms.ErrorAlarm;
 import com.woogleFX.engine.gui.alarms.LoadingResourcesAlarm;
@@ -22,7 +23,11 @@ import com.worldOfGoo.resrc.ResrcImage;
 import com.worldOfGoo.resrc.Sound;
 import com.worldOfGoo.scene.SceneLayer;
 import com.worldOfGoo2.level._2_Level;
+import com.worldOfGoo2.level._2_Level_BallInstance;
+import com.worldOfGoo2.level._2_Level_Item;
+import com.worldOfGoo2.level._2_Level_Strand;
 import com.worldOfGoo2.misc._2_Point;
+import javafx.concurrent.Task;
 import javafx.scene.control.Tab;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
@@ -326,12 +331,39 @@ public class LevelLoader {
 
         } else if (level instanceof WOG2Level wog2Level) {
 
-            new Thread(() -> {
-                for (EditorObject object : wog2Level.getObjects().toArray(new EditorObject[0])) {
-                    object.update();
-                    object.onLoaded();
+            LoadingScreen loadingScreen = new LoadingScreen();
+
+            Task<Void> task = new Task<>() {
+                @Override
+                protected Void call() {
+
+                    long count = wog2Level.getObjects().size();
+
+                    long i = 0;
+                    for (EditorObject object : wog2Level.getObjects().toArray(new EditorObject[0])) {
+                        object.update();
+                        object.onLoaded();
+                        i++;
+                        updateProgress(i, count);
+                    }
+
+                    return null;
                 }
-            }).start();
+            };
+
+            loadingScreen.setTask(task);
+            Stage stage = new Stage();
+            loadingScreen.start(stage);
+            task.setOnSucceeded(event -> stage.close());
+            task.setOnCancelled(event -> stage.close());
+            task.setOnFailed(event -> stage.close());
+            new Thread(task).start();
+
+            stage.setOnCloseRequest(event -> {
+                task.cancel();
+                FXLevelSelectPane.getLevelSelectPane().getTabs().remove(level.getLevelTab());
+            });
+
             wog2Level.getLevel().getTreeItem().setExpanded(true);
             FXHierarchy.getHierarchy().setRoot(wog2Level.getLevel().getTreeItem());
 

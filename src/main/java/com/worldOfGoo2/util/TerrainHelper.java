@@ -12,6 +12,7 @@ import com.worldOfGoo2.level._2_Level_TerrainGroup;
 import com.worldOfGoo2.misc._2_ImageID;
 import com.worldOfGoo2.terrain.BaseSettings;
 import com.worldOfGoo2.terrain._2_Terrain_Collection;
+import com.worldOfGoo2.terrain._2_Terrain_TerrainType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
@@ -71,7 +72,6 @@ public class TerrainHelper {
     public static void buildImageMap() {
         try {
             terrainImageCache.clear();
-            System.out.println("Building Image map");
             File itemFile = new File(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "/res/terrain/terrain.wog2");
             ArrayList<EditorObject> items = ObjectGOOParser.read(_2_Terrain_Collection.class, Files.readString(itemFile.toPath())).getChildren();
             for (EditorObject item : items) {
@@ -107,6 +107,7 @@ public class TerrainHelper {
             return terrainColorCache.get(index);
         }
         if (LevelManager.getLevel() instanceof WOG2Level level) {
+            if (level.getLevel().getChildren("terrainGroups").isEmpty()) return new Color(0.5, 0.5, 0.5, 1);
             EditorObject terrainGroup = level.getLevel().getChildren("terrainGroups").get(index);
             var type = terrainGroup.getAttribute("type").stringValue();
             String uuid = "";
@@ -125,4 +126,31 @@ public class TerrainHelper {
         }
         return new Color(0.5, 0.5, 0.5, 1);
     }
+
+
+    public static Image buildTerrainImage(_2_Level_TerrainGroup terrainGroup) {
+
+        String terrainType = terrainGroup.getAttribute("typeUuid").stringValue();
+
+        _2_Terrain_TerrainType terrain;
+        try {
+            terrain = ResourceManager.getTerrainType(null, terrainType, GameVersion.VERSION_WOG2);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        BaseSettings baseSettings = (BaseSettings) terrain.getChildren("baseSettings").get(0);
+
+        String imageId = baseSettings.getChildren("image").get(0).getAttribute("imageId").stringValue();
+        Image image;
+        try {
+            image = ResourceManager.getImage(null, imageId, GameVersion.VERSION_WOG2);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        return image;
+
+    }
+
 }

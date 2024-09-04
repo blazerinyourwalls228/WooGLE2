@@ -58,14 +58,15 @@ public class ObjectManager {
 
             int i = switch (level.getCurrentlySelectedSection()) {
                 case "Terrain" -> 0;
-                case "Balls" -> 1;
-                case "Items" -> 2;
-                case "Pins" -> 3;
-                case "Camera" -> 4;
-                case "Addin" -> 5;
+                case "Terrain Groups" -> 1;
+                case "Balls" -> 2;
+                case "Items" -> 3;
+                case "Pins" -> 4;
+                case "Camera" -> 5;
+                case "Addin" -> 6;
                 default -> -1;
             };
-            FXHierarchy.getNewHierarchySwitcherButtons().getSelectionModel().select((i + 1) % 6);
+            FXHierarchy.getNewHierarchySwitcherButtons().getSelectionModel().select((i + 1) % 7);
             FXHierarchy.getNewHierarchySwitcherButtons().getSelectionModel().select(i);
 
             FXHierarchy.getHierarchy().getSelectionModel().clearSelection();
@@ -224,13 +225,13 @@ public class ObjectManager {
 
             EditorObject parent = selected.getParent();
 
-            int row = parent.getChildren().indexOf(selected);
+            int row = parent.getTreeItem().getChildren().indexOf(selected.getTreeItem());
 
             objectDestructionActions.add(new ObjectDestructionAction(selected, Math.max(row, 0)));
 
             deleteItem(level, selected, false);
 
-            EditorObject parentObject = (row <= 0) ? parent : parent.getChildren().get(row - 1);
+            EditorObject parentObject = (row <= 0) ? parent : parent.getTreeItem().getChildren().get(row - 1).getValue();
             if (Arrays.stream(level.getSelected()).noneMatch(e -> e == parentObject)) newSelectionBuilder.add(parentObject);
         }
 

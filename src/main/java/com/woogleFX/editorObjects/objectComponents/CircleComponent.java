@@ -40,16 +40,16 @@ public abstract class CircleComponent extends ObjectComponent
         double screenX = (x - radius) * zoom + offsetX;
         double screenY = (y - radius) * zoom + offsetY;
 
-        graphicsContext.setFill(getColor());
-        graphicsContext.setStroke(getColor());
-        graphicsContext.fillOval(screenX + zoom / 2, screenY + zoom / 2,
-                (radius - 0.5) * 2 * zoom, (radius - 0.5) * 2 * zoom);
-
-        graphicsContext.setStroke(getBorderColor());
-
         double woag = Math.min(getEdgeSize(), Math.abs(radius)) / 2;
 
+
+        graphicsContext.setLineWidth(radius * 100 * zoom);
+        graphicsContext.setStroke(getColor());
+        graphicsContext.strokeOval(screenX + zoom / 2, screenY + zoom / 2,
+                (radius - 0.5) * 2 * zoom, (radius - 0.5) * 2 * zoom);
+
         graphicsContext.setLineWidth(woag * 2 * zoom);
+        graphicsContext.setStroke(getBorderColor());
         if (getEdgeSize() != 0)
             graphicsContext.strokeOval(screenX + woag * zoom, screenY + woag * zoom,
                     (radius - woag) * 2 * zoom, (radius - woag) * 2 * zoom);

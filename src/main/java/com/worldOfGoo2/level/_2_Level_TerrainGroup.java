@@ -5,14 +5,24 @@ import com.woogleFX.editorObjects.attributes.AttributeAdapter;
 import com.woogleFX.editorObjects.attributes.EditorAttribute;
 import com.woogleFX.editorObjects.attributes.InputField;
 import com.woogleFX.editorObjects.attributes.MetaEditorAttribute;
+import com.woogleFX.editorObjects.objectComponents.MeshComponent;
 import com.woogleFX.engine.LevelManager;
+import com.woogleFX.engine.fx.FXEditorButtons;
 import com.woogleFX.engine.fx.FXPropertiesView;
 import com.woogleFX.file.resourceManagers.GlobalResourceManager;
+import com.woogleFX.file.resourceManagers.ResourceManager;
 import com.woogleFX.gameData.level.GameVersion;
 import com.woogleFX.gameData.level.WOG2Level;
 import com.worldOfGoo2.misc._2_Point;
+import com.worldOfGoo2.terrain.BaseSettings;
 import com.worldOfGoo2.terrain._2_Terrain_TerrainType;
 import com.worldOfGoo2.util.ItemHelper;
+import com.worldOfGoo2.util.TerrainHelper;
+import javafx.scene.image.Image;
+import javafx.scene.shape.Polygon;
+
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 
 public class _2_Level_TerrainGroup extends EditorObject {
 
@@ -81,8 +91,147 @@ public class _2_Level_TerrainGroup extends EditorObject {
                 setAttribute2("textureOffset", getAttribute2("textureOffset").positionValue().getX() + "," + newValue));
         setAttribute2("textureOffset", textureOffset.getAttribute("x").stringValue() + "," + textureOffset.getAttribute("y").stringValue());
 
+        getAttribute("type").addChangeListener((observable, oldValue, newValue) -> update());
+
     }
 
+    @Override
+    public void update() {
+
+        clearObjectPositions();
+
+        Image image = TerrainHelper.buildTerrainImage(this);
+
+        String terrainType = getAttribute("typeUuid").stringValue();
+
+        _2_Terrain_TerrainType terrain;
+        try {
+            terrain = ResourceManager.getTerrainType(null, terrainType, GameVersion.VERSION_WOG2);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        BaseSettings baseSettings = (BaseSettings) terrain.getChildren("baseSettings").get(0);
+
+        addObjectComponent(new MeshComponent() {
+            @Override
+            public Polygon getPolygon() {
+                Polygon polygon = new Polygon();
+
+                // Get all balls in this terrain group
+                ArrayList<_2_Level_BallInstance> balls = new ArrayList<>();
+                for (EditorObject editorObject : ((WOG2Level)LevelManager.getLevel()).getLevel().getChildren("balls")) {
+                    if (editorObject instanceof _2_Level_BallInstance ballInstance) {
+                        if (ballInstance.getAttribute("terrainGroup").intValue() == ((WOG2Level)LevelManager.getLevel()).getLevel().getChildren("terrainGroups").indexOf(_2_Level_TerrainGroup.this)) {
+                            balls.add(ballInstance);
+                        }
+                    }
+                }
+                if (balls.isEmpty()) return polygon;
+
+                // Find the highest ball
+                _2_Level_BallInstance furthestBall = balls.get(0);
+                double furthestDistance = furthestBall.getChildren("pos").get(0).getAttribute("y").doubleValue();
+                for (_2_Level_BallInstance ballInstance : balls) {
+                    double distance = ballInstance.getChildren("pos").get(0).getAttribute("y").doubleValue();
+                    if (distance > furthestDistance) {
+                        furthestDistance = distance;
+                        furthestBall = ballInstance;
+                    }
+                }
+
+                // Do the thing
+                _2_Level_BallInstance previous = furthestBall;
+                _2_Level_BallInstance currentBall = furthestBall;
+                double theta = Math.PI / 2;
+                int i = 100;
+                do {
+
+                    polygon.getPoints().addAll(currentBall.getChildren("pos").get(0).getAttribute("x").doubleValue(),
+                            -currentBall.getChildren("pos").get(0).getAttribute("y").doubleValue());
+
+                    ArrayList<_2_Level_BallInstance> connectedToThisOne = new ArrayList<>();
+                    for (EditorObject editorObject : ((WOG2Level)LevelManager.getLevel()).getLevel().getChildren("strands"))
+                        if (editorObject instanceof _2_Level_Strand strand) {
+                        if (strand.getGoo1() == currentBall) connectedToThisOne.add(strand.getGoo2());
+                        if (strand.getGoo2() == currentBall) connectedToThisOne.add(strand.getGoo1());
+                    }
+
+                    double minimumDistance = 10000;
+                    double minimumAngle = 0;
+                    _2_Level_BallInstance minimumBall = furthestBall;
+
+                    for (_2_Level_BallInstance connected : connectedToThisOne) if (connected != previous) {
+
+                        double angleBetween = Math.atan2(connected.getChildren("pos").get(0).getAttribute("y").doubleValue() -
+                                currentBall.getChildren("pos").get(0).getAttribute("y").doubleValue(),
+                                connected.getChildren("pos").get(0).getAttribute("x").doubleValue() -
+                                        currentBall.getChildren("pos").get(0).getAttribute("x").doubleValue());
+
+                        double angleDistance = angleBetween - theta;
+                        while (angleDistance < 0) angleDistance += Math.TAU;
+                        if (angleDistance < minimumDistance) {
+                            minimumDistance = angleDistance;
+                            minimumAngle = angleBetween;
+                            minimumBall = connected;
+                        }
+
+                    }
+
+                    previous = currentBall;
+                    currentBall = minimumBall;
+                    theta = minimumAngle + Math.PI;
+
+                    i--;
+
+                } while (currentBall != furthestBall && i > 0);
 
 
+                return polygon;
+            }
+
+            @Override
+            public Image getImage() {
+                return image;
+            }
+
+            @Override
+            public double getX() {
+                return 0;
+            }
+
+            @Override
+            public double getY() {
+                return 0;
+            }
+
+            @Override
+            public double getScaleX() {
+                return baseSettings.getAttribute("metersToUv").doubleValue() / image.getWidth();
+            }
+
+            @Override
+            public double getScaleY() {
+                return baseSettings.getAttribute("metersToUv").doubleValue() / image.getHeight();
+            }
+
+            @Override
+            public double getDepth() {
+                return getAttribute("sortOffset").doubleValue() + (getAttribute("foreground").booleanValue() ? 249 : 0) - 500;
+            }
+
+            @Override
+            public boolean isVisible() {
+
+                if (LevelManager.getLevel().getVisibilitySettings().getShowGoos() != 2) return false;
+
+                int terrainGroup = ((WOG2Level)LevelManager.getLevel()).getLevel().getChildren("terrainGroups").indexOf(_2_Level_TerrainGroup.this);
+                if (terrainGroup < 0 || terrainGroup >= FXEditorButtons.comboBoxList.size()) return true;
+                else return FXEditorButtons.comboBoxList.get(terrainGroup);
+
+            }
+
+        });
+
+    }
 }

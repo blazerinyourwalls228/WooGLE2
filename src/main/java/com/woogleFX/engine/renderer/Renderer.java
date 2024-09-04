@@ -1,7 +1,6 @@
 package com.woogleFX.engine.renderer;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import com.woogleFX.editorObjects.EditorObject;
@@ -9,17 +8,13 @@ import com.woogleFX.editorObjects.objectComponents.ObjectComponent;
 import com.woogleFX.engine.SelectionManager;
 import com.woogleFX.engine.fx.FXCanvas;
 import com.woogleFX.engine.LevelManager;
-import com.woogleFX.engine.fx.FXContainers;
-import com.woogleFX.engine.fx.FXLevelSelectPane;
 import com.woogleFX.gameData.level.WOG1Level;
 import com.woogleFX.gameData.level.WOG2Level;
 import com.woogleFX.gameData.level._Level;
 
-import com.worldOfGoo2.misc._2_Point;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.SplitPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.transform.Affine;
@@ -50,10 +45,10 @@ public class Renderer {
 
         if (level != null) {
             //if (level.getVisibilitySettings().isShowSceneBGColor()) {
-               // canvas.getGraphicsContext2D().setFill(Paint.valueOf(((WOG1Level)level).getSceneObject().getAttribute("backgroundcolor").colorValue().toHexRGBA()));
-               // canvas.getGraphicsContext2D().fillRect(-5000000, -5000000, 10000000, 10000000);
+               //canvas.getGraphicsContext2D().setFill(Paint.valueOf(((WOG1Level)level).getSceneObject().getAttribute("backgroundcolor").colorValue().toHexRGBA()));
+               //canvas.getGraphicsContext2D().fillRect(-5000000, -5000000, 10000000, 10000000);
             //} else {
-               // canvas.getGraphicsContext2D().clearRect(-5000000, -5000000, 10000000, 10000000);
+               //canvas.getGraphicsContext2D().clearRect(-5000000, -5000000, 10000000, 10000000);
             //}
             canvas.getGraphicsContext2D().clearRect(-5000000, -5000000, 10000000, 10000000);
             drawLevelToCanvas(level, canvas);

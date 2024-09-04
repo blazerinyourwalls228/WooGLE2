@@ -162,11 +162,12 @@ public class SelectionManager {
                 case "BallInstance" -> {
                     if (absoluteParent.getAttribute("type").stringValue().equals("Terrain"))
                         FXHierarchy.getNewHierarchySwitcherButtons().getSelectionModel().select(0);
-                    else FXHierarchy.getNewHierarchySwitcherButtons().getSelectionModel().select(1);
+                    else FXHierarchy.getNewHierarchySwitcherButtons().getSelectionModel().select(2);
                 }
-                case "Item" -> FXHierarchy.getNewHierarchySwitcherButtons().getSelectionModel().select(2);
-                case "Pin" -> FXHierarchy.getNewHierarchySwitcherButtons().getSelectionModel().select(3);
-                case "CameraKeyFrame" -> FXHierarchy.getNewHierarchySwitcherButtons().getSelectionModel().select(4);
+                case "TerrainGroup" -> FXHierarchy.getNewHierarchySwitcherButtons().getSelectionModel().select(1);
+                case "Item" -> FXHierarchy.getNewHierarchySwitcherButtons().getSelectionModel().select(3);
+                case "Pin" -> FXHierarchy.getNewHierarchySwitcherButtons().getSelectionModel().select(4);
+                case "CameraKeyFrame" -> FXHierarchy.getNewHierarchySwitcherButtons().getSelectionModel().select(5);
 
             }
         }

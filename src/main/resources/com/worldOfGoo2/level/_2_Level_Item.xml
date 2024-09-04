@@ -55,7 +55,7 @@
             <MetaEditorAttribute name="flipVertical"/>
             <MetaEditorAttribute name="particleEffectName"/>
         </MetaEditorAttribute>
-        <MetaEditorAttribute name="User Variables" openByDefault="false"/>
+        <MetaEditorAttribute name="User Variables" openByDefault="true"/>
     </metaAttributes>
 
 </AttributeManifest>

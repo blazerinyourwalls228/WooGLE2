@@ -51,8 +51,14 @@ public class ClipboardManager {
         String clipboard = Clipboard.getSystemClipboard().getString();
         if (clipboard == null) return;
 
-        EditorObject[] selectedList = ClipboardHandler.importFromClipboardString(clipboard);
-        if (selectedList == null) return;
+
+        EditorObject[] selectedList;
+        try {
+            selectedList = ClipboardHandler.importFromClipboardString(clipboard);
+            if (selectedList == null) return;
+        } catch (Exception e) {
+            return;
+        }
 
         ArrayList<UserAction> objectCreationActions = new ArrayList<>();
 

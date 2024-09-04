@@ -39,12 +39,18 @@ public class _2_Level_Strand extends EditorObject {
 
 
     private _2_Level_BallInstance goo1 = null;
+    public _2_Level_BallInstance getGoo1() {
+        return goo1;
+    }
     public void setGoo1(_2_Level_BallInstance goo1) {
         this.goo1 = goo1;
     }
 
 
     private _2_Level_BallInstance goo2 = null;
+    public _2_Level_BallInstance getGoo2() {
+        return goo2;
+    }
     public void setGoo2(_2_Level_BallInstance goo2) {
         this.goo2 = goo2;
     }
@@ -255,7 +261,7 @@ public class _2_Level_Strand extends EditorObject {
             }
 
             public double getEdgeSize() {
-                return 0;
+                return 0.025;
             }
             public boolean isEdgeOnly() {
                 return false;
@@ -265,8 +271,11 @@ public class _2_Level_Strand extends EditorObject {
                 return -0.00000001;
             }
 
-            public Paint getBorderColor() {
-                return new Color(0.0, 0.0, 0.0, 0.0);
+            public Paint getBorderColor() {if (goo1 != null && goo1.getAttribute("type").stringValue().equals("Terrain")) {
+                    return new Color(1.0, 1.0, 1.0, 1.0);
+                } else {
+                    return new Color(0.0, 0.0, 0.0, 0.0);
+                }
             }
 
             public Paint getColor() {
@@ -286,7 +295,7 @@ public class _2_Level_Strand extends EditorObject {
                     }
                 }
                 if (goo1 != null && goo1.getAttribute("type").stringValue().equals("Terrain") && goo1.getAttribute("terrainGroup").intValue() > -1) {
-                    return TerrainHelper.averageColor(goo1.getAttribute("terrainGroup").intValue());
+                    return new Color(0.0, 0.0, 0.0, 1);
                 } else {
                     return new Color(0.5, 0.5, 0.5, 1);
                 }

@@ -165,8 +165,6 @@ public class ObjectCreator {
 
         if (parent != null) toAdd.setParent(parent);
 
-        // System.out.println(name);
-
         return toAdd;
 
     }

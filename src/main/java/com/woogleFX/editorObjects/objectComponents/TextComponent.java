@@ -68,7 +68,7 @@ public abstract class TextComponent extends ObjectComponent implements Rotatable
 
         if (font == null) {
 
-            graphicsContext.setFont(Font.font(0.5));
+            graphicsContext.setFont(getOtherFont());
             graphicsContext.setFill(Color.WHITE);
             graphicsContext.setStroke(Color.BLACK);
             graphicsContext.setLineWidth(0.03);

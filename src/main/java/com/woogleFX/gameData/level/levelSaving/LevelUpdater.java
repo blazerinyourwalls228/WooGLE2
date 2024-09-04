@@ -135,7 +135,7 @@ public class LevelUpdater {
 
             try {
                 ProcessBuilder processBuilder = new ProcessBuilder(
-                        new File(FileManager.getGameDir(GameVersion.VERSION_WOG2)).getParent().replaceAll("\\\\", "/") + "/" + FileManager.get2ExtensionFilter().getExtensions().get(0));
+                        new File(FileManager.getGameDir(GameVersion.VERSION_WOG2)).getParent().replaceAll("\\\\", "/") + "/" + FileManager.     get2ExtensionFilter().getExtensions().get(0));
                 processBuilder.directory(new File(FileManager.getGameDir(GameVersion.VERSION_WOG2)));
                 processBuilder.start();
             } catch (Exception e) {

@@ -117,7 +117,7 @@ public class MouseDraggedManager {
             Renderer.t.appendScale(level.getZoom(), level.getZoom());
 
             // Redraw the canvas.
-            Renderer.drawLevelToCanvas(level, FXCanvas.getCanvas());
+            // Renderer.drawLevelToCanvas(level, FXCanvas.getCanvas());
         }
 
     }

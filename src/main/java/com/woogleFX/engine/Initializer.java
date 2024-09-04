@@ -3,17 +3,16 @@ package com.woogleFX.engine;
 import com.woogleFX.engine.fx.*;
 import com.woogleFX.engine.fx.hierarchy.FXHierarchy;
 import com.woogleFX.engine.gui.EditorWindow;
+import com.woogleFX.engine.gui.LoadingScreen;
 import com.woogleFX.engine.gui.alarms.ErrorAlarm;
 import com.woogleFX.engine.gui.alarms.MissingWOGAlarm;
-import com.woogleFX.file.aesEncryption.KTXFileManager;
 import com.woogleFX.file.resourceManagers.BaseGameResources;
 import com.woogleFX.file.FileManager;
 import com.woogleFX.file.resourceManagers.GlobalResourceManager;
 import com.woogleFX.engine.inputEvents.*;
-import com.woogleFX.file.resourceManagers.ResourceManager;
-import com.woogleFX.gameData.animation.AnimBinReader;
 import com.woogleFX.gameData.level.levelOpening.LevelLoader;
 import com.woogleFX.gameData.level.GameVersion;
+import javafx.concurrent.Task;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -23,7 +22,6 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -89,16 +87,7 @@ public class Initializer {
 
     public static void startWithWorldOfGooVersion() {
 
-        BaseGameResources.init();
-        GlobalResourceManager.init();
-
         initializeGUI();
-
-        try {
-            FileManager.openFailedImage();
-        } catch (IOException ignored) {
-
-        }
 
         FXEditorButtons.updateAllButtons();
         FXMenu.updateAllButtons();
@@ -106,28 +95,43 @@ public class Initializer {
         EditorWindow editorWindow = new EditorWindow();
         editorWindow.start();
 
-        String[] launchArguments = Main.getLaunchArguments();
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() {
+                updateMessage("Starting");
+                BaseGameResources.init();
+                GlobalResourceManager.init();
 
-        if (launchArguments.length > 0) {
-            logger.info("Opening level " + launchArguments[0]);
-            if (!FileManager.getGameDir(GameVersion.VERSION_WOG1_NEW).isEmpty()) {
-                LevelLoader.openLevel(launchArguments[0], GameVersion.VERSION_WOG1_NEW);
-            } else {
-                LevelLoader.openLevel(launchArguments[0], GameVersion.VERSION_WOG1_OLD);
+                try {
+                    FileManager.openFailedImage();
+                } catch (IOException ignored) {
+
+                }
+
+                updateMessage("Hello");
+
+                String[] launchArguments = Main.getLaunchArguments();
+
+                if (launchArguments.length > 0) {
+                    logger.info("Opening level " + launchArguments[0]);
+                    if (!FileManager.getGameDir(GameVersion.VERSION_WOG1_NEW).isEmpty()) {
+                        LevelLoader.openLevel(launchArguments[0], GameVersion.VERSION_WOG1_NEW);
+                    } else {
+                        LevelLoader.openLevel(launchArguments[0], GameVersion.VERSION_WOG1_OLD);
+                    }
+                }
+                updateMessage("Finished");
+                return null;
             }
-        }
+        };
+        new Thread(task).start();
 
-        // KTXFileManager.readKTXImage(Path.of(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "/res/balls/_atlas.image"));
 
-        // AnimBinReader.attemptToRead(Path.of(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "/res/anim/LevelArrow/LevelArrow.anim.bin"), null);
-        // AnimBinReader.attemptToRead(Path.of(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "/res/anim/TransitionBlackScreen/TransitionBlackScreen.anim.bin"), null);
-        // AnimBinReader.attemptToRead(Path.of(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "/res/anim/DishConnectedLadyHair/LadyHair.anim.bin"), null);
-
-        // AnimBinReader.attemptToRead(Path.of(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "/res/anim/IslandMap1_islands/IslandMap1_islands.anim.bin"), null);
-
-        // AnimBinReader.attemptToRead(Path.of(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "/res/anim/Cutscene5Scene1/Cutscene5Scene1.anim.bin"), null);
-
-        // System.exit(0);
+        Stage stage = new Stage();
+        LoadingScreen loadingScreen = new LoadingScreen();
+        loadingScreen.setTask(task);
+        task.setOnFailed(event -> stage.close());
+        //loadingScreen.start(stage);
 
     }
 

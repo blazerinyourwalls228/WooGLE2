@@ -48,8 +48,16 @@ public class _2_Level_BallInstance extends EditorObject {
 
             @Override
             public void setValue(String value) {
-                typeAttribute.setValue(value);
-                setAttribute2("typeEnum", BallInstanceHelper.typeToTypeEnumMap.getOrDefault(value, 0));
+                Integer typeEnum = BallInstanceHelper.typeToTypeEnumMap.get(value);
+                if (typeEnum == null) {
+                    try {
+                        typeEnum = Integer.parseInt(value);
+                        typeAttribute.setValue(value);
+                    } catch (NumberFormatException ignored) {
+                        typeEnum = 0;
+                    }
+                } else typeAttribute.setValue(value);
+                setAttribute2("typeEnum", typeEnum);
             }
 
         });
