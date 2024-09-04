@@ -295,7 +295,8 @@ public class FXPropertiesView {
 
                 // Push an attribute change to the undo buffer.
                 UndoManager.registerChange(new AttributeChangeAction(attribute, oldValue,
-                        attribute.stringValue()));
+                        e.getNewValue()));
+                attribute.setValue(e.getNewValue());
 
                 // If we have edited the name or ID of the object, change the object's "Name or
                 // ID" value.
