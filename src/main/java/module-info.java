@@ -14,7 +14,6 @@ module com.example.WOGAnniversaryEditor {
   requires org.lwjgl.opengl;
   requires org.lwjgl.glfw;
   requires org.lwjgl.jawt;
-  requires lwjgl3.awt;
 
 
   exports com.worldOfGoo.scene;
