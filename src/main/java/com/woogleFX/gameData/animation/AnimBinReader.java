@@ -190,7 +190,7 @@ public class AnimBinReader {
 
             //finalBinAnimation.animationProperty11s = new SimpleBinAnimation.SimpleBinAnimationProperty11[int23];
             for (int i = 0; i < int23; i++) {
-                input.skipNBytes(4 * 9);
+                input.skipNBytes(4 * 10);
                 //finalBinAnimation.animationProperty11s[i] = new SimpleBinAnimation.SimpleBinAnimationProperty11();
                 //finalBinAnimation.animationProperty11s[i].globalIdHash = readInt(input);
                 //finalBinAnimation.animationProperty11s[i].type = //FinalBinAnimation.AnimationProperty11Type.values()[readInt(input)];
@@ -330,13 +330,16 @@ public class AnimBinReader {
 
             //finalBinAnimation.animationProperty16s = new SimpleBinAnimation.SimpleBinAnimationProperty16[int1];
             for (int i = 0; i < int1; i++) {
-                input.skipNBytes(4 * 2);
+                //input.skipNBytes(4 * 2);
+                System.out.println(readInt(input));
+                System.out.println(readInt(input));
                 //finalBinAnimation.animationProperty16s[i] = new SimpleBinAnimation.SimpleBinAnimationProperty16();
                 //finalBinAnimation.animationProperty16s[i].idHash1 = readInt(input);
                 //finalBinAnimation.animationProperty16s[i].idHash2 = readInt(input);
             }
 
             int stringCount = readInt(input);
+            System.out.println(stringCount);
             input.skipNBytes(4);
 
             if (stringCount > 10000 || stringCount < -10000) return finalBinAnimation;
