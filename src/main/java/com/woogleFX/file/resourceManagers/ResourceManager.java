@@ -4,14 +4,13 @@ import com.woogleFX.editorObjects.EditorObject;
 import com.woogleFX.engine.gui.alarms.ErrorAlarm;
 import com.woogleFX.file.aesEncryption.KTXFileManager;
 import com.woogleFX.file.fileImport.ObjectGOOParser;
+import com.woogleFX.gameData.animation.AnimBinReader;
+import com.woogleFX.gameData.animation.SimpleBinAnimation;
 import com.woogleFX.gameData.font._Font;
 import com.woogleFX.file.FileManager;
 import com.woogleFX.gameData.font.FontReader;
 import com.woogleFX.gameData.level.GameVersion;
-import com.worldOfGoo.resrc.Material;
-import com.worldOfGoo.resrc.Font;
-import com.worldOfGoo.resrc.ResrcImage;
-import com.worldOfGoo.resrc.Sound;
+import com.worldOfGoo.resrc.*;
 import com.worldOfGoo.text.TextString;
 import com.worldOfGoo2.environments._2_Environment;
 import com.worldOfGoo2.items._2_Item;
@@ -41,6 +40,7 @@ public class ResourceManager {
         if (resource instanceof ResrcImage resrcImage) return resrcImage.getAdjustedID().equals(id);
         else if (resource instanceof Sound sound) return sound.getAdjustedID().equals(id);
         else if (resource instanceof Font font) return font.getAdjustedID().equals(id);
+        else if (resource instanceof FlashAnim flashAnim) return flashAnim.getAdjustedID().equals(id);
         else if (resource instanceof TextString text) return text.getAttribute("id").stringValue().equals(id);
         else if (resource instanceof Material mat) return mat.getAttribute("id").stringValue().equals(id);
         else if (resource instanceof _2_Item item) return item.getAttribute("uuid").stringValue().equals(id);
@@ -234,6 +234,17 @@ public class ResourceManager {
     }
 
 
+    /** Returns a flash animation corresponding with the given ID. */
+    public static SimpleBinAnimation getFlashAnim(ArrayList<EditorObject> resources, String id, GameVersion version) throws FileNotFoundException {
+        EditorObject resource = findResource(resources, id, version);
+        if (resource instanceof FlashAnim font) {
+            if (font.getAnimation() == null) updateResource(font, version);
+            return font.getAnimation();
+        }
+        else throw new FileNotFoundException("Invalid text resource ID: \"" + id + "\" (version " + version + ")");
+    }
+
+
     /** Returns a material corresponding with the given ID. */
     public static Material getMaterial(ArrayList<EditorObject> resources, String id, GameVersion version) throws FileNotFoundException {
         EditorObject resource = findResource(resources, id, version);
@@ -257,6 +268,11 @@ public class ResourceManager {
             } catch (IOException ignored) {
                 return false;
             }
+        } else if (resource instanceof FlashAnim resrcImage) {
+            if (Files.exists(Path.of(dir + "/" + resrcImage.getAdjustedPath() + ".anim.bin"))) {
+                resrcImage.setAnimation(AnimBinReader.readSimpleBinAnimation(Path.of(dir + "/" + resrcImage.getAdjustedPath() + ".anim.bin"), resrcImage.getAdjustedPath()));
+            }
+            return true;
         } else if (resource instanceof Sound sound) {
             return true;
         } else if (resource instanceof TextString textString) {

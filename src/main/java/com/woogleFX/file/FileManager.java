@@ -30,12 +30,14 @@ import com.woogleFX.gameData.ball._2Ball;
 import com.woogleFX.gameData.level.GameVersion;
 import com.woogleFX.gameData.level.WOG1Level;
 import com.woogleFX.gameData.level.WOG2Level;
+import com.worldOfGoo.resrc.FlashAnim;
 import com.worldOfGoo2.ball._2_Ball;
 import com.worldOfGoo2.items._2_Item_Collection;
 import com.worldOfGoo2.level._2_Level;
 import javafx.stage.FileChooser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -316,6 +318,16 @@ public class FileManager {
             saxParser.parse(ballFile, defaultHandler);
         } else if (version == GameVersion.VERSION_WOG2) {
             dir = WOG2dir;
+            ballFile = new File(dir + "/res/properties/resources.xml");
+            try {
+                String text = Files.readString(ballFile.toPath());
+                text = text.substring(22);
+                text = "<?xml version = '1.0' encoding = 'UTF-8'?>" + text;
+                saxParser.parse(new InputSource(new StringReader(text)), defaultHandler);
+            } catch (Exception e) {
+                e.printStackTrace();
+                logger.error("", e);
+            }
             ballFile = new File(dir + "/res/items/images/_resources.xml");
             saxParser.parse(ballFile, defaultHandler);
             ballFile = new File(dir + "/res/environments/images/_resources.xml");

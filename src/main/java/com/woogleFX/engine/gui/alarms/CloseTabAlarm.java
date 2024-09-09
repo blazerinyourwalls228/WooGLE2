@@ -1,8 +1,9 @@
 package com.woogleFX.engine.gui.alarms;
 
+import com.woogleFX.editorObjects.Asset;
 import com.woogleFX.editorObjects.EditorObject;
 import com.woogleFX.engine.LevelManager;
-import com.woogleFX.engine.fx.FXLevelSelectPane;
+import com.woogleFX.engine.fx.FXAssetSelectPane;
 import com.woogleFX.engine.fx.FXPropertiesView;
 import com.woogleFX.engine.fx.hierarchy.FXHierarchy;
 import com.woogleFX.gameData.level.LevelCloser;
@@ -22,8 +23,8 @@ public class CloseTabAlarm {
         alert.showAndWait().ifPresent(buttonType -> {
             if (buttonType.equals(ButtonType.OK)) {
                 if (tab.getTabPane().getTabs().size() == 1) {
-                    FXLevelSelectPane.getLevelSelectPane().setMinHeight(0);
-                    FXLevelSelectPane.getLevelSelectPane().setMaxHeight(0);
+                    FXAssetSelectPane.getAssetSelectPane().setMinHeight(0);
+                    FXAssetSelectPane.getAssetSelectPane().setMaxHeight(0);
                     FXHierarchy.getHierarchy().setRoot(null);
                     FXPropertiesView.changeTableView(new EditorObject[]{});
                 }
@@ -34,7 +35,7 @@ public class CloseTabAlarm {
         });
     }
 
-    public static void showClosingEditor(Tab tab, _Level level) {
+    public static void showClosingEditor(Tab tab, Asset asset) {
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setHeaderText("Unsaved Changes");
@@ -43,8 +44,8 @@ public class CloseTabAlarm {
         alert.showAndWait().ifPresent(buttonType -> {
             if (buttonType.equals(ButtonType.OK)) {
                 if (tab.getTabPane().getTabs().size() == 1) {
-                    FXLevelSelectPane.getLevelSelectPane().setMinHeight(0);
-                    FXLevelSelectPane.getLevelSelectPane().setMaxHeight(0);
+                    FXAssetSelectPane.getAssetSelectPane().setMinHeight(0);
+                    FXAssetSelectPane.getAssetSelectPane().setMaxHeight(0);
                     FXHierarchy.getHierarchy().setRoot(null);
                     FXPropertiesView.changeTableView(new EditorObject[]{});
                 }
@@ -53,7 +54,7 @@ public class CloseTabAlarm {
                     LevelCloser.resumeLevelClosing();
                 });
             } else if (buttonType.equals(ButtonType.CANCEL)) {
-                level.setEditingStatus(level.getEditingStatus(), level == LevelManager.getLevel());
+                asset.setEditingStatus(asset.getEditingStatus(), asset == LevelManager.getLevel());
             }
         });
     }

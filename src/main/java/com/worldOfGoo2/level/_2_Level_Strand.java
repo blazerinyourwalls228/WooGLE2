@@ -183,6 +183,7 @@ public class _2_Level_Strand extends EditorObject {
             }
             public double getScaleX() {
                 if (strandImage.getWidth() == 0) return 0;
+                if (true) return 0.3 / strandImage.getWidth();
                 // if (goo2.getBall().getObjects().get(0).getAttribute("strandThickness").doubleValue() == 0) return goo1.getBall().getObjects().get(0).getAttribute("strandThickness").doubleValue() / strandImage.getWidth();
                 if (goo1.getBall() == null || goo1.getBall().getObjects().get(0).getAttribute("strandThickness").doubleValue() <= 0) return goo2.getBall().getObjects().get(0).getAttribute("strandThickness").doubleValue() / strandImage.getWidth();
                 else return goo1.getBall().getObjects().get(0).getAttribute("strandThickness").doubleValue() / strandImage.getWidth();

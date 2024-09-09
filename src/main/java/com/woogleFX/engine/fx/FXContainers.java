@@ -60,7 +60,7 @@ public class FXContainers {
             FXHierarchy.getHierarchy().setPrefHeight(height);
         });
 
-        splitPane.getItems().addAll(new VBox(FXLevelSelectPane.getLevelSelectPane(), pane), viewPane);
+        splitPane.getItems().addAll(new VBox(FXAssetSelectPane.getAssetSelectPane(), pane), viewPane);
 
         splitPane.getDividers().get(0).setPosition(0.7);
 

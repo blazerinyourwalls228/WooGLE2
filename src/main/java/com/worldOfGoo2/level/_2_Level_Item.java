@@ -18,11 +18,13 @@ import com.woogleFX.engine.renderer.Depth;
 import com.woogleFX.file.resourceManagers.GlobalResourceManager;
 import com.woogleFX.file.resourceManagers.ResourceManager;
 import com.woogleFX.gameData.animation.Keyframe;
+import com.woogleFX.gameData.animation.SimpleBinAnimation;
 import com.woogleFX.gameData.animation.WoGAnimation;
 import com.woogleFX.gameData.font._Font;
 import com.woogleFX.gameData.level.GameVersion;
 import com.worldOfGoo2.items._2_Item;
 import com.worldOfGoo2.items._2_Item_Object;
+import com.worldOfGoo2.util.BinAnimationHelper;
 import com.worldOfGoo2.util.ItemHelper;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
@@ -461,6 +463,16 @@ public class _2_Level_Item extends EditorObject {
                 return false;
             }
         });
+
+        String animation = getItem().getAttribute("animationName").stringValue();
+        if (!animation.isEmpty()) {
+            try {
+                SimpleBinAnimation flashAnim = ResourceManager.getFlashAnim(null, animation, GameVersion.VERSION_WOG2);
+                BinAnimationHelper.addBinAnimationAsObjectPositions(this, flashAnim);
+            } catch (FileNotFoundException e) {
+                logger.error("", e);
+            }
+        }
 
     }
 

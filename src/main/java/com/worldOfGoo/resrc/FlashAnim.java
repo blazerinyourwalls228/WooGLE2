@@ -3,9 +3,19 @@ package com.worldOfGoo.resrc;
 import com.woogleFX.editorObjects.EditorObject;
 import com.woogleFX.editorObjects.attributes.InputField;
 import com.woogleFX.editorObjects.attributes.MetaEditorAttribute;
+import com.woogleFX.gameData.animation.SimpleBinAnimation;
 import com.woogleFX.gameData.level.GameVersion;
+import javafx.scene.image.Image;
 
 public class FlashAnim extends EditorObject {
+
+    private SimpleBinAnimation animation;
+    public SimpleBinAnimation getAnimation() {
+        return animation;
+    }
+    public void setAnimation(SimpleBinAnimation animation) {
+        this.animation = animation;
+    }
 
     private SetDefaults setDefaults;
     public void setSetDefaults(SetDefaults setDefaults) {
@@ -20,7 +30,7 @@ public class FlashAnim extends EditorObject {
 
 
     public String getAdjustedPath() {
-        if (setDefaults == null) return getAttribute("path").stringValue();
+        if (setDefaults == null || setDefaults.getAttribute("path").stringValue().equals("./")) return getAttribute("path").stringValue();
         else return setDefaults.getAttribute("path").stringValue() + getAttribute("path").stringValue();
     }
 

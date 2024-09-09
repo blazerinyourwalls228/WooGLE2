@@ -15,6 +15,12 @@ public class AnimationManager {
     }
 
 
+    private static final ArrayList<SimpleBinAnimation> binAnimations = new ArrayList<>();
+    public static ArrayList<SimpleBinAnimation> getBinAnimations() {
+        return binAnimations;
+    }
+
+
     public static void updateAnimations(float timeElapsed) {
         if (LevelManager.getLevel() != null && LevelManager.getLevel() instanceof WOG1Level) {
             for (EditorObject object : ((WOG1Level)LevelManager.getLevel()).getScene()) {

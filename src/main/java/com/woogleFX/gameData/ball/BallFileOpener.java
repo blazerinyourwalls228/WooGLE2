@@ -28,11 +28,20 @@ public class BallFileOpener extends DefaultHandler {
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
 
+        if (qName.equals("Atlas")) return;
+
         if (qName.equals("particles") || qName.equals("sound")) qName = "ball_" + qName;
 
         EditorObject obj = ObjectCreator.create(qName, parent, version);
 
-        for (int i = 0; i < attributes.getLength(); i++) obj.setAttribute(attributes.getQName(i), attributes.getValue(i));
+        for (int i = 0; i < attributes.getLength(); i++) {
+            try {
+                if (obj.attributeExists(attributes.getQName(i)))
+                    obj.setAttribute(attributes.getQName(i), attributes.getValue(i));
+            } catch (Exception ignored) {
+
+            }
+        }
 
         if (mode == 0) objects.add(obj);
         else if (mode == 1) resources.add(obj);
@@ -44,7 +53,8 @@ public class BallFileOpener extends DefaultHandler {
     @Override
     public void endElement(String uri, String localName, String qName) {
         //logger.debug("Ended: " + qName);
-        parent = parent.getParent();
+        if (parent.getParent() == null) System.out.println(qName);
+        else parent = parent.getParent();
     }
 
     @Override

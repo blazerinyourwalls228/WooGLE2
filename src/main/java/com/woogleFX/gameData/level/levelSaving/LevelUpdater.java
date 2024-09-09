@@ -1,6 +1,8 @@
 package com.woogleFX.gameData.level.levelSaving;
 
+import com.woogleFX.editorObjects.Asset;
 import com.woogleFX.editorObjects.EditorObject;
+import com.woogleFX.engine.fx.AssetTab;
 import com.woogleFX.engine.gui.alarms.AskForLevelNameAlarm;
 import com.woogleFX.engine.gui.alarms.ErrorAlarm;
 import com.woogleFX.engine.gui.alarms.LevelIssuesAlarm;
@@ -9,7 +11,7 @@ import com.woogleFX.file.fileExport.Goo2modExporter;
 import com.woogleFX.file.fileExport.XMLUtility;
 import com.woogleFX.gameData.ball._Ball;
 import com.woogleFX.engine.fx.hierarchy.FXHierarchy;
-import com.woogleFX.engine.fx.FXLevelSelectPane;
+import com.woogleFX.engine.fx.FXAssetSelectPane;
 import com.woogleFX.engine.fx.FXPropertiesView;
 import com.woogleFX.engine.fx.FXStage;
 import com.woogleFX.file.FileManager;
@@ -41,29 +43,29 @@ public class LevelUpdater {
 
     public static void saveLevel(_Level level) {
         GameVersion version = level.getVersion();
-        if (saveSpecificLevel(level, version)) {
+        if (saveSpecificAsset(level, version)) {
             level.setLastSavedUndoPosition(level.undoActions.size());
-            if (level.getEditingStatus() != LevelTab.NO_UNSAVED_CHANGES) {
-                level.setEditingStatus(LevelTab.NO_UNSAVED_CHANGES, true);
+            if (level.getEditingStatus() != AssetTab.NO_UNSAVED_CHANGES) {
+                level.setEditingStatus(AssetTab.NO_UNSAVED_CHANGES, true);
             }
         }
     }
 
 
-    public static boolean saveSpecificLevel(_Level level, GameVersion version) {
+    public static boolean saveSpecificAsset(Asset asset, GameVersion version) {
 
         boolean okayToSave = true;
 
         // Check for errors in level objects
-        if (!LevelVerifier.verifyEntireLevel(level)) {
+        if (!AssetVerifier.verifyEntireAsset(asset)) {
             // Fail to save
             ErrorAlarm.show("Level could not be verified");
             okayToSave = false;
         }
 
-        if (level instanceof WOG2Level wog2Level) {
+        if (asset instanceof WOG2Level wog2Level) {
 
-            ArrayList<String> levelErrors = LevelVerifier.checkForWoG2Errors(wog2Level);
+            ArrayList<String> levelErrors = AssetVerifier.checkForWoG2Errors(wog2Level);
 
             if (!levelErrors.isEmpty()) {
                 if (LevelIssuesAlarm.show(levelErrors)) return false;
@@ -74,10 +76,10 @@ public class LevelUpdater {
 
         if (!okayToSave) return false;
 
-        if (level instanceof WOG1Level) {
+        if (asset instanceof WOG1Level wog1Level) {
 
             try {
-                LevelWriter.saveAsXML(level, FileManager.getGameDir(version) + "/res/levels/" + level.getLevelName(),
+                LevelWriter.saveAsXML(wog1Level, FileManager.getGameDir(version) + "/res/levels/" + asset.getLevelName(),
                         version, false, true);
                 return true;
             } catch (IOException e) {
@@ -85,16 +87,16 @@ public class LevelUpdater {
                 return false;
             }
 
-        } else if (level instanceof WOG2Level) {
+        } else if (asset instanceof WOG2Level wog2Level) {
 
             StringBuilder export = new StringBuilder();
-            GOOWriter.recursiveGOOExport(export, ((WOG2Level) level).getLevel(), 0);
-            EditorObject addinObject = level.getAddinObject();
+            GOOWriter.recursiveGOOExport(export, ((WOG2Level) asset).getLevel(), 0);
+            EditorObject addinObject = wog2Level.getAddinObject();
             String addin = XMLUtility.fullAddinXMLExport("", addinObject, 0);
 
             try {
-                Files.write(Path.of(FileManager.getGameDir(version) + "/res/levels/" + level.getLevelName() + ".addin.xml"), Collections.singleton(addin), StandardCharsets.UTF_8);
-                Files.writeString(Path.of(FileManager.getGameDir(version) + "/res/levels/" + level.getLevelName() + ".wog2"), export.toString());
+                Files.write(Path.of(FileManager.getGameDir(version) + "/res/levels/" + asset.getLevelName() + ".addin.xml"), Collections.singleton(addin), StandardCharsets.UTF_8);
+                Files.writeString(Path.of(FileManager.getGameDir(version) + "/res/levels/" + asset.getLevelName() + ".wog2"), export.toString());
                 return true;
             } catch (IOException e) {
                 ErrorAlarm.show(e);
@@ -109,16 +111,16 @@ public class LevelUpdater {
 
 
     public static void saveAll() {
-        int selectedIndex = FXLevelSelectPane.getLevelSelectPane().getSelectionModel().getSelectedIndex();
-        for (Tab tab : FXLevelSelectPane.getLevelSelectPane().getTabs().toArray(new Tab[0])) {
-            LevelTab levelTab = (LevelTab) tab;
-            if (levelTab.getLevel().getEditingStatus() == LevelTab.UNSAVED_CHANGES) {
-                if (saveSpecificLevel(levelTab.getLevel(), levelTab.getLevel().getVersion())) {
-                    levelTab.getLevel().setEditingStatus(LevelTab.NO_UNSAVED_CHANGES, false);
+        int selectedIndex = FXAssetSelectPane.getAssetSelectPane().getSelectionModel().getSelectedIndex();
+        for (Tab tab : FXAssetSelectPane.getAssetSelectPane().getTabs().toArray(new Tab[0])) {
+            AssetTab assetTab = (AssetTab) tab;
+            if (assetTab.getAsset().getEditingStatus() == AssetTab.UNSAVED_CHANGES) {
+                if (saveSpecificAsset(assetTab.getAsset(), assetTab.getAsset().getVersion())) {
+                    assetTab.getAsset().setEditingStatus(AssetTab.NO_UNSAVED_CHANGES, false);
                 }
             }
         }
-        FXLevelSelectPane.getLevelSelectPane().getSelectionModel().select(selectedIndex);
+        FXAssetSelectPane.getAssetSelectPane().getSelectionModel().select(selectedIndex);
     }
 
     public static void playLevel(_Level level) {
@@ -225,10 +227,10 @@ public class LevelUpdater {
 
             try {
                 nuke(new File(FileManager.getGameDir(level.getVersion()) + "/res/levels/" + level.getLevelName()));
-                TabPane levelSelectPane = FXLevelSelectPane.getLevelSelectPane();
+                TabPane levelSelectPane = FXAssetSelectPane.getAssetSelectPane();
                 if (levelSelectPane.getTabs().size() == 1) {
-                    FXLevelSelectPane.getLevelSelectPane().setMinHeight(0);
-                    FXLevelSelectPane.getLevelSelectPane().setMaxHeight(0);
+                    FXAssetSelectPane.getAssetSelectPane().setMinHeight(0);
+                    FXAssetSelectPane.getAssetSelectPane().setMaxHeight(0);
                     // If all tabs are closed, clear the side pane
                     FXHierarchy.getHierarchy().setRoot(null);
                     // Clear the properties pane too

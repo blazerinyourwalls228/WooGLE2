@@ -4,12 +4,18 @@ import com.woogleFX.editorObjects.EditorObject;
 import com.woogleFX.editorObjects.attributes.*;
 import com.woogleFX.engine.LevelManager;
 import com.woogleFX.engine.fx.FXEditorButtons;
+import com.woogleFX.file.resourceManagers.ResourceManager;
+import com.woogleFX.gameData.animation.SimpleBinAnimation;
 import com.woogleFX.gameData.ball.BallManager;
 import com.woogleFX.gameData.ball._2Ball;
 import com.woogleFX.gameData.level.GameVersion;
 import com.woogleFX.gameData.level.WOG2Level;
 import com.woogleFX.gameData.level.levelOpening.LevelLoader;
+import com.worldOfGoo.resrc.FlashAnim;
 import com.worldOfGoo2.util.BallInstanceHelper;
+import com.worldOfGoo2.util.BinAnimationHelper;
+
+import java.io.FileNotFoundException;
 
 public class _2_Level_BallInstance extends EditorObject {
 
@@ -112,6 +118,16 @@ public class _2_Level_BallInstance extends EditorObject {
             clearObjectPositions();
 
             addObjectComponents(BallInstanceHelper.generateBallObjectComponents(this));
+
+            String animation = getBall().getObjects().get(0).getChildren("flashAnimation").get(0).getAttribute("flashAnimationId").stringValue();
+            if (!animation.isEmpty()) {
+                try {
+                    SimpleBinAnimation flashAnim = ResourceManager.getFlashAnim(getBall().getResources(), animation, GameVersion.VERSION_WOG2);
+                    BinAnimationHelper.addBinAnimationAsObjectPositions(this, flashAnim);
+                } catch (FileNotFoundException e) {
+                    logger.error("", e);
+                }
+            }
 
         }
 

@@ -2,10 +2,7 @@ package com.woogleFX.gameData.ball;
 
 import com.woogleFX.editorObjects.EditorObject;
 import com.woogleFX.gameData.level.GameVersion;
-import com.worldOfGoo.resrc.Font;
-import com.worldOfGoo.resrc.ResrcImage;
-import com.worldOfGoo.resrc.SetDefaults;
-import com.worldOfGoo.resrc.Sound;
+import com.worldOfGoo.resrc.*;
 
 import java.util.ArrayList;
 
@@ -76,36 +73,6 @@ public class _2Ball {
         height = _objects.get(0).getAttribute("height").doubleValue();
         sizeVariance = _objects.get(0).getAttribute("sizeVariance").doubleValue();
 
-        /*
-
-        String input2 = objects.get(0).getAttribute("shape").stringValue();
-
-        setShapeType(input2.substring(0, input2.indexOf(",")));
-
-        String input3 = input2.substring(input2.indexOf(",") + 1);
-
-        double size1 = input3.contains(",") ? Double.parseDouble(input3.substring(0, input3.indexOf(","))) : Double.parseDouble(input3);
-
-        if (getShapeType().equals("circle")) {
-            if (input3.contains(",")) {
-                setShapeSize(size1);
-                setShapeVariance(Double.parseDouble(input3.substring(input3.indexOf(",") + 1)));
-            } else {
-                setShapeSize(Double.parseDouble(input3));
-                setShapeVariance(0);
-            }
-        } else {
-            setShapeSize2(size1);
-            String input4 = input3.substring(input3.indexOf(",") + 1);
-            if (input4.contains(",")) {
-                setShapeSize(Double.parseDouble(input4.substring(0, input4.indexOf(","))));
-                setShapeVariance(Double.parseDouble(input4.substring(input4.indexOf(",") + 1)));
-            } else {
-                setShapeSize(Double.parseDouble(input4));
-                setShapeVariance(0);
-            }
-        }
-
         SetDefaults currentSetDefaults = null;
 
         for (EditorObject EditorObject : resources) {
@@ -114,7 +81,9 @@ public class _2Ball {
                 currentSetDefaults = setDefaults;
             }
 
-            else if (EditorObject instanceof ResrcImage resrcImage) {
+            else if (EditorObject instanceof FlashAnim flashAnim) {
+                flashAnim.setSetDefaults(currentSetDefaults);
+            } else if (EditorObject instanceof ResrcImage resrcImage) {
                 resrcImage.setSetDefaults(currentSetDefaults);
             } else if (EditorObject instanceof Sound sound) {
                 sound.setSetDefaults(currentSetDefaults);
@@ -123,9 +92,6 @@ public class _2Ball {
             }
 
         }
-
-
-         */
 
     }
 

@@ -2,10 +2,7 @@ package com.woogleFX.gameData.ball;
 
 import com.woogleFX.editorObjects.EditorObject;
 import com.woogleFX.gameData.level.GameVersion;
-import com.worldOfGoo.resrc.Font;
-import com.worldOfGoo.resrc.ResrcImage;
-import com.worldOfGoo.resrc.SetDefaults;
-import com.worldOfGoo.resrc.Sound;
+import com.worldOfGoo.resrc.*;
 
 import java.util.ArrayList;
 
@@ -108,7 +105,9 @@ public class _Ball {
                 currentSetDefaults = setDefaults;
             }
 
-            else if (EditorObject instanceof ResrcImage resrcImage) {
+            else if (EditorObject instanceof FlashAnim flashAnim) {
+                flashAnim.setSetDefaults(currentSetDefaults);
+            } else if (EditorObject instanceof ResrcImage resrcImage) {
                 resrcImage.setSetDefaults(currentSetDefaults);
             } else if (EditorObject instanceof Sound sound) {
                 sound.setSetDefaults(currentSetDefaults);

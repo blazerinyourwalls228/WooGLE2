@@ -18,7 +18,7 @@ public class FXCanvas {
     }
 
     public static double getMouseYOffset() {
-        return FXLevelSelectPane.getLevelSelectPane().getHeight() + FXContainers.getvBox().getChildren().get(4).getLayoutY();
+        return FXAssetSelectPane.getAssetSelectPane().getHeight() + FXContainers.getvBox().getChildren().get(4).getLayoutY();
     }
 
 

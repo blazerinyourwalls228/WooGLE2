@@ -68,7 +68,7 @@ public class WOG1Level extends _Level {
         for (EditorObject object : text) object.getTreeItem().setExpanded(true);
 
         reAssignSetDefaultsToAllResources();
-        cameraToMiddleOfLevel();
+        resetCamera();
 
         for (EditorObject editorObject : scene)
             if (editorObject instanceof Label label) {

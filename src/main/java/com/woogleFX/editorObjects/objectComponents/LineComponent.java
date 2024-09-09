@@ -4,7 +4,7 @@ import com.woogleFX.editorObjects.objectComponents.generic.ColoredProperty;
 import com.woogleFX.editorObjects.objectComponents.generic.RotatableProperty;
 import com.woogleFX.engine.fx.FXCanvas;
 import com.woogleFX.engine.fx.FXContainers;
-import com.woogleFX.engine.fx.FXLevelSelectPane;
+import com.woogleFX.engine.fx.FXAssetSelectPane;
 import com.woogleFX.engine.renderer.Renderer;
 import com.woogleFX.engine.LevelManager;
 import com.woogleFX.editorObjects.DragSettings;
@@ -41,7 +41,7 @@ public abstract class LineComponent extends ObjectComponent implements Rotatable
 
         SplitPane splitPane = FXContainers.getSplitPane();
         double WIDTH = splitPane.getDividerPositions()[0] * splitPane.getWidth() - 6;
-        double HEIGHT = FXCanvas.getCanvas().getHeight() - FXLevelSelectPane.getLevelSelectPane().getHeight();
+        double HEIGHT = FXCanvas.getCanvas().getHeight() - FXAssetSelectPane.getAssetSelectPane().getHeight();
 
         Point2D top = new Point2D(screenX - screenY / Math.tan(rotation) - 4, 0);
         boolean topPossible = top.getX() >= 0 && top.getX() <= WIDTH;

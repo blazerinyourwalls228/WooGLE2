@@ -70,7 +70,7 @@ public class Initializer {
         FXContainers.init();
         FXEditorButtons.init();
         FXHierarchy.init();
-        FXLevelSelectPane.init();
+        FXAssetSelectPane.init();
         FXMenu.init();
         FXPropertiesView.init();
 

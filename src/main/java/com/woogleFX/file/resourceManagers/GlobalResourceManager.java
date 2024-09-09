@@ -5,29 +5,28 @@ import com.woogleFX.engine.gui.alarms.ErrorAlarm;
 import com.woogleFX.engine.gui.alarms.LoadingResourcesAlarm;
 import com.woogleFX.file.FileManager;
 import com.woogleFX.file.fileImport.ObjectGOOParser;
+import com.woogleFX.gameData.animation.AnimBinReader;
 import com.woogleFX.gameData.animation.AnimationManager;
 import com.woogleFX.gameData.animation.AnimationReader;
 import com.woogleFX.gameData.ball.AtlasManager;
+import com.woogleFX.gameData.ball.BallFileOpener;
 import com.woogleFX.gameData.level.GameVersion;
 import com.woogleFX.gameData.particle.ParticleManager;
-import com.worldOfGoo.resrc.Material;
+import com.worldOfGoo.resrc.*;
 import com.worldOfGoo.particle._Particle;
-import com.worldOfGoo.resrc.Font;
-import com.worldOfGoo.resrc.ResrcImage;
-import com.worldOfGoo.resrc.SetDefaults;
-import com.worldOfGoo.resrc.Sound;
 import com.worldOfGoo.text.TextString;
 import com.worldOfGoo2.items._2_Item;
 import com.worldOfGoo2.util.ItemHelper;
 import com.worldOfGoo2.util.TerrainHelper;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -86,13 +85,13 @@ public class GlobalResourceManager {
             new Thread(() -> {
                 try {
                     ResourceManager.findTerrainTypes(null, GameVersion.VERSION_WOG2);
-                    TerrainHelper.buildImageMap();
+                    //TerrainHelper.buildImageMap();
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
             }).start();
             //openParticles(GameVersion.VERSION_WOG2);
-            //openAnimations(GameVersion.VERSION_WOG2);
+            openAnimations(GameVersion.VERSION_WOG2);
             //openText(GameVersion.VERSION_WOG2);
             //openMaterials(GameVersion.VERSION_WOG2);
         }
@@ -144,6 +143,7 @@ public class GlobalResourceManager {
         try {
             resources = FileManager.openResources(version);
         } catch (ParserConfigurationException | SAXException | IOException e) {
+            e.printStackTrace();
             ErrorAlarm.show(e);
             return;
         }
@@ -155,8 +155,10 @@ public class GlobalResourceManager {
             if (EditorObject instanceof SetDefaults setDefaults) {
                 currentSetDefaults = setDefaults;
             }
-
-            else if (EditorObject instanceof ResrcImage resrcImage) {
+            else if (EditorObject instanceof FlashAnim flashAnim) {
+                //flashAnim.setSetDefaults(currentSetDefaults);
+                toAddTo.add(flashAnim);
+            } else if (EditorObject instanceof ResrcImage resrcImage) {
                 resrcImage.setSetDefaults(currentSetDefaults);
                 toAddTo.add(resrcImage);
             } else if (EditorObject instanceof Sound sound) {
@@ -204,7 +206,26 @@ public class GlobalResourceManager {
         if (animationsArray == null) return;
 
         for (File second : animationsArray) {
-            if (version == GameVersion.VERSION_WOG1_NEW || !second.getName().substring(second.getName().lastIndexOf(".")).equals(".binltl64")) {
+
+            if (version == GameVersion.VERSION_WOG2) {
+
+                if (second.isDirectory()) for (File fourth : second.listFiles()) {
+                    if (fourth.isDirectory()) {
+                        for (File third : fourth.listFiles())
+                            if (third.getName().endsWith(".anim.bin")) {
+
+                                openAnimationFile(third, GameVersion.VERSION_WOG2);
+
+                            }
+                    } else if (fourth.getName().endsWith(".anim.bin") && !(fourth.getName().contains("Scene"))) {
+
+                        openAnimationFile(fourth, GameVersion.VERSION_WOG2);
+
+                    }
+
+                }
+
+            } else if (version == GameVersion.VERSION_WOG1_NEW || !second.getName().substring(second.getName().lastIndexOf(".")).equals(".binltl64")) {
                 try (FileInputStream test2 = new FileInputStream(second)) {
                     byte[] allBytes = test2.readAllBytes();
                     if (version == GameVersion.VERSION_WOG1_OLD) {
@@ -218,6 +239,47 @@ public class GlobalResourceManager {
             }
         }
 
+        if (version == GameVersion.VERSION_WOG2) {
+
+            for (File file : new File(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "/res/ui/buttons").listFiles()) {
+                File anim = new File(file.getPath() + "/" + file.getName() + ".anim.bin");
+                if (anim.exists()) openAnimationFile(anim, GameVersion.VERSION_WOG2);
+            }
+
+        }
+
+
+    }
+
+
+    private static void openAnimationFile(File third, GameVersion version) {
+        String text = "";
+        try {
+            AnimationManager.getBinAnimations().add(AnimBinReader.readSimpleBinAnimation(third.toPath(), third.getName()));
+
+            ArrayList<EditorObject> objects = new ArrayList<>();
+            ArrayList<EditorObject> resources = new ArrayList<>();
+
+            BallFileOpener defaultHandler = new BallFileOpener(objects, resources, GameVersion.VERSION_WOG1_NEW);
+
+            File ballFileR = new File(third.getParent() + "/manifest.resrc");
+            BallFileOpener.mode = 1;
+
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            SAXParser saxParser = factory.newSAXParser();
+            text = Files.readString(ballFileR.toPath());
+            if (text.indexOf("?") == 2) text = text.substring(1);
+            if (!text.contains("<Resources id=\"")) {
+                text = text.substring(0, text.indexOf("<Resources id=") + 14)
+                        + '"' + text.substring(text.indexOf("<Resources id=") + 14, text.indexOf(">", text.indexOf("<Resources id=") + 14)) + '"'
+                        + text.substring( text.indexOf(">", text.indexOf("<Resources id=") + 14));
+            }
+            saxParser.parse(new InputSource(new ByteArrayInputStream(text.getBytes())), defaultHandler);
+            GlobalResourceManager.getSequelResources().addAll(resources);
+        } catch (Exception e) {
+            e.printStackTrace();
+            allFailedResources.add("Animation: " + third.getName() + " (version " + version + ")");
+        }
     }
 
 

@@ -2,7 +2,7 @@ package com.woogleFX.engine.undoHandling;
 
 import com.woogleFX.engine.fx.*;
 import com.woogleFX.engine.LevelManager;
-import com.woogleFX.gameData.level.LevelTab;
+import com.woogleFX.engine.fx.AssetTab;
 import com.woogleFX.engine.undoHandling.userActions.*;
 import com.woogleFX.gameData.level._Level;
 import javafx.scene.control.Button;
@@ -19,8 +19,8 @@ public class UndoManager {
         level.undoActions.add(actions);
         level.redoActions.clear();
 
-        if (level.getEditingStatus() == LevelTab.NO_UNSAVED_CHANGES)
-            level.setEditingStatus(LevelTab.UNSAVED_CHANGES, true);
+        if (level.getEditingStatus() == AssetTab.NO_UNSAVED_CHANGES)
+            level.setEditingStatus(AssetTab.UNSAVED_CHANGES, true);
 
         FXEditorButtons.buttonUndo.setDisable(false);
         FXMenu.undoItem.setDisable(false);
@@ -65,9 +65,9 @@ public class UndoManager {
         for (int i = changes.length - 1; i >= 0; i--) changes[i].getInverse().execute();
 
         if (level.undoActions.size() == level.getLastSavedUndoPosition()) {
-            level.setEditingStatus(LevelTab.NO_UNSAVED_CHANGES, true);
+            level.setEditingStatus(AssetTab.NO_UNSAVED_CHANGES, true);
         } else {
-            level.setEditingStatus(LevelTab.UNSAVED_CHANGES, true);
+            level.setEditingStatus(AssetTab.UNSAVED_CHANGES, true);
         }
 
         backwardButton.setDisable(false);

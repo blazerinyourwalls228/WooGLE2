@@ -23,9 +23,6 @@ import com.worldOfGoo.resrc.ResrcImage;
 import com.worldOfGoo.resrc.Sound;
 import com.worldOfGoo.scene.SceneLayer;
 import com.worldOfGoo2.level._2_Level;
-import com.worldOfGoo2.level._2_Level_BallInstance;
-import com.worldOfGoo2.level._2_Level_Item;
-import com.worldOfGoo2.level._2_Level_Strand;
 import com.worldOfGoo2.misc._2_Point;
 import javafx.concurrent.Task;
 import javafx.scene.control.Tab;
@@ -58,8 +55,8 @@ public class LevelLoader {
     public static void newLevel(String name, GameVersion version) {
         logger.debug("New level");
 
-        FXLevelSelectPane.getLevelSelectPane().setMinHeight(30);
-        FXLevelSelectPane.getLevelSelectPane().setMaxHeight(30);
+        FXAssetSelectPane.getAssetSelectPane().setMinHeight(30);
+        FXAssetSelectPane.getAssetSelectPane().setMaxHeight(30);
 
         if (version == GameVersion.VERSION_WOG1_OLD || version == GameVersion.VERSION_WOG1_NEW) {
 
@@ -279,9 +276,9 @@ public class LevelLoader {
         if (levelName == null || levelName.isEmpty()) return;
 
         // Don't open a level if it's already open
-        for (Tab tab : FXLevelSelectPane.getLevelSelectPane().getTabs()) {
-            if (tab.getText().equals(levelName) && ((LevelTab)tab).getLevel().getVersion() == version) {
-                FXLevelSelectPane.getLevelSelectPane().getSelectionModel().select(tab);
+        for (Tab tab : FXAssetSelectPane.getAssetSelectPane().getTabs()) {
+            if (tab.getText().equals(levelName) && ((AssetTab)tab).getAsset().getVersion() == version) {
+                FXAssetSelectPane.getAssetSelectPane().getSelectionModel().select(tab);
                 return;
             }
         }
@@ -302,8 +299,8 @@ public class LevelLoader {
         FXEditorButtons.updateAllButtons();
         FXMenu.updateAllButtons();
 
-        FXLevelSelectPane.getLevelSelectPane().setMinHeight(30);
-        FXLevelSelectPane.getLevelSelectPane().setMaxHeight(30);
+        FXAssetSelectPane.getAssetSelectPane().setMinHeight(30);
+        FXAssetSelectPane.getAssetSelectPane().setMaxHeight(30);
 
         if (level instanceof WOG1Level wog1Level) {
 
@@ -361,7 +358,7 @@ public class LevelLoader {
 
             stage.setOnCloseRequest(event -> {
                 task.cancel();
-                FXLevelSelectPane.getLevelSelectPane().getTabs().remove(level.getLevelTab());
+                FXAssetSelectPane.getAssetSelectPane().getTabs().remove(level.getAssetTab());
             });
 
             wog2Level.getLevel().getTreeItem().setExpanded(true);
@@ -387,8 +384,8 @@ public class LevelLoader {
 
 
     public static void cloneLevel(String name, GameVersion version) {
-        FXLevelSelectPane.getLevelSelectPane().setMinHeight(30);
-        FXLevelSelectPane.getLevelSelectPane().setMaxHeight(30);
+        FXAssetSelectPane.getAssetSelectPane().setMinHeight(30);
+        FXAssetSelectPane.getAssetSelectPane().setMaxHeight(30);
 
         if (LevelManager.getLevel() instanceof WOG1Level before) {
 
@@ -508,17 +505,17 @@ public class LevelLoader {
 
     private static void finishOpeningLevel(_Level level) {
 
-        LevelTab levelSelectButton = FXLevelSelectPane.levelSelectButton(level);
-        FXLevelSelectPane.getLevelSelectPane().getTabs().add(levelSelectButton);
+        AssetTab levelSelectButton = FXAssetSelectPane.levelSelectButton(level);
+        FXAssetSelectPane.getAssetSelectPane().getTabs().add(levelSelectButton);
 
-        int numTabs = FXLevelSelectPane.getLevelSelectPane().getTabs().size();
+        int numTabs = FXAssetSelectPane.getAssetSelectPane().getTabs().size();
         double tabSize = 1 / (numTabs + 1.0);
-        FXLevelSelectPane.getLevelSelectPane().setTabMaxWidth(tabSize * (FXLevelSelectPane.getLevelSelectPane().getWidth() - 15) - 15);
-        FXLevelSelectPane.getLevelSelectPane().setTabMinWidth(tabSize * (FXLevelSelectPane.getLevelSelectPane().getWidth() - 15) - 15);
+        FXAssetSelectPane.getAssetSelectPane().setTabMaxWidth(tabSize * (FXAssetSelectPane.getAssetSelectPane().getWidth() - 15) - 15);
+        FXAssetSelectPane.getAssetSelectPane().setTabMinWidth(tabSize * (FXAssetSelectPane.getAssetSelectPane().getWidth() - 15) - 15);
 
-        level.setLevelTab(levelSelectButton);
-        level.setEditingStatus(LevelTab.NO_UNSAVED_CHANGES, true);
-        FXLevelSelectPane.getLevelSelectPane().getSelectionModel().select(levelSelectButton);
+        level.setAssetTab(levelSelectButton);
+        level.setEditingStatus(AssetTab.NO_UNSAVED_CHANGES, true);
+        FXAssetSelectPane.getAssetSelectPane().getSelectionModel().select(levelSelectButton);
         LevelManager.onSetLevel(level);
 
     }
