@@ -76,6 +76,7 @@ public class SimpleBinAnimation {
     public SimpleBinAnimationKeyframe[] keyframes;
     public SimpleBinAnimationPart[] parts;
     public int[] imageStringTableIndices;
+    public int[] stateAliasStringTableIndices;
     public SimpleBinAnimationStringDeclaration[] stringDeclarations;
     public SimpleBinAnimationStringDefinition[] stringDefinitions;
     public byte[] stringTable;

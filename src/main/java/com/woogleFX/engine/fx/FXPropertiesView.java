@@ -515,7 +515,7 @@ public class FXPropertiesView {
                         setImageItem.setOnAction(event -> {
                             UndoManager.registerChange(new AttributeChangeAction(attribute,
                                     attribute.stringValue(), itemType));
-                            attribute.setValue(itemType);
+                            attribute.getObject().setAttribute(attribute.getName(), itemType);
                             if (contextMenu.isFocused()) {
                                 cell.commitEdit(attribute.stringValue());
                                 TerrainHelper.terrainColorCache.clear();
@@ -530,7 +530,7 @@ public class FXPropertiesView {
                         setImageItem.setOnAction(event -> {
                             UndoManager.registerChange(new AttributeChangeAction(attribute,
                                     attribute.stringValue(), itemType));
-                            attribute.setValue(itemType);
+                            attribute.getObject().setAttribute(attribute.getName(), itemType);
                             if (contextMenu.isFocused()) {
                                 cell.commitEdit(attribute.stringValue());
                                 TerrainHelper.terrainColorCache.clear();

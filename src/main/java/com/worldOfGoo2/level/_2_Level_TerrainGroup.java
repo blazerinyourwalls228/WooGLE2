@@ -50,7 +50,6 @@ public class _2_Level_TerrainGroup extends EditorObject {
             @Override
             public void setValue(String value) {
                 temp.setValue(value);
-                // TODO: Show a preview of the terrain types... and render them I guess
                 for (EditorObject resource : GlobalResourceManager.getSequelResources()) {
                     if (resource instanceof _2_Terrain_TerrainType) {
                         if (resource.getAttribute("name").stringValue().equals(value)) {

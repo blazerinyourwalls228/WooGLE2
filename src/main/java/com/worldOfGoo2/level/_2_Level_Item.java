@@ -468,7 +468,7 @@ public class _2_Level_Item extends EditorObject {
         if (!animation.isEmpty()) {
             try {
                 SimpleBinAnimation flashAnim = ResourceManager.getFlashAnim(null, animation, GameVersion.VERSION_WOG2);
-                BinAnimationHelper.addBinAnimationAsObjectPositions(this, flashAnim);
+                BinAnimationHelper.addBinAnimationAsObjectPositions(this, flashAnim, getItem().getAttribute("animationAlias").stringValue());
             } catch (FileNotFoundException e) {
                 logger.error("", e);
             }

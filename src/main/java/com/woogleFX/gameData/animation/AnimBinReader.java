@@ -322,24 +322,20 @@ public class AnimBinReader {
                 //finalBinAnimation.animationXMLDataStringTableIndices[i] = readInt(input);
             }
 
-            //finalBinAnimation.animationStateNameStringTableIndices = new int[int47];
+            finalBinAnimation.stateAliasStringTableIndices = new int[int47];
             for (int i = 0; i < int47; i++) {
-                input.skipNBytes(4 * 1);
-                //finalBinAnimation.animationStateNameStringTableIndices[i] = readInt(input);
+                finalBinAnimation.stateAliasStringTableIndices[i] = readInt(input);
             }
 
             //finalBinAnimation.animationProperty16s = new SimpleBinAnimation.SimpleBinAnimationProperty16[int1];
             for (int i = 0; i < int1; i++) {
-                //input.skipNBytes(4 * 2);
-                System.out.println(readInt(input));
-                System.out.println(readInt(input));
+                input.skipNBytes(4 * 2);
                 //finalBinAnimation.animationProperty16s[i] = new SimpleBinAnimation.SimpleBinAnimationProperty16();
                 //finalBinAnimation.animationProperty16s[i].idHash1 = readInt(input);
                 //finalBinAnimation.animationProperty16s[i].idHash2 = readInt(input);
             }
 
             int stringCount = readInt(input);
-            System.out.println(stringCount);
             input.skipNBytes(4);
 
             if (stringCount > 10000 || stringCount < -10000) return finalBinAnimation;
@@ -364,7 +360,6 @@ public class AnimBinReader {
             return finalBinAnimation;
 
         } catch (IOException e) {
-            System.out.println("what");
             logger.error("", e);
             return null;
         }

@@ -123,7 +123,7 @@ public class _2_Level_BallInstance extends EditorObject {
             if (!animation.isEmpty()) {
                 try {
                     SimpleBinAnimation flashAnim = ResourceManager.getFlashAnim(getBall().getResources(), animation, GameVersion.VERSION_WOG2);
-                    BinAnimationHelper.addBinAnimationAsObjectPositions(this, flashAnim);
+                    BinAnimationHelper.addBinAnimationAsObjectPositions(this, flashAnim, "");
                 } catch (FileNotFoundException e) {
                     logger.error("", e);
                 }

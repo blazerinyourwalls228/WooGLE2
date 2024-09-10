@@ -85,7 +85,7 @@ public class GlobalResourceManager {
             new Thread(() -> {
                 try {
                     ResourceManager.findTerrainTypes(null, GameVersion.VERSION_WOG2);
-                    //TerrainHelper.buildImageMap();
+                    TerrainHelper.buildImageMap();
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
