@@ -14,6 +14,7 @@ import com.woogleFX.gameData.particle.ParticleManager;
 import com.worldOfGoo.resrc.*;
 import com.worldOfGoo.particle._Particle;
 import com.worldOfGoo.text.TextString;
+import com.worldOfGoo2.util.BallInstanceHelper;
 import com.worldOfGoo2.util.ItemHelper;
 import com.worldOfGoo2.util.TerrainHelper;
 import org.xml.sax.InputSource;
@@ -24,6 +25,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.*;
 import java.nio.file.Files;
+import java.text.ParseException;
 import java.util.*;
 
 /** Stores global resources (those specified in properties/resources.xml). */
@@ -77,6 +79,7 @@ public class GlobalResourceManager {
             openResources(GameVersion.VERSION_WOG2);
             openItems();
             AtlasManager.reloadAtlas();
+            openBallTable();
             new Thread(() -> {
                 try {
                     ResourceManager.findTerrainTypes(null, GameVersion.VERSION_WOG2);
@@ -121,8 +124,58 @@ public class GlobalResourceManager {
                     ItemHelper.getItemActualName(itemFile.getName().substring(0, itemFile.getName().length() - 5));
         }).start();
 
+    }
+    
+    private static void openBallTable() {
 
+        new Thread(() -> {  
+            File ballTableFile = new File(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "/fisty/ballTable.ini");
+            if (ballTableFile.exists()) {
+                try {
+                    String ballTable = Files.readString(ballTableFile.toPath());
+                    parseBallTable(ballTable);
+                } catch (IOException e) {
+                    // TODO: do something (?)
+                } catch (ParseException e) {
+                    
+                }
+            }
+        }).start();
 
+    }
+    
+    private static void parseBallTable(String ballTable) throws ParseException {
+        String[] lines = ballTable.split("\n");
+        Map<Integer, String> typeEnumToTypeMap = new HashMap<>();
+        
+        int lineNumber = -1;
+        for (String line : lines) {
+            lineNumber++;
+            
+            int lineCommentStart = line.indexOf(';');
+            if (lineCommentStart != -1)
+                line = line.substring(0, lineCommentStart);
+            
+            if (line.isBlank())
+                continue;
+            
+            int equalsSignPos = line.indexOf('=');
+            
+            if (equalsSignPos == -1)
+                throw new ParseException(null, lineNumber);
+            
+            String keyStr = line.substring(0, equalsSignPos).trim();
+            String value = line.substring(equalsSignPos + 1).trim();
+            
+            try {
+                int key = Integer.parseInt(keyStr);
+                typeEnumToTypeMap.put(key, value);
+            } catch (NumberFormatException e) {
+                throw new ParseException(null, lineNumber);
+            }
+        }
+        
+        BallInstanceHelper.setTypeEnumMaps(typeEnumToTypeMap);
     }
 
 

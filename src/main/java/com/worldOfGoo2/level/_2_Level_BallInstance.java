@@ -39,34 +39,7 @@ public class _2_Level_BallInstance extends EditorObject {
         addAttributeAdapter("pos", AttributeAdapter.pointAttributeAdapter(
                 this, "pos", "pos"));
 
-        addAttributeAdapter("typeEnum", new AttributeAdapter("type") {
-
-            private final EditorAttribute typeAttribute = new EditorAttribute("type",
-                    InputField._2_BALL_TYPE, _2_Level_BallInstance.this);
-
-            @Override
-            public EditorAttribute getValue() {
-                if (getAttribute2("typeEnum").stringValue().isEmpty()) return typeAttribute;
-                typeAttribute.setValue(BallInstanceHelper.typeEnumToTypeMap.getOrDefault(
-                        getAttribute2("typeEnum").intValue(), ""));
-                return typeAttribute;
-            }
-
-            @Override
-            public void setValue(String value) {
-                Integer typeEnum = BallInstanceHelper.typeToTypeEnumMap.get(value);
-                if (typeEnum == null) {
-                    try {
-                        typeEnum = Integer.parseInt(value);
-                        typeAttribute.setValue(value);
-                    } catch (NumberFormatException ignored) {
-                        typeEnum = 0;
-                    }
-                } else typeAttribute.setValue(value);
-                setAttribute2("typeEnum", typeEnum);
-            }
-
-        });
+        addAttributeAdapter("typeEnum", BallInstanceHelper.ballTypeAttributeAdapter(this, "type", "typeEnum"));
 
     }
 

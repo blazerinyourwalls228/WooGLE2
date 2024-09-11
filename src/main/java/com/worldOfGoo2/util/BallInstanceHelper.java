@@ -1,6 +1,9 @@
 package com.worldOfGoo2.util;
 
 import com.woogleFX.editorObjects.EditorObject;
+import com.woogleFX.editorObjects.attributes.AttributeAdapter;
+import com.woogleFX.editorObjects.attributes.EditorAttribute;
+import com.woogleFX.editorObjects.attributes.InputField;
 import com.woogleFX.editorObjects.objectComponents.CircleComponent;
 import com.woogleFX.editorObjects.objectComponents.ImageComponent;
 import com.woogleFX.editorObjects.objectComponents.ObjectComponent;
@@ -19,9 +22,6 @@ import com.worldOfGoo2.level._2_Level_Strand;
 import com.worldOfGoo2.misc._2_ImageID;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
-import javafx.scene.image.WritableImage;
-import javafx.scene.paint.Color;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
@@ -32,52 +32,93 @@ import java.util.Random;
 
 public class BallInstanceHelper {
 
-    public static final Map<Integer, String> typeEnumToTypeMap = new HashMap<>();
-    public static final Map<String, Integer> typeToTypeEnumMap = new HashMap<>();
+    public static final Map<Integer, String> vanillaTypeEnumToTypeMap = new HashMap<>();
+    
+    private static Map<Integer, String> typeEnumToTypeMap;
+    private static Map<String, Integer> typeToTypeEnumMap;
 
     static {
 
-        typeEnumToTypeMap.put(1, "Common");
-        typeEnumToTypeMap.put(2, "CommonAlbino");
-        typeEnumToTypeMap.put(3, "Ivy");
-        typeEnumToTypeMap.put(4, "Balloon");
-        typeEnumToTypeMap.put(5, "GoolfSingle");
-        typeEnumToTypeMap.put(6, "Anchor");
-        typeEnumToTypeMap.put(7, "LauncherL2B");
-        typeEnumToTypeMap.put(8, "GooProduct");
-        typeEnumToTypeMap.put(9, "Thruster");
-        typeEnumToTypeMap.put(10, "Terrain");
-        typeEnumToTypeMap.put(11, "BalloonEye");
-        typeEnumToTypeMap.put(12, "Conduit");
-        typeEnumToTypeMap.put(13, "LauncherL2L");
-        typeEnumToTypeMap.put(14, "GooProductWhite");
-        typeEnumToTypeMap.put(15, "Grow");
-        typeEnumToTypeMap.put(16, "BombSticky");
-        typeEnumToTypeMap.put(17, "Rope");
-        typeEnumToTypeMap.put(18, "Bouncy");
-        typeEnumToTypeMap.put(19, "Fish");
-        typeEnumToTypeMap.put(20, "TimeBug");
-        typeEnumToTypeMap.put(23, "MatchStick");
-        typeEnumToTypeMap.put(25, "Fireworks");
-        typeEnumToTypeMap.put(26, "Lightball");
-        typeEnumToTypeMap.put(27, "TwuBit");
-        typeEnumToTypeMap.put(28, "TwuBitBit");
-        typeEnumToTypeMap.put(29, "Adapter");
-        typeEnumToTypeMap.put(30, "Winch");
-        typeEnumToTypeMap.put(32, "Shrink");
-        typeEnumToTypeMap.put(33, "Jelly");
-        typeEnumToTypeMap.put(34, "Goolf");
-        typeEnumToTypeMap.put(35, "ThisWayUp");
-        typeEnumToTypeMap.put(36, "LiquidLevelExit");
-        typeEnumToTypeMap.put(37, "Eye");
-        typeEnumToTypeMap.put(38, "UtilAttachWalkable");
+        vanillaTypeEnumToTypeMap.put(1, "Common");
+        vanillaTypeEnumToTypeMap.put(2, "CommonAlbino");
+        vanillaTypeEnumToTypeMap.put(3, "Ivy");
+        vanillaTypeEnumToTypeMap.put(4, "Balloon");
+        vanillaTypeEnumToTypeMap.put(5, "GoolfSingle");
+        vanillaTypeEnumToTypeMap.put(6, "Anchor");
+        vanillaTypeEnumToTypeMap.put(7, "LauncherL2B");
+        vanillaTypeEnumToTypeMap.put(8, "GooProduct");
+        vanillaTypeEnumToTypeMap.put(9, "Thruster");
+        vanillaTypeEnumToTypeMap.put(10, "Terrain");
+        vanillaTypeEnumToTypeMap.put(11, "BalloonEye");
+        vanillaTypeEnumToTypeMap.put(12, "Conduit");
+        vanillaTypeEnumToTypeMap.put(13, "LauncherL2L");
+        vanillaTypeEnumToTypeMap.put(14, "GooProductWhite");
+        vanillaTypeEnumToTypeMap.put(15, "Grow");
+        vanillaTypeEnumToTypeMap.put(16, "BombSticky");
+        vanillaTypeEnumToTypeMap.put(17, "Rope");
+        vanillaTypeEnumToTypeMap.put(18, "Bouncy");
+        vanillaTypeEnumToTypeMap.put(19, "Fish");
+        vanillaTypeEnumToTypeMap.put(20, "TimeBug");
+        vanillaTypeEnumToTypeMap.put(23, "MatchStick");
+        vanillaTypeEnumToTypeMap.put(25, "Fireworks");
+        vanillaTypeEnumToTypeMap.put(26, "Lightball");
+        vanillaTypeEnumToTypeMap.put(27, "TwuBit");
+        vanillaTypeEnumToTypeMap.put(28, "TwuBitBit");
+        vanillaTypeEnumToTypeMap.put(29, "Adapter");
+        vanillaTypeEnumToTypeMap.put(30, "Winch");
+        vanillaTypeEnumToTypeMap.put(32, "Shrink");
+        vanillaTypeEnumToTypeMap.put(33, "Jelly");
+        vanillaTypeEnumToTypeMap.put(34, "Goolf");
+        vanillaTypeEnumToTypeMap.put(35, "ThisWayUp");
+        vanillaTypeEnumToTypeMap.put(36, "LiquidLevelExit");
+        vanillaTypeEnumToTypeMap.put(37, "Eye");
+        vanillaTypeEnumToTypeMap.put(38, "UtilAttachWalkable");
 
         // CommonBlack LightBall CommonWorld
 
-        for (int key : typeEnumToTypeMap.keySet()) typeToTypeEnumMap.put(typeEnumToTypeMap.get(key), key);
-
+        // by default uses vanilla ball table
+        // if GlobalResourceManager finds the FistyLoader
+        // ballTable.ini, it will change it from there
+        setTypeEnumMaps(vanillaTypeEnumToTypeMap);
     }
 
+    
+    public static AttributeAdapter ballTypeAttributeAdapter(EditorObject object, String displayName, String realName) {
+        return new AttributeAdapter(displayName) {
+            private final EditorAttribute typeAttribute = new EditorAttribute(displayName,
+                    InputField._2_BALL_TYPE, object);
+
+            @Override
+            public EditorAttribute getValue() {
+                if (object.getAttribute2(realName).stringValue().isEmpty()) return typeAttribute;
+                
+                typeAttribute.setValue(BallInstanceHelper.typeEnumToTypeMap.getOrDefault(
+                        object.getAttribute2(realName).intValue(), ""));
+                
+                return typeAttribute;
+            }
+
+            @Override
+            public void setValue(String value) {
+                Integer typeEnum = BallInstanceHelper.typeToTypeEnumMap.get(value);
+                
+                if (typeEnum != null) {
+                    typeAttribute.setValue(value);
+                } else {
+                    try {
+                        typeEnum = Integer.parseInt(value);
+                        typeAttribute.setValue(value);
+                    } catch (NumberFormatException ignored) {
+                        typeEnum = 0;
+                    }
+                };
+                
+                object.setAttribute2(realName, typeEnum);
+            }
+
+        };
+    }
+    
 
     private static boolean part2CanBeUsed(_2_Level_BallInstance ballInstance, _2_Ball_Part part) {
 
@@ -558,4 +599,22 @@ public class BallInstanceHelper {
 
     }
 
+    public static void setTypeEnumMaps(Map<Integer, String> typeEnumToTypeMap) {
+        BallInstanceHelper.typeEnumToTypeMap = typeEnumToTypeMap;
+        
+        HashMap<String, Integer> typeToTypeEnumMap = new HashMap<>();
+        for (int key : typeEnumToTypeMap.keySet()) {
+            typeToTypeEnumMap.put(typeEnumToTypeMap.get(key), key);
+        }
+        
+        BallInstanceHelper.typeToTypeEnumMap = typeToTypeEnumMap;
+    }
+    
+    public static Map<Integer, String> getTypeEnumToTypeMap() {
+        return typeEnumToTypeMap;
+    }
+    
+    public static Map<String, Integer> getTypeToTypeEnumMap() {
+        return typeToTypeEnumMap;
+    }
 }

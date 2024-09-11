@@ -63,41 +63,8 @@ public class _2_Level_Item extends EditorObject {
     public _2_Level_Item(EditorObject parent) {
         super(parent, "Item", GameVersion.VERSION_WOG2);
 
-        addAttributeAdapter("pos", new AttributeAdapter("pos") {
-
-            @Override
-            public EditorAttribute getValue() {
-                return getAttribute2("pos");
-            }
-
-            @Override
-            public void setValue(String value) {
-                EditorObject pos = getChildren("pos").get(0);
-                String x = value.substring(0, value.indexOf(","));
-                String y = value.substring(value.indexOf(",") + 1);
-                pos.setAttribute("x", x);
-                pos.setAttribute("y", y);
-            }
-
-        });
-
-        addAttributeAdapter("scale", new AttributeAdapter("scale") {
-
-            @Override
-            public EditorAttribute getValue() {
-                return getAttribute2("scale");
-            }
-
-            @Override
-            public void setValue(String value) {
-                EditorObject scale = getChildren("scale").get(0);
-                String x = value.substring(0, value.indexOf(","));
-                String y = value.substring(value.indexOf(",") + 1);
-                scale.setAttribute("x", x);
-                scale.setAttribute("y", y);
-            }
-
-        });
+        addAttributeAdapter("pos", AttributeAdapter.pointAttributeAdapter(this, "pos", "pos"));
+        addAttributeAdapter("scale", AttributeAdapter.pointAttributeAdapter(this, "scale", "scale"));
 
         EditorAttribute temp = new EditorAttribute("type", InputField._2_ITEM_TYPE, this).assertRequired();
         addAttributeAdapter("type", new AttributeAdapter("type") {

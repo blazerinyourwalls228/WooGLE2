@@ -1,30 +1,24 @@
 package com.worldOfGoo2.level;
 
+import java.io.FileNotFoundException;
+
 import com.woogleFX.editorObjects.EditorObject;
-import com.woogleFX.editorObjects.ObjectUtil;
-import com.woogleFX.editorObjects.attributes.AttributeAdapter;
-import com.woogleFX.editorObjects.attributes.EditorAttribute;
 import com.woogleFX.editorObjects.attributes.InputField;
 import com.woogleFX.editorObjects.attributes.MetaEditorAttribute;
-import com.woogleFX.editorObjects.attributes.dataTypes.Position;
 import com.woogleFX.editorObjects.objectComponents.ImageComponent;
 import com.woogleFX.editorObjects.objectComponents.RectangleComponent;
 import com.woogleFX.engine.LevelManager;
 import com.woogleFX.engine.fx.FXEditorButtons;
 import com.woogleFX.engine.renderer.Renderer;
+import com.woogleFX.file.resourceManagers.ResourceManager;
 import com.woogleFX.gameData.ball.AtlasManager;
 import com.woogleFX.gameData.ball.BallManager;
 import com.woogleFX.gameData.ball._2Ball;
 import com.woogleFX.gameData.ball._Ball;
 import com.woogleFX.gameData.level.GameVersion;
-import com.woogleFX.gameData.level.WOG1Level;
 import com.woogleFX.gameData.level.WOG2Level;
-import com.woogleFX.gameData.level.levelOpening.LevelLoader;
 import com.worldOfGoo.ball.BallStrand;
-import com.worldOfGoo.level.BallInstance;
-import com.worldOfGoo2.misc._2_ImageID;
 import com.worldOfGoo2.util.BallInstanceHelper;
-import com.worldOfGoo2.util.TerrainHelper;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
@@ -74,34 +68,7 @@ public class _2_Level_Strand extends EditorObject {
 
 
 
-        addAttributeAdapter("type", new AttributeAdapter("type") {
-
-            private final EditorAttribute typeAttribute = new EditorAttribute("type",
-                    InputField._2_BALL_TYPE, _2_Level_Strand.this);
-
-            @Override
-            public EditorAttribute getValue() {
-                if (getAttribute2("type").stringValue().isEmpty()) return typeAttribute;
-                typeAttribute.setValue(BallInstanceHelper.typeEnumToTypeMap.getOrDefault(
-                        getAttribute2("type").intValue(), ""));
-                return typeAttribute;
-            }
-
-            @Override
-            public void setValue(String value) {
-                Integer typeEnum = BallInstanceHelper.typeToTypeEnumMap.get(value);
-                if (typeEnum == null) {
-                    try {
-                        typeEnum = Integer.parseInt(value);
-                        typeAttribute.setValue(value);
-                    } catch (NumberFormatException ignored) {
-                        typeEnum = 0;
-                    }
-                } else typeAttribute.setValue(value);
-                setAttribute2("type", typeEnum);
-            }
-
-        });
+        addAttributeAdapter("type", BallInstanceHelper.ballTypeAttributeAdapter(this, "type", "type"));
 
     }
 
@@ -162,8 +129,12 @@ public class _2_Level_Strand extends EditorObject {
         try {
             _2Ball ball = BallManager.get2Ball(getAttribute("type").stringValue(), GameVersion.VERSION_WOG2);
             String imageString = ball.getObjects().get(0).getChildren("strandImageId").get(0).getAttribute("imageId").stringValue();
-            if (AtlasManager.atlas.containsKey(imageString))
-                strandImage = SwingFXUtils.toFXImage(AtlasManager.atlas.get(imageString), null);
+            try {
+                strandImage = ResourceManager.getImage(ball.getResources(), imageString, GameVersion.VERSION_WOG2);
+            } catch (FileNotFoundException e) {
+                if (AtlasManager.atlas.containsKey(imageString))
+                    strandImage = SwingFXUtils.toFXImage(AtlasManager.atlas.get(imageString), null);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

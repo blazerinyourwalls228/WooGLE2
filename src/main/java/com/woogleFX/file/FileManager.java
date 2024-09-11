@@ -467,7 +467,7 @@ public class FileManager {
         SAXParserFactory factory = SAXParserFactory.newInstance();
         SAXParser saxParser = factory.newSAXParser();
 
-        BallFileOpener defaultHandler = new BallFileOpener(objects, resources, GameVersion.VERSION_WOG1_NEW);
+        BallFileOpener defaultHandler = new BallFileOpener(objects, resources, GameVersion.VERSION_WOG2);
 
         File ballFileR = new File(WOG2dir + "/res/balls/" + ballName + "/resources.xml");
         BallFileOpener.mode = 1;
