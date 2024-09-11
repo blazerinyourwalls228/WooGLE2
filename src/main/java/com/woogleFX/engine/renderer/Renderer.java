@@ -86,7 +86,7 @@ public class Renderer {
 
         EditorObjects.add(EditorObject);
 
-        for (EditorObject child : EditorObject.getChildren()) {
+        for (EditorObject child : EditorObject.getChildren().toArray(new EditorObject[0])) {
             recursiveGetAllObjectsInList(EditorObjects, child);
         }
 

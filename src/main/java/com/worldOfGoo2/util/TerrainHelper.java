@@ -8,6 +8,7 @@ import com.woogleFX.file.fileImport.ObjectGOOParser;
 import com.woogleFX.file.resourceManagers.ResourceManager;
 import com.woogleFX.gameData.level.GameVersion;
 import com.woogleFX.gameData.level.WOG2Level;
+import com.woogleFX.gameData.terrainTypes.TerrainTypeManager;
 import com.worldOfGoo2.level._2_Level_TerrainGroup;
 import com.worldOfGoo2.misc._2_ImageID;
 import com.worldOfGoo2.terrain.BaseSettings;
@@ -132,12 +133,7 @@ public class TerrainHelper {
 
         String terrainType = terrainGroup.getAttribute("typeUuid").stringValue();
 
-        _2_Terrain_TerrainType terrain;
-        try {
-            terrain = ResourceManager.getTerrainType(null, terrainType, GameVersion.VERSION_WOG2);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        _2_Terrain_TerrainType terrain = TerrainTypeManager.getTerrainType(terrainType);
 
         BaseSettings baseSettings = (BaseSettings) terrain.getChildren("baseSettings").get(0);
 

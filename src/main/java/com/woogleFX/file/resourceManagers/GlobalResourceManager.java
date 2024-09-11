@@ -4,7 +4,6 @@ import com.woogleFX.editorObjects.EditorObject;
 import com.woogleFX.engine.gui.alarms.ErrorAlarm;
 import com.woogleFX.engine.gui.alarms.LoadingResourcesAlarm;
 import com.woogleFX.file.FileManager;
-import com.woogleFX.file.fileImport.ObjectGOOParser;
 import com.woogleFX.gameData.animation.AnimBinReader;
 import com.woogleFX.gameData.animation.AnimationManager;
 import com.woogleFX.gameData.animation.AnimationReader;
@@ -15,7 +14,6 @@ import com.woogleFX.gameData.particle.ParticleManager;
 import com.worldOfGoo.resrc.*;
 import com.worldOfGoo.particle._Particle;
 import com.worldOfGoo.text.TextString;
-import com.worldOfGoo2.items._2_Item;
 import com.worldOfGoo2.util.ItemHelper;
 import com.worldOfGoo2.util.TerrainHelper;
 import org.xml.sax.InputSource;
@@ -26,28 +24,25 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /** Stores global resources (those specified in properties/resources.xml). */
 public class GlobalResourceManager {
 
-    private static final ArrayList<EditorObject> oldResources = new ArrayList<>();
-    public static ArrayList<EditorObject> getOldResources() {
+    private static final Map<String, EditorObject> oldResources = new HashMap<>();
+    public static Map<String, EditorObject> getOldResources() {
         return oldResources;
     }
 
 
-    private static final ArrayList<EditorObject> newResources = new ArrayList<>();
-    public static ArrayList<EditorObject> getNewResources() {
+    private static final Map<String, EditorObject> newResources = new HashMap<>();
+    public static Map<String, EditorObject> getNewResources() {
         return newResources;
     }
 
 
-    private static final ArrayList<EditorObject> sequelResources = new ArrayList<>();
-    public static ArrayList<EditorObject> getSequelResources() {
+    private static final Map<String, EditorObject> sequelResources = new HashMap<>();
+    public static Map<String, EditorObject> getSequelResources() {
         return sequelResources;
     }
 
@@ -133,7 +128,7 @@ public class GlobalResourceManager {
 
     private static void openResources(GameVersion version) {
 
-        ArrayList<EditorObject> toAddTo = switch (version) {
+        Map<String, EditorObject> toAddTo = switch (version) {
             case VERSION_WOG1_OLD -> oldResources;
             case VERSION_WOG1_NEW -> newResources;
             case VERSION_WOG2 -> sequelResources;
@@ -157,16 +152,16 @@ public class GlobalResourceManager {
             }
             else if (EditorObject instanceof FlashAnim flashAnim) {
                 //flashAnim.setSetDefaults(currentSetDefaults);
-                toAddTo.add(flashAnim);
+                toAddTo.put(flashAnim.getAdjustedID(), flashAnim);
             } else if (EditorObject instanceof ResrcImage resrcImage) {
                 resrcImage.setSetDefaults(currentSetDefaults);
-                toAddTo.add(resrcImage);
+                toAddTo.put(resrcImage.getAdjustedID(), resrcImage);
             } else if (EditorObject instanceof Sound sound) {
                 sound.setSetDefaults(currentSetDefaults);
-                toAddTo.add(sound);
+                toAddTo.put(sound.getAdjustedID(), sound);
             } else if (EditorObject instanceof Font font) {
                 font.setSetDefaults(currentSetDefaults);
-                toAddTo.add(font);
+                toAddTo.put(font.getAdjustedID(), font);
             }
 
         }
@@ -275,7 +270,19 @@ public class GlobalResourceManager {
                         + text.substring( text.indexOf(">", text.indexOf("<Resources id=") + 14));
             }
             saxParser.parse(new InputSource(new ByteArrayInputStream(text.getBytes())), defaultHandler);
-            GlobalResourceManager.getSequelResources().addAll(resources);
+
+            for (EditorObject EditorObject : resources) {
+                if (EditorObject instanceof FlashAnim flashAnim) {
+                    sequelResources.put(flashAnim.getAdjustedID(), flashAnim);
+                } else if (EditorObject instanceof ResrcImage resrcImage) {
+                    sequelResources.put(resrcImage.getAdjustedID(), resrcImage);
+                } else if (EditorObject instanceof Sound sound) {
+                    sequelResources.put(sound.getAdjustedID(), sound);
+                } else if (EditorObject instanceof Font font) {
+                    sequelResources.put(font.getAdjustedID(), font);
+                }
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             allFailedResources.add("Animation: " + third.getName() + " (version " + version + ")");
@@ -285,7 +292,7 @@ public class GlobalResourceManager {
 
     private static void openText(GameVersion version) {
 
-        ArrayList<EditorObject> toAddTo = version == GameVersion.VERSION_WOG1_OLD ? oldResources : newResources;
+        Map<String, EditorObject> toAddTo = version == GameVersion.VERSION_WOG1_OLD ? oldResources : newResources;
 
         ArrayList<EditorObject> textList;
         try {
@@ -296,8 +303,8 @@ public class GlobalResourceManager {
         }
 
         for (EditorObject text : textList) {
-            if (text instanceof TextString) {
-                toAddTo.add(text);
+            if (text instanceof TextString textString) {
+                toAddTo.put("", textString);
             }
         }
 
@@ -306,7 +313,7 @@ public class GlobalResourceManager {
 
     private static void openMaterials(GameVersion version) {
 
-        ArrayList<EditorObject> toAddTo = version == GameVersion.VERSION_WOG1_OLD ? oldResources : newResources;
+        Map<String, EditorObject> toAddTo = version == GameVersion.VERSION_WOG1_OLD ? oldResources : newResources;
 
         ArrayList<EditorObject> materialList;
         try {
@@ -316,9 +323,9 @@ public class GlobalResourceManager {
             return;
         }
 
-        for (EditorObject material : materialList) {
-            if (material instanceof Material) {
-                toAddTo.add(material);
+        for (EditorObject editorObject : materialList) {
+            if (editorObject instanceof Material material) {
+                toAddTo.put("", material);
             }
         }
 

@@ -330,10 +330,10 @@ public class BallInstanceHelper {
                     pos.setAttribute("y", -y);
                 }
                 public double getRotation() {
-                    return -Math.toRadians(ballInstance.getAttribute("angle").doubleValue());
+                    return -ballInstance.getAttribute("angle").doubleValue();
                 }
                 public void setRotation(double rotation) {
-                    ballInstance.setAttribute("angle", -Math.toDegrees(rotation));
+                    ballInstance.setAttribute("angle", -rotation);
                 }
                 public double getScaleX() {
                     return final_scaleX;
@@ -375,14 +375,13 @@ public class BallInstanceHelper {
                         return -pos.getAttribute("y").doubleValue();
                     }
                     public double getRotation() {
-                        return -Math.toRadians(ballInstance.getAttribute("angle").doubleValue());
+                        return -ballInstance.getAttribute("angle").doubleValue();
                     }
                     public void setY(double y) {
                         pos.setAttribute("y", -y);
                     }
                     public double getRadius() {
-                        if (ball == null) return 0.2;
-                        return ball.getWidth() / 2;
+                        return 0.1;
                     }
                     public double getEdgeSize() {
                         return 100;
@@ -426,17 +425,19 @@ public class BallInstanceHelper {
                     pos.setAttribute("y", -y);
                 }
                 public double getRotation() {
-                    return -Math.toRadians(ballInstance.getAttribute("angle").doubleValue());
+                    return -ballInstance.getAttribute("angle").doubleValue();
                 }
                 public void setRotation(double rotation) {
-                    ballInstance.setAttribute("angle", -Math.toDegrees(rotation));
+                    ballInstance.setAttribute("angle", -rotation);
                 }
                 public double getRadius() {
                     if (ball == null) return 0.2;
+                    else if (ballInstance.getAttribute("type").stringValue().equals("Terrain")) return 0.1;
                     return ball.getWidth() / 2;
                 }
                 public double getEdgeSize() {
-                    return 0.05;
+                    if (ballInstance.getAttribute("type").stringValue().equals("Terrain")) return 0.025;
+                    else return 0.05;
                 }
                 public boolean isEdgeOnly() {
                     return false;
@@ -501,11 +502,11 @@ public class BallInstanceHelper {
             }
 
             public double getRotation() {
-                return -Math.toRadians(ballInstance.getAttribute("angle").doubleValue());
+                return -ballInstance.getAttribute("angle").doubleValue();
             }
 
             public void setRotation(double rotation) {
-                ballInstance.setAttribute("angle", -Math.toDegrees(rotation));
+                ballInstance.setAttribute("angle", -rotation);
             }
 
             public double getWidth() {

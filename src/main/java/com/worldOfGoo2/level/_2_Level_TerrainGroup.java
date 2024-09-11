@@ -13,6 +13,7 @@ import com.woogleFX.file.resourceManagers.GlobalResourceManager;
 import com.woogleFX.file.resourceManagers.ResourceManager;
 import com.woogleFX.gameData.level.GameVersion;
 import com.woogleFX.gameData.level.WOG2Level;
+import com.woogleFX.gameData.terrainTypes.TerrainTypeManager;
 import com.worldOfGoo2.misc._2_Point;
 import com.worldOfGoo2.terrain.BaseSettings;
 import com.worldOfGoo2.terrain._2_Terrain_TerrainType;
@@ -50,16 +51,10 @@ public class _2_Level_TerrainGroup extends EditorObject {
             @Override
             public void setValue(String value) {
                 temp.setValue(value);
-                for (EditorObject resource : GlobalResourceManager.getSequelResources()) {
-                    if (resource instanceof _2_Terrain_TerrainType) {
-                        if (resource.getAttribute("name").stringValue().equals(value)) {
-                            setAttribute2("typeUuid", resource.getAttribute("uuid").stringValue());
-                            if (LevelManager.getLevel().getSelected().length > 0 && _2_Level_TerrainGroup.this == LevelManager.getLevel().getSelected()[0]) {
-                                FXPropertiesView.changeTableView(LevelManager.getLevel().getSelected());
-                            }
-                            return;
-                        }
-                    }
+                _2_Terrain_TerrainType terrainType = TerrainTypeManager.getTerrainType(value);
+                setAttribute2("typeUuid", terrainType.getAttribute("uuid").stringValue());
+                if (LevelManager.getLevel().getSelected().length > 0 && _2_Level_TerrainGroup.this == LevelManager.getLevel().getSelected()[0]) {
+                    FXPropertiesView.changeTableView(LevelManager.getLevel().getSelected());
                 }
             }
 
@@ -103,12 +98,7 @@ public class _2_Level_TerrainGroup extends EditorObject {
 
         String terrainType = getAttribute("typeUuid").stringValue();
 
-        _2_Terrain_TerrainType terrain;
-        try {
-            terrain = ResourceManager.getTerrainType(null, terrainType, GameVersion.VERSION_WOG2);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        _2_Terrain_TerrainType terrain = TerrainTypeManager.getTerrainType(terrainType);
 
         BaseSettings baseSettings = (BaseSettings) terrain.getChildren("baseSettings").get(0);
 
@@ -216,7 +206,7 @@ public class _2_Level_TerrainGroup extends EditorObject {
 
             @Override
             public double getDepth() {
-                return getAttribute("sortOffset").doubleValue() + (getAttribute("foreground").booleanValue() ? 249 : 0) - 500;
+                return getAttribute("sortOffset").doubleValue() * 0.00001 + (getAttribute("foreground").booleanValue() ? 0.01 : 0) - 0.02;
             }
 
             @Override

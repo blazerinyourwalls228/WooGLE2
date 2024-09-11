@@ -29,11 +29,11 @@ public class AnimBinReader {
 
     public static SimpleBinAnimation readSimpleBinAnimation(Path path, String name) {
 
-        System.out.println(name);
-
         try {
 
             SimpleBinAnimation finalBinAnimation = new SimpleBinAnimation();
+
+            finalBinAnimation.name = name;
 
             ByteArrayInputStream input = new ByteArrayInputStream(Files.readAllBytes(path));
             int int1 = readInt(input);
@@ -147,36 +147,34 @@ public class AnimBinReader {
                 finalBinAnimation.parts[i].unknown1 = readInt(input);
             }
 
-            //finalBinAnimation.animationExternals = new SimpleBinAnimation.SimpleBinAnimationExternal[int13];
+            finalBinAnimation.externals = new SimpleBinAnimation.SimpleBinAnimationExternal[int13];
             for (int i = 0; i < int13; i++) {
-                input.skipNBytes(4 * 5);
-                //finalBinAnimation.animationExternals[i] = new SimpleBinAnimation.SimpleBinAnimationExternal();
-                //finalBinAnimation.animationExternals[i].globalIdHash = readInt(input);
-                //finalBinAnimation.animationExternals[i].type = //FinalBinAnimation.AnimationExternalType.values()[readInt(input)];
-                //finalBinAnimation.animationExternals[i].property12Offset = readInt(input);
-                //finalBinAnimation.animationExternals[i].property9Offset = readInt(input);
-                //finalBinAnimation.animationExternals[i].property9Length = readInt(input);
+                finalBinAnimation.externals[i] = new SimpleBinAnimation.SimpleBinAnimationExternal();
+                finalBinAnimation.externals[i].globalIdHash = readInt(input);
+                finalBinAnimation.externals[i].type = readInt(input);
+                finalBinAnimation.externals[i].property12Offset = readInt(input);
+                finalBinAnimation.externals[i].property9Offset = readInt(input);
+                finalBinAnimation.externals[i].property9Length = readInt(input);
             }
 
-            //finalBinAnimation.animationProperty8s = new SimpleBinAnimation.SimpleBinAnimationProperty8[int15];
+            //finalBinAnimation.property8s = new SimpleBinAnimation.SimpleBinAnimationProperty8[int15];
             for (int i = 0; i < int15; i++) {
                 input.skipNBytes(4 * 2);
-                //finalBinAnimation.animationProperty8s[i] = new SimpleBinAnimation.SimpleBinAnimationProperty8();
-                //finalBinAnimation.animationProperty8s[i].unknown1 = readInt(input);
-                //finalBinAnimation.animationProperty8s[i].unknown2 = readInt(input);
+                //finalBinAnimation.property8s[i] = new SimpleBinAnimation.SimpleBinAnimationProperty8();
+                //finalBinAnimation.property8s[i].unknown1 = readInt(input);
+                //finalBinAnimation.property8s[i].unknown2 = readInt(input);
             }
 
-            //finalBinAnimation.animationProperty9s = new SimpleBinAnimation.SimpleBinAnimationProperty9[int17];
+            finalBinAnimation.property9s = new SimpleBinAnimation.SimpleBinAnimationProperty9[int17];
             for (int i = 0; i < int17; i++) {
-                input.skipNBytes(4 * 7);
-                //finalBinAnimation.animationProperty9s[i] = new SimpleBinAnimation.SimpleBinAnimationProperty9();
-                //finalBinAnimation.animationProperty9s[i].type = //FinalBinAnimation.AnimationProperty9Type.values()[readInt(input)];
-                //finalBinAnimation.animationProperty9s[i].unknown1 = readFloat(input);
-                //finalBinAnimation.animationProperty9s[i].unknown2 = readFloat(input);
-                //finalBinAnimation.animationProperty9s[i].unknown3 = readFloat(input);
-                //finalBinAnimation.animationProperty9s[i].unknown4 = readFloat(input);
-                //finalBinAnimation.animationProperty9s[i].unknown5 = readFloat(input);
-                //finalBinAnimation.animationProperty9s[i].unknown6 = readFloat(input);
+                finalBinAnimation.property9s[i] = new SimpleBinAnimation.SimpleBinAnimationProperty9();
+                finalBinAnimation.property9s[i].type = readInt(input);
+                finalBinAnimation.property9s[i].unknown1 = readFloat(input);
+                finalBinAnimation.property9s[i].unknown2 = readFloat(input);
+                finalBinAnimation.property9s[i].unknown3 = readFloat(input);
+                finalBinAnimation.property9s[i].unknown4 = readFloat(input);
+                finalBinAnimation.property9s[i].unknown5 = readFloat(input);
+                finalBinAnimation.property9s[i].unknown6 = readFloat(input);
             }
 
             //finalBinAnimation.animationEvents = new SimpleBinAnimation.SimpleBinAnimationEvent[int19];
@@ -188,115 +186,114 @@ public class AnimBinReader {
                 //finalBinAnimation.animationEvents[i].unknown1 = readInt(input);
             }
 
-            //finalBinAnimation.animationProperty11s = new SimpleBinAnimation.SimpleBinAnimationProperty11[int23];
+            //finalBinAnimation.property11s = new SimpleBinAnimation.SimpleBinAnimationProperty11[int23];
             for (int i = 0; i < int23; i++) {
                 input.skipNBytes(4 * 10);
-                //finalBinAnimation.animationProperty11s[i] = new SimpleBinAnimation.SimpleBinAnimationProperty11();
-                //finalBinAnimation.animationProperty11s[i].globalIdHash = readInt(input);
-                //finalBinAnimation.animationProperty11s[i].type = //FinalBinAnimation.AnimationProperty11Type.values()[readInt(input)];
-                //finalBinAnimation.animationProperty11s[i].unknown1 = readInt(input);
-                //finalBinAnimation.animationProperty11s[i].unknown2 = readInt(input);
-                //finalBinAnimation.animationProperty11s[i].unknown3 = readInt(input);
-                //finalBinAnimation.animationProperty11s[i].unknown4 = readInt(input);
-                //finalBinAnimation.animationProperty11s[i].unknown5 = readInt(input);
-                //finalBinAnimation.animationProperty11s[i].unknown6 = readInt(input);
-                //finalBinAnimation.animationProperty11s[i].unknown7 = readInt(input);
+                //finalBinAnimation.property11s[i] = new SimpleBinAnimation.SimpleBinAnimationProperty11();
+                //finalBinAnimation.property11s[i].globalIdHash = readInt(input);
+                //finalBinAnimation.property11s[i].type = //FinalBinAnimation.AnimationProperty11Type.values()[readInt(input)];
+                //finalBinAnimation.property11s[i].unknown1 = readInt(input);
+                //finalBinAnimation.property11s[i].unknown2 = readInt(input);
+                //finalBinAnimation.property11s[i].unknown3 = readInt(input);
+                //finalBinAnimation.property11s[i].unknown4 = readInt(input);
+                //finalBinAnimation.property11s[i].unknown5 = readInt(input);
+                //finalBinAnimation.property11s[i].unknown6 = readInt(input);
+                //finalBinAnimation.property11s[i].unknown7 = readInt(input);
             }
 
-            //finalBinAnimation.animationProperty12s = new SimpleBinAnimation.SimpleBinAnimationProperty12[int31];
+            finalBinAnimation.property12s = new SimpleBinAnimation.SimpleBinAnimationProperty12[int31];
             for (int i = 0; i < int31; i++) {
-                input.skipNBytes(4 * 23);
-                //finalBinAnimation.animationProperty12s[i] = new SimpleBinAnimation.SimpleBinAnimationProperty12();
-                //finalBinAnimation.animationProperty12s[i].type = //FinalBinAnimation.AnimationProperty12Type.values()[readInt(input)];
-                //finalBinAnimation.animationProperty12s[i].idHash = readInt(input);
-                //finalBinAnimation.animationProperty12s[i].attribute3 = readInt(input);
-                //finalBinAnimation.animationProperty12s[i].attribute4 = readInt(input);
-                //finalBinAnimation.animationProperty12s[i].attribute5 = readInt(input);
-                //finalBinAnimation.animationProperty12s[i].attribute6 = readFloat(input);
-                //finalBinAnimation.animationProperty12s[i].attribute7 = readInt(input);
-                //finalBinAnimation.animationProperty12s[i].attribute8 = readInt(input);
-                //finalBinAnimation.animationProperty12s[i].attribute9 = readInt(input);
-                //finalBinAnimation.animationProperty12s[i].attribute10 = readInt(input);
-                //finalBinAnimation.animationProperty12s[i].attribute11 = readInt(input);
-                //finalBinAnimation.animationProperty12s[i].attribute12 = readInt(input);
-                //finalBinAnimation.animationProperty12s[i].attribute13 = readInt(input);
-                //finalBinAnimation.animationProperty12s[i].attribute14 = readInt(input);
-                //finalBinAnimation.animationProperty12s[i].attribute15 = readInt(input);
-                //finalBinAnimation.animationProperty12s[i].attribute16 = readInt(input);
-                //finalBinAnimation.animationProperty12s[i].attribute17 = readInt(input);
-                //finalBinAnimation.animationProperty12s[i].attribute18 = readInt(input);
-                //finalBinAnimation.animationProperty12s[i].attribute19 = readInt(input);
-                //finalBinAnimation.animationProperty12s[i].attribute20 = readInt(input);
-                //finalBinAnimation.animationProperty12s[i].attribute21 = readInt(input);
-                //finalBinAnimation.animationProperty12s[i].attribute22 = readInt(input);
-                //finalBinAnimation.animationProperty12s[i].stringTableIndex = readInt(input);
+                finalBinAnimation.property12s[i] = new SimpleBinAnimation.SimpleBinAnimationProperty12();
+                finalBinAnimation.property12s[i].type = readInt(input);
+                finalBinAnimation.property12s[i].idHash = readInt(input);
+                finalBinAnimation.property12s[i].attribute3 = readInt(input);
+                finalBinAnimation.property12s[i].attribute4 = readInt(input);
+                finalBinAnimation.property12s[i].attribute5 = readInt(input);
+                finalBinAnimation.property12s[i].attribute6 = readFloat(input);
+                finalBinAnimation.property12s[i].attribute7 = readInt(input);
+                finalBinAnimation.property12s[i].attribute8 = readInt(input);
+                finalBinAnimation.property12s[i].attribute9 = readInt(input);
+                finalBinAnimation.property12s[i].attribute10 = readInt(input);
+                finalBinAnimation.property12s[i].attribute11 = readInt(input);
+                finalBinAnimation.property12s[i].attribute12 = readInt(input);
+                finalBinAnimation.property12s[i].attribute13 = readInt(input);
+                finalBinAnimation.property12s[i].attribute14 = readInt(input);
+                finalBinAnimation.property12s[i].attribute15 = readInt(input);
+                finalBinAnimation.property12s[i].attribute16 = readInt(input);
+                finalBinAnimation.property12s[i].attribute17 = readInt(input);
+                finalBinAnimation.property12s[i].attribute18 = readInt(input);
+                finalBinAnimation.property12s[i].attribute19 = readInt(input);
+                finalBinAnimation.property12s[i].attribute20 = readInt(input);
+                finalBinAnimation.property12s[i].attribute21 = readInt(input);
+                finalBinAnimation.property12s[i].attribute22 = readInt(input);
+                finalBinAnimation.property12s[i].stringTableIndex = readInt(input);
             }
 
-            //finalBinAnimation.animationProperty13s = new SimpleBinAnimation.SimpleBinAnimationProperty13[int33];
+            //finalBinAnimation.property13s = new SimpleBinAnimation.SimpleBinAnimationProperty13[int33];
             for (int i = 0; i < int33; i++) {
                 input.skipNBytes(4 * 7);
-                //finalBinAnimation.animationProperty13s[i] = new SimpleBinAnimation.SimpleBinAnimationProperty13();
-                //finalBinAnimation.animationProperty13s[i].attribute1 = readInt(input);
-                //finalBinAnimation.animationProperty13s[i].attribute2 = readFloat(input);
-                //finalBinAnimation.animationProperty13s[i].attribute3 = readInt(input);
-                //finalBinAnimation.animationProperty13s[i].attribute4 = readInt(input);
-                //finalBinAnimation.animationProperty13s[i].attribute5 = readInt(input);
-                //finalBinAnimation.animationProperty13s[i].attribute6 = readInt(input);
-                //finalBinAnimation.animationProperty13s[i].attribute7 = readInt(input);
+                //finalBinAnimation.property13s[i] = new SimpleBinAnimation.SimpleBinAnimationProperty13();
+                //finalBinAnimation.property13s[i].attribute1 = readInt(input);
+                //finalBinAnimation.property13s[i].attribute2 = readFloat(input);
+                //finalBinAnimation.property13s[i].attribute3 = readInt(input);
+                //finalBinAnimation.property13s[i].attribute4 = readInt(input);
+                //finalBinAnimation.property13s[i].attribute5 = readInt(input);
+                //finalBinAnimation.property13s[i].attribute6 = readInt(input);
+                //finalBinAnimation.property13s[i].attribute7 = readInt(input);
             }
 
-            //finalBinAnimation.animationProperty14s = new SimpleBinAnimation.SimpleBinAnimationProperty14[int35];
+            //finalBinAnimation.property14s = new SimpleBinAnimation.SimpleBinAnimationProperty14[int35];
             for (int i = 0; i < int35; i++) {
                 input.skipNBytes(4 * 39);
-                //finalBinAnimation.animationProperty14s[i] = new SimpleBinAnimation.SimpleBinAnimationProperty14();
-                //finalBinAnimation.animationProperty14s[i].attribute1 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute2 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute3 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute4 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute5 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute6 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute7 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute8 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute9 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute10 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute11 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute12 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute13 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute14 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute15 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute16 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute17 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute18 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute19 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute20 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute21 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute22 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute23 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute24 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute25 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute26 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute27 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute28 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute29 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute30 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute31 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute32 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute33 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute34 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute35 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute36 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute37 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute38 = readInt(input);
-                //finalBinAnimation.animationProperty14s[i].attribute39 = readInt(input);
+                //finalBinAnimation.property14s[i] = new SimpleBinAnimation.SimpleBinAnimationProperty14();
+                //finalBinAnimation.property14s[i].attribute1 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute2 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute3 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute4 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute5 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute6 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute7 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute8 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute9 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute10 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute11 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute12 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute13 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute14 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute15 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute16 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute17 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute18 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute19 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute20 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute21 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute22 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute23 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute24 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute25 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute26 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute27 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute28 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute29 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute30 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute31 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute32 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute33 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute34 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute35 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute36 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute37 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute38 = readInt(input);
+                //finalBinAnimation.property14s[i].attribute39 = readInt(input);
             }
 
-            //finalBinAnimation.animationProperty15s = new SimpleBinAnimation.SimpleBinAnimationProperty15[int37];
+            //finalBinAnimation.property15s = new SimpleBinAnimation.SimpleBinAnimationProperty15[int37];
             for (int i = 0; i < int37; i++) {
                 input.skipNBytes(4 * 3);
-                //finalBinAnimation.animationProperty15s[i] = new SimpleBinAnimation.SimpleBinAnimationProperty15();
-                //finalBinAnimation.animationProperty15s[i].idHash1 = readInt(input);
-                //finalBinAnimation.animationProperty15s[i].idHash2 = readInt(input);
-                //finalBinAnimation.animationProperty15s[i].unknown1 = readInt(input);
+                //finalBinAnimation.property15s[i] = new SimpleBinAnimation.SimpleBinAnimationProperty15();
+                //finalBinAnimation.property15s[i].idHash1 = readInt(input);
+                //finalBinAnimation.property15s[i].idHash2 = readInt(input);
+                //finalBinAnimation.property15s[i].unknown1 = readInt(input);
             }
 
             finalBinAnimation.imageStringTableIndices = new int[int39];
@@ -327,12 +324,12 @@ public class AnimBinReader {
                 finalBinAnimation.stateAliasStringTableIndices[i] = readInt(input);
             }
 
-            //finalBinAnimation.animationProperty16s = new SimpleBinAnimation.SimpleBinAnimationProperty16[int1];
+            //finalBinAnimation.property16s = new SimpleBinAnimation.SimpleBinAnimationProperty16[int1];
             for (int i = 0; i < int1; i++) {
                 input.skipNBytes(4 * 2);
-                //finalBinAnimation.animationProperty16s[i] = new SimpleBinAnimation.SimpleBinAnimationProperty16();
-                //finalBinAnimation.animationProperty16s[i].idHash1 = readInt(input);
-                //finalBinAnimation.animationProperty16s[i].idHash2 = readInt(input);
+                //finalBinAnimation.property16s[i] = new SimpleBinAnimation.SimpleBinAnimationProperty16();
+                //finalBinAnimation.property16s[i].idHash1 = readInt(input);
+                //finalBinAnimation.property16s[i].idHash2 = readInt(input);
             }
 
             int stringCount = readInt(input);

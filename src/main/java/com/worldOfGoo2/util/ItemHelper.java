@@ -1,7 +1,9 @@
 package com.worldOfGoo2.util;
 
 import com.woogleFX.file.resourceManagers.ResourceManager;
+import com.woogleFX.gameData.items.ItemManager;
 import com.woogleFX.gameData.level.GameVersion;
+import com.worldOfGoo2.items._2_Item;
 
 import java.io.FileNotFoundException;
 import java.util.HashMap;
@@ -18,13 +20,11 @@ public class ItemHelper {
 
         if (itemNameMap.containsKey(itemUUID)) return itemNameMap.get(itemUUID);
 
-        try {
-            String actualName = ResourceManager.getItem(null, itemUUID, GameVersion.VERSION_WOG2).getAttribute("name").stringValue();
-            itemNameMap.put(itemUUID, actualName);
-            return actualName;
-        } catch (FileNotFoundException ignored) {
-            return "";
-        }
+        _2_Item item = ItemManager.getItem(itemUUID);
+        if (item == null) return "(None)";
+        String actualName = item.getAttribute("name").stringValue();
+        itemNameMap.put(itemUUID, actualName);
+        return actualName;
 
     }
 

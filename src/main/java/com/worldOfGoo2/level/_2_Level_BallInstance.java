@@ -90,6 +90,7 @@ public class _2_Level_BallInstance extends EditorObject {
                 setAttribute2("pos", getAttribute2("pos").positionValue().getX() + "," + newValue));
 
         getAttribute("discovered").addChangeListener((observable, oldValue, newValue) -> update());
+        getAttribute("interactive").addChangeListener((observable, oldValue, newValue) -> update());
         getAttribute2("typeEnum").addChangeListener((observable, oldValue, newValue) -> update());
 
     }
@@ -123,7 +124,17 @@ public class _2_Level_BallInstance extends EditorObject {
             if (!animation.isEmpty()) {
                 try {
                     SimpleBinAnimation flashAnim = ResourceManager.getFlashAnim(getBall().getResources(), animation, GameVersion.VERSION_WOG2);
-                    BinAnimationHelper.addBinAnimationAsObjectPositions(this, flashAnim, "");
+                    String state = "";
+                    if (getAttribute("type").stringValue().equals("LauncherL2B") || getAttribute("type").stringValue().equals("LauncherL2L")) {
+                        if (getAttribute("discovered").booleanValue()) {
+                            if (getAttribute("interactive").booleanValue()) state = "idle";
+                            else state = "npc_idle";
+                        } else {
+                            if (getAttribute("interactive").booleanValue()) state = "sleep";
+                            else state = "npc_sleep";
+                        }
+                    }
+                    BinAnimationHelper.addBinAnimationAsObjectPositions(this, flashAnim, state);
                 } catch (FileNotFoundException e) {
                     logger.error("", e);
                 }

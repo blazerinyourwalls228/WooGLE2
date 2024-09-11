@@ -2,6 +2,8 @@ package com.woogleFX.gameData.animation;
 
 public class SimpleBinAnimation {
 
+    public String name;
+
     public static class SimpleBinAnimationState {
         public int globalIdHash;
         public int localIdHash;
@@ -58,6 +60,50 @@ public class SimpleBinAnimation {
         public int unknown1;
     }
 
+    public static class SimpleBinAnimationExternal {
+        public int globalIdHash;
+        public int type;
+        public int property12Offset;
+        public int property9Offset;
+        public int property9Length;
+    }
+
+    public static class SimpleBinAnimationProperty9 {
+        public int type;
+        public float unknown1;
+        public float unknown2;
+        public float unknown3;
+        public float unknown4;
+        public float unknown5;
+        public float unknown6;
+    }
+
+    public static class SimpleBinAnimationProperty12 {
+        public int type;
+        public int idHash;
+        public int attribute3;
+        public int attribute4;
+        public int attribute5;
+        public float attribute6;
+        public int attribute7;
+        public int attribute8;
+        public int attribute9;
+        public int attribute10;
+        public int attribute11;
+        public int attribute12;
+        public int attribute13;
+        public int attribute14;
+        public int attribute15;
+        public int attribute16;
+        public int attribute17;
+        public int attribute18;
+        public int attribute19;
+        public int attribute20;
+        public int attribute21;
+        public int attribute22;
+        public int stringTableIndex;
+    }
+
     public static class SimpleBinAnimationStringDeclaration {
         public int index;
         public int type;
@@ -75,6 +121,9 @@ public class SimpleBinAnimation {
     public SimpleBinAnimationElement[] elements;
     public SimpleBinAnimationKeyframe[] keyframes;
     public SimpleBinAnimationPart[] parts;
+    public SimpleBinAnimationExternal[] externals;
+    public SimpleBinAnimationProperty9[] property9s;
+    public SimpleBinAnimationProperty12[] property12s;
     public int[] imageStringTableIndices;
     public int[] stateAliasStringTableIndices;
     public SimpleBinAnimationStringDeclaration[] stringDeclarations;

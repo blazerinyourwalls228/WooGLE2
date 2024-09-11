@@ -2,6 +2,8 @@ package com.worldOfGoo2.level;
 
 import com.woogleFX.editorObjects.EditorObject;
 import com.woogleFX.editorObjects.ObjectUtil;
+import com.woogleFX.editorObjects.attributes.AttributeAdapter;
+import com.woogleFX.editorObjects.attributes.EditorAttribute;
 import com.woogleFX.editorObjects.attributes.InputField;
 import com.woogleFX.editorObjects.attributes.MetaEditorAttribute;
 import com.woogleFX.editorObjects.attributes.dataTypes.Position;
@@ -12,6 +14,7 @@ import com.woogleFX.engine.fx.FXEditorButtons;
 import com.woogleFX.engine.renderer.Renderer;
 import com.woogleFX.gameData.ball.AtlasManager;
 import com.woogleFX.gameData.ball.BallManager;
+import com.woogleFX.gameData.ball._2Ball;
 import com.woogleFX.gameData.ball._Ball;
 import com.woogleFX.gameData.level.GameVersion;
 import com.woogleFX.gameData.level.WOG1Level;
@@ -20,6 +23,7 @@ import com.woogleFX.gameData.level.levelOpening.LevelLoader;
 import com.worldOfGoo.ball.BallStrand;
 import com.worldOfGoo.level.BallInstance;
 import com.worldOfGoo2.misc._2_ImageID;
+import com.worldOfGoo2.util.BallInstanceHelper;
 import com.worldOfGoo2.util.TerrainHelper;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Point2D;
@@ -63,12 +67,41 @@ public class _2_Level_Strand extends EditorObject {
 
         addAttribute("ball1UID", InputField._2_BALL_UID);
         addAttribute("ball2UID", InputField._2_BALL_UID);
-        addAttribute("type", InputField._2_STRAND_TYPE).setDefaultValue("1").assertRequired();
+        addAttribute("type", InputField._2_BALL_TYPE).setDefaultValue("1").assertRequired();
         addAttribute("filled", InputField._2_BOOLEAN);
 
         setMetaAttributes(MetaEditorAttribute.parse("ball1UID,ball2UID,type,filled,"));
 
 
+
+        addAttributeAdapter("type", new AttributeAdapter("type") {
+
+            private final EditorAttribute typeAttribute = new EditorAttribute("type",
+                    InputField._2_BALL_TYPE, _2_Level_Strand.this);
+
+            @Override
+            public EditorAttribute getValue() {
+                if (getAttribute2("type").stringValue().isEmpty()) return typeAttribute;
+                typeAttribute.setValue(BallInstanceHelper.typeEnumToTypeMap.getOrDefault(
+                        getAttribute2("type").intValue(), ""));
+                return typeAttribute;
+            }
+
+            @Override
+            public void setValue(String value) {
+                Integer typeEnum = BallInstanceHelper.typeToTypeEnumMap.get(value);
+                if (typeEnum == null) {
+                    try {
+                        typeEnum = Integer.parseInt(value);
+                        typeAttribute.setValue(value);
+                    } catch (NumberFormatException ignored) {
+                        typeEnum = 0;
+                    }
+                } else typeAttribute.setValue(value);
+                setAttribute2("type", typeEnum);
+            }
+
+        });
 
     }
 
@@ -100,7 +133,11 @@ public class _2_Level_Strand extends EditorObject {
 
     @Override
     public void onLoaded() {
+
+        getAttribute2("type").addChangeListener((observable, oldValue, newValue) -> update());
+
         update();
+
     }
 
 
@@ -120,23 +157,11 @@ public class _2_Level_Strand extends EditorObject {
 
         }
 
-        if (goo1 != null && goo1.getAttribute("type").stringValue().equals("Terrain")) setAttribute("type", "10");
+        if (goo1 != null && getAttribute("type").stringValue().equals("Terrain")) setAttribute("type", "10");
 
         try {
-            String imageString = "";
-            if (goo2 == null || goo2.getBall() == null || goo2.getBall().getObjects().get(0).getChildren("strandImageId").get(0).getAttribute("imageId").stringValue().isEmpty()) {
-                if (goo1 == null || goo1.getBall() == null) return;
-                for (EditorObject editorObject : goo1.getBall().getObjects())
-                    if (editorObject instanceof _2_ImageID ball_image && editorObject.getTypeID().equals("strandImageId"))
-                        if (!ball_image.getAttribute("imageId").stringValue().isEmpty())
-                            imageString = ball_image.getAttribute("imageId").stringValue();
-            } else {
-                for (EditorObject editorObject : goo2.getBall().getObjects())
-                    if (editorObject instanceof _2_ImageID ball_image && editorObject.getTypeID().equals("strandImageId"))
-                        if (!ball_image.getAttribute("imageId").stringValue().isEmpty())
-                            imageString = ball_image.getAttribute("imageId").stringValue();
-            }
-
+            _2Ball ball = BallManager.get2Ball(getAttribute("type").stringValue(), GameVersion.VERSION_WOG2);
+            String imageString = ball.getObjects().get(0).getChildren("strandImageId").get(0).getAttribute("imageId").stringValue();
             if (AtlasManager.atlas.containsKey(imageString))
                 strandImage = SwingFXUtils.toFXImage(AtlasManager.atlas.get(imageString), null);
 
@@ -257,7 +282,8 @@ public class _2_Level_Strand extends EditorObject {
                 double y1 = -goo1.getAttribute("pos").positionValue().getY();
                 double x2 = goo2.getAttribute("pos").positionValue().getX();
                 double y2 = -goo2.getAttribute("pos").positionValue().getY();
-                return Math.hypot(y2 - y1, x2 - x1) - 0.35;
+                double amt = (getAttribute("type").stringValue().equals("Terrain")) ? 0.1 : 0.35;
+                return Math.hypot(y2 - y1, x2 - x1) - amt;
 
             }
 
@@ -272,7 +298,7 @@ public class _2_Level_Strand extends EditorObject {
                 return -0.00000001;
             }
 
-            public Paint getBorderColor() {if (goo1 != null && goo1.getAttribute("type").stringValue().equals("Terrain")) {
+            public Paint getBorderColor() {if (goo1 != null && getAttribute("type").stringValue().equals("Terrain")) {
                     return new Color(1.0, 1.0, 1.0, 1.0);
                 } else {
                     return new Color(0.0, 0.0, 0.0, 0.0);
@@ -288,14 +314,14 @@ public class _2_Level_Strand extends EditorObject {
 
                 if (length > maxSize) return new Color(1.0, 0.0, 0.0, 1.0);
                 if (length < minSize) return new Color(0.0, 0.0, 1.0, 1.0);
-                if (goo1 != null && goo1.getAttribute("type").stringValue().equals("Terrain") && FXEditorButtons.comboBoxSelected == goo1.getAttribute("terrainGroup").intValue() && FXEditorButtons.comboBoxSelected != -1) {
+                if (goo1 != null && getAttribute("type").stringValue().equals("Terrain") && FXEditorButtons.comboBoxSelected == goo1.getAttribute("terrainGroup").intValue() && FXEditorButtons.comboBoxSelected != -1) {
                     if (FXEditorButtons.comboBoxList.get(FXEditorButtons.comboBoxSelected)) {
                         return new Color(1.0 ,0.0, 1.0, 1);
                     } else {
                         return new Color(0.0 ,0.0, 1.0, 1);
                     }
                 }
-                if (goo1 != null && goo1.getAttribute("type").stringValue().equals("Terrain") && goo1.getAttribute("terrainGroup").intValue() > -1) {
+                if (goo1 != null && getAttribute("type").stringValue().equals("Terrain") && goo1.getAttribute("terrainGroup").intValue() > -1) {
                     return new Color(0.0, 0.0, 0.0, 1);
                 } else {
                     return new Color(0.5, 0.5, 0.5, 1);
@@ -304,7 +330,7 @@ public class _2_Level_Strand extends EditorObject {
             }
 
             public boolean isVisible() {
-                if (goo1.getAttribute("type").stringValue().equals("Terrain")) {
+                if (getAttribute("type").stringValue().equals("Terrain")) {
                     return (LevelManager.getLevel().getVisibilitySettings().getShowGoos() == 1 || LevelManager.getLevel().getVisibilitySettings().getShowGoos() == 2 && goo1.visibilityFunction() && goo2.visibilityFunction()) || FXEditorButtons.comboBoxSelected == goo1.getAttribute("terrainGroup").intValue();
                 }
                 return LevelManager.getLevel().getVisibilitySettings().getShowGoos() == 1 && goo1.visibilityFunction() && goo2.visibilityFunction();

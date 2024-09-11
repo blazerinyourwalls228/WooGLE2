@@ -337,11 +337,15 @@ public class LevelLoader {
                     long count = wog2Level.getObjects().size();
 
                     long i = 0;
-                    for (EditorObject object : wog2Level.getObjects().toArray(new EditorObject[0])) {
-                        object.update();
-                        object.onLoaded();
-                        i++;
-                        updateProgress(i, count);
+                    try {
+                        for (EditorObject object : wog2Level.getObjects().toArray(new EditorObject[0])) {
+                            object.update();
+                            object.onLoaded();
+                            i++;
+                            updateProgress(i, count);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
 
                     return null;

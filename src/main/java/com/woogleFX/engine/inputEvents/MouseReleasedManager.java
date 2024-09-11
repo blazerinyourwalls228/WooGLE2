@@ -137,6 +137,7 @@ public class MouseReleasedManager {
 
                                     strand.setAttribute("ball1UID", SelectionManager.getStrand1Gooball().getAttribute("uid").stringValue());
                                     strand.setAttribute("ball2UID", ball.getAttribute("uid").stringValue());
+                                    strand.setAttribute("type", SelectionManager.getStrand1Gooball().getAttribute("type").stringValue());
 
                                     wog2Level.getObjects().add(strand);
                                     ObjectAdder.addAnything(strand);

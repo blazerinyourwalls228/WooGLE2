@@ -17,10 +17,12 @@ import com.woogleFX.engine.fx.FXPropertiesView;
 import com.woogleFX.engine.renderer.Depth;
 import com.woogleFX.file.resourceManagers.GlobalResourceManager;
 import com.woogleFX.file.resourceManagers.ResourceManager;
+import com.woogleFX.gameData.animation.AnimationManager;
 import com.woogleFX.gameData.animation.Keyframe;
 import com.woogleFX.gameData.animation.SimpleBinAnimation;
 import com.woogleFX.gameData.animation.WoGAnimation;
 import com.woogleFX.gameData.font._Font;
+import com.woogleFX.gameData.items.ItemManager;
 import com.woogleFX.gameData.level.GameVersion;
 import com.worldOfGoo2.items._2_Item;
 import com.worldOfGoo2.items._2_Item_Object;
@@ -112,18 +114,13 @@ public class _2_Level_Item extends EditorObject {
             @Override
             public void setValue(String value) {
                 temp.setValue(value);
-                for (EditorObject resource : GlobalResourceManager.getSequelResources()) {
-                    if (resource instanceof _2_Item) {
-                        if (resource.getAttribute("name").stringValue().equals(value)) {
-                            setAttribute2("type", resource.getAttribute("uuid").stringValue());
-                            updateImage();
-                            refreshUserVariables();
-                            if (LevelManager.getLevel().getSelected().length > 0 && _2_Level_Item.this == LevelManager.getLevel().getSelected()[0]) {
-                                FXPropertiesView.changeTableView(LevelManager.getLevel().getSelected());
-                            }
-                            return;
-                        }
-                    }
+                _2_Item item1 = ItemManager.getItem(value);
+                if (item1 == null) return;
+                setAttribute2("type", item1.getAttribute("uuid").stringValue());
+                updateImage();
+                refreshUserVariables();
+                if (LevelManager.getLevel().getSelected().length > 0 && _2_Level_Item.this == LevelManager.getLevel().getSelected()[0]) {
+                    FXPropertiesView.changeTableView(LevelManager.getLevel().getSelected());
                 }
             }
 
@@ -299,13 +296,9 @@ public class _2_Level_Item extends EditorObject {
 
         if (LevelManager.getLevel() == null) return;
 
-        try {
-            if (!getAttribute2("type").stringValue().isEmpty()) {
-                item = ResourceManager.getItem(null, getAttribute2("type").stringValue(), GameVersion.VERSION_WOG2);
-                refreshObjectPositions();
-            }
-        } catch (FileNotFoundException ignored) {
-
+        if (!getAttribute2("type").stringValue().isEmpty()) {
+            item = ItemManager.getItem(getAttribute("type").stringValue());
+            refreshObjectPositions();
         }
 
     }
@@ -347,122 +340,157 @@ public class _2_Level_Item extends EditorObject {
             }
         }
 
-        boolean finalOk = ok;
-        addObjectComponent(new TextComponent() {
-            public _Font getFont() {
-                return null;
-            }
-            public Font getOtherFont() {
-                return new Font("Consolas", 0.5);
-            }
-            public String getText() {
-                return getAttribute("type").stringValue();
-            }
-            public double getX() {
-                return getAttribute("pos").positionValue().getX() + 0.2;
-            }
-            public double getY() {
-                return -getAttribute("pos").positionValue().getY() + 0.16875;
-            }
-            public double getDepth() {
-                return Depth.ITEMS;
-            }
-            public boolean isVisible() {
-                return !finalOk && shouldShow() && LevelManager.getLevel().getVisibilitySettings().isShowGraphics();
-            }
-            public boolean isResizable() {
-                return false;
-            }
-            public boolean isRotatable() {
-                return false;
-            }
-        });
-        addObjectComponent(new CircleComponent() {
-            public Paint getColor() {
-                return new javafx.scene.paint.Color(1.0, 1.0, 1.0, 1.0);
-            }
-            public double getEdgeSize() {
-                return 0.1;
-            }
-            public Paint getBorderColor() {
-                return new javafx.scene.paint.Color(1.0, 1.0, 1.0, 1.0);
-            }
-            public boolean isEdgeOnly() {
-                return false;
-            }
-            public double getRadius() {
-                return 0.1;
-            }
-            public double getX() {
-                return getAttribute("pos").positionValue().getX();
-            }
-            public void setX(double x) {
-                double y = getAttribute("pos").positionValue().getY();
-                setAttribute("pos", x + "," + y);
-            }
-            public double getY() {
-                return -getAttribute("pos").positionValue().getY();
-            }
-            public void setY(double y) {
-                double x = getAttribute("pos").positionValue().getX();
-                setAttribute("pos", x + "," + (-y));
-            }
-            public double getDepth() {
-                return Depth.ITEMS;
-            }
-            public boolean isVisible() {
-                return !finalOk && shouldShow() && LevelManager.getLevel().getVisibilitySettings().isShowGraphics();
-            }
-            public boolean isResizable() {
-                return false;
-            }
-            public boolean isRotatable() {
-                return false;
-            }
-        });
-        addObjectComponent(new CircleComponent() {
-            public Paint getColor() {
-                return new javafx.scene.paint.Color(1.0, 1.0, 1.0, 1.0);
-            }
-            public double getEdgeSize() {
-                return 0.0125;
-            }
-            public Paint getBorderColor() {
-                return new javafx.scene.paint.Color(0.0, 0.0, 0.0, 1.0);
-            }
-            public boolean isEdgeOnly() {
-                return false;
-            }
-            public double getRadius() {
-                return 0.1;
-            }
-            public double getX() {
-                return getAttribute("pos").positionValue().getX();
-            }
-            public void setX(double x) {
-                double y = getAttribute("pos").positionValue().getY();
-                setAttribute("pos", x + "," + y);
-            }
-            public double getY() {
-                return -getAttribute("pos").positionValue().getY();
-            }
-            public void setY(double y) {
-                double x = getAttribute("pos").positionValue().getX();
-                setAttribute("pos", x + "," + (-y));
-            }
-            public double getDepth() {
-                return Depth.ITEMS;
-            }
-            public boolean isVisible() {
-                return !finalOk && shouldShow() && LevelManager.getLevel().getVisibilitySettings().isShowGraphics();
-            }
-            public boolean isResizable() {
-                return false;
-            }
-            public boolean isRotatable() {
-                return false;
-            }
-        });
+        if (!ok) {
+
+            addObjectComponent(new TextComponent() {
+                public _Font getFont() {
+                    return null;
+                }
+
+                public Font getOtherFont() {
+                    return new Font("Consolas", 0.5);
+                }
+
+                public String getText() {
+                    return getAttribute("type").stringValue();
+                }
+
+                public double getX() {
+                    return getAttribute("pos").positionValue().getX() + 0.2;
+                }
+
+                public double getY() {
+                    return -getAttribute("pos").positionValue().getY() + 0.16875;
+                }
+
+                public double getDepth() {
+                    return Depth.ITEMS;
+                }
+
+                public boolean isVisible() {
+                    return shouldShow() && LevelManager.getLevel().getVisibilitySettings().isShowGraphics();
+                }
+
+                public boolean isResizable() {
+                    return false;
+                }
+
+                public boolean isRotatable() {
+                    return false;
+                }
+            });
+            addObjectComponent(new CircleComponent() {
+                public Paint getColor() {
+                    return new javafx.scene.paint.Color(1.0, 1.0, 1.0, 1.0);
+                }
+
+                public double getEdgeSize() {
+                    return 0.1;
+                }
+
+                public Paint getBorderColor() {
+                    return new javafx.scene.paint.Color(1.0, 1.0, 1.0, 1.0);
+                }
+
+                public boolean isEdgeOnly() {
+                    return false;
+                }
+
+                public double getRadius() {
+                    return 0.1;
+                }
+
+                public double getX() {
+                    return getAttribute("pos").positionValue().getX();
+                }
+
+                public void setX(double x) {
+                    double y = getAttribute("pos").positionValue().getY();
+                    setAttribute("pos", x + "," + y);
+                }
+
+                public double getY() {
+                    return -getAttribute("pos").positionValue().getY();
+                }
+
+                public void setY(double y) {
+                    double x = getAttribute("pos").positionValue().getX();
+                    setAttribute("pos", x + "," + (-y));
+                }
+
+                public double getDepth() {
+                    return Depth.ITEMS;
+                }
+
+                public boolean isVisible() {
+                    return shouldShow() && LevelManager.getLevel().getVisibilitySettings().isShowGraphics();
+                }
+
+                public boolean isResizable() {
+                    return false;
+                }
+
+                public boolean isRotatable() {
+                    return false;
+                }
+            });
+            addObjectComponent(new CircleComponent() {
+                public Paint getColor() {
+                    return new javafx.scene.paint.Color(1.0, 1.0, 1.0, 1.0);
+                }
+
+                public double getEdgeSize() {
+                    return 0.0125;
+                }
+
+                public Paint getBorderColor() {
+                    return new javafx.scene.paint.Color(0.0, 0.0, 0.0, 1.0);
+                }
+
+                public boolean isEdgeOnly() {
+                    return false;
+                }
+
+                public double getRadius() {
+                    return 0.1;
+                }
+
+                public double getX() {
+                    return getAttribute("pos").positionValue().getX();
+                }
+
+                public void setX(double x) {
+                    double y = getAttribute("pos").positionValue().getY();
+                    setAttribute("pos", x + "," + y);
+                }
+
+                public double getY() {
+                    return -getAttribute("pos").positionValue().getY();
+                }
+
+                public void setY(double y) {
+                    double x = getAttribute("pos").positionValue().getX();
+                    setAttribute("pos", x + "," + (-y));
+                }
+
+                public double getDepth() {
+                    return Depth.ITEMS;
+                }
+
+                public boolean isVisible() {
+                    return shouldShow() && LevelManager.getLevel().getVisibilitySettings().isShowGraphics();
+                }
+
+                public boolean isResizable() {
+                    return false;
+                }
+
+                public boolean isRotatable() {
+                    return false;
+                }
+            });
+
+        }
 
         String animation = getItem().getAttribute("animationName").stringValue();
         if (!animation.isEmpty()) {
@@ -471,6 +499,28 @@ public class _2_Level_Item extends EditorObject {
                 BinAnimationHelper.addBinAnimationAsObjectPositions(this, flashAnim, getItem().getAttribute("animationAlias").stringValue());
             } catch (FileNotFoundException e) {
                 logger.error("", e);
+            }
+        } else {
+            String animationAlias = getItem().getAttribute("animationAlias").stringValue();
+            if (!animationAlias.isEmpty()) {
+                System.out.println(animationAlias);
+                for (SimpleBinAnimation binAnimation : AnimationManager.getBinAnimations()) {
+                    int i1 = 0;
+                    for (SimpleBinAnimation.SimpleBinAnimationState ignored : binAnimation.states) {
+                        if (binAnimation.stateAliasStringTableIndices.length <= i1) break;
+                        StringBuilder stringBuilder = new StringBuilder();
+                        int byteIndex = binAnimation.stringDefinitions[binAnimation.stateAliasStringTableIndices[i1]].stringTableIndex;
+                        while (binAnimation.stringTable[byteIndex] != 0x00) {
+                            stringBuilder.append((char)binAnimation.stringTable[byteIndex]);
+                            byteIndex++;
+                        }
+                        if (stringBuilder.toString().equals(animationAlias)) {
+                            BinAnimationHelper.addBinAnimationAsObjectPositions(this, binAnimation, animationAlias);
+                            break;
+                        }
+                        i1++;
+                    }
+                }
             }
         }
 
@@ -561,12 +611,13 @@ public class _2_Level_Item extends EditorObject {
                     if (getAttribute("forcedRandomizationIndex").intValue() == -1) {
                         return randomizationIndices.get(-1) == null || item.getChildren("objects").indexOf(part) == randomizationIndices.get(-1);
                     }
+                    if (true) return item.getChildren("objects").indexOf(part) == getAttribute("forcedRandomizationIndex").intValue();
                     if (randomizationIndices.get(part.getAttribute("randomizationGroup").intValue()) == null) return false;
                     if (part.getAttribute("randomizationGroup").intValue() == getAttribute("forcedRandomizationIndex").intValue()) {
                         int index = 0;
                         for (EditorObject child : getChildren()) if (child instanceof _2_Item_Object && child.getAttribute("randomizationGroup").intValue() == getAttribute("forcedRandomizationIndex").intValue()) {
-                            index++;
                             if (child == part) break;
+                            index++;
                         }
                         return (index == randomizationIndices.get(part.getAttribute("randomizationGroup").intValue()));
                     }

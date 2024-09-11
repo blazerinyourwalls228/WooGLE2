@@ -208,7 +208,7 @@ public class ObjectGOOParser {
     }
 
 
-    public static EditorObject read(Class<? extends EditorObject> assetType, String text) {
+    public static <T extends EditorObject> T read(Class<T> assetType, String text) {
 
         String currentWord = "";
 
@@ -234,7 +234,7 @@ public class ObjectGOOParser {
 
         AssetAssetObject asset = readAsset(assetType, tokens, null);
 
-        return asset.value;
+        return (T) asset.value;
 
     }
 

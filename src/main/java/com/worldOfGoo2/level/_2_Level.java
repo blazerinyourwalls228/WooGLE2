@@ -9,6 +9,7 @@ import com.woogleFX.editorObjects.objectComponents.RectangleComponent;
 import com.woogleFX.engine.LevelManager;
 import com.woogleFX.engine.renderer.Depth;
 import com.woogleFX.file.resourceManagers.ResourceManager;
+import com.woogleFX.gameData.environments.EnvironmentManager;
 import com.woogleFX.gameData.level.GameVersion;
 import com.worldOfGoo2.environments._2_Environment;
 import com.worldOfGoo2.environments._2_Environment_Layer;
@@ -176,7 +177,7 @@ public class _2_Level extends EditorObject {
 
             if (getAttribute("backgroundId").stringValue().isEmpty()) return;
 
-            _2_Environment environment = ResourceManager.getEnvironment(null, getAttribute("backgroundId").stringValue(), GameVersion.VERSION_WOG2);
+            _2_Environment environment = EnvironmentManager.getEnvironment(getAttribute("backgroundId").stringValue());
 
             for (EditorObject part : environment.getChildren()) if (part instanceof _2_Environment_Layer) {
 
