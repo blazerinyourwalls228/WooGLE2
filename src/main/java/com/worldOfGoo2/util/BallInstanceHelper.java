@@ -83,10 +83,11 @@ public class BallInstanceHelper {
     }
 
     
-    public static AttributeAdapter ballTypeAttributeAdapter(EditorObject object, String displayName, String realName) {
+    public static AttributeAdapter ballTypeAttributeAdapter(EditorObject object, String displayName, String realName, EditorAttribute attribute) {
         return new AttributeAdapter(displayName) {
-            private final EditorAttribute typeAttribute = new EditorAttribute(displayName,
-                    InputField._2_BALL_TYPE, object);
+            private final EditorAttribute typeAttribute = attribute != null
+                ? attribute
+                : new EditorAttribute(displayName, InputField._2_BALL_TYPE, object);
 
             @Override
             public EditorAttribute getValue() {

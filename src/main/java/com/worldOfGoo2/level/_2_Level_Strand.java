@@ -68,7 +68,7 @@ public class _2_Level_Strand extends EditorObject {
 
 
 
-        addAttributeAdapter("type", BallInstanceHelper.ballTypeAttributeAdapter(this, "type", "type"));
+        addAttributeAdapter("type", BallInstanceHelper.ballTypeAttributeAdapter(this, "type", "type", null));
 
     }
 

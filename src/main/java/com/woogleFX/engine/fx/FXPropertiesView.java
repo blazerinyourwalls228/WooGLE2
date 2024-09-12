@@ -287,7 +287,11 @@ public class FXPropertiesView {
             EditorAttribute attribute = propertiesView.getTreeItem(e.getTreeTablePosition().getRow()).getValue();
             String oldValue = attribute.stringValue();
             if (InputField.verify(attribute.getObject(), attribute.getType(), e.getNewValue(), attribute.getRequired())) {
-                attribute.getObject().setAttribute(attribute.getName(), e.getNewValue());
+                if (attribute.getType() == InputField._2_BALL_TYPE_USERVAR) {
+                    attribute.getObject().setAttribute(attribute.getObject().getName(), e.getNewValue());
+                } else {
+                    attribute.getObject().setAttribute(attribute.getName(), e.getNewValue());
+                }
             }
 
             // If the edit was actually valid:
@@ -458,6 +462,26 @@ public class FXPropertiesView {
                         UndoManager.registerChange(new AttributeChangeAction(attribute.getObject().getAttribute("type"),
                                 attribute.getObject().getAttribute("type").stringValue(), ballFile.getName()));
                         attribute.getObject().setAttribute("type", ballFile.getName());
+                    });
+                    vBox.getChildren().add(setImageItem);
+
+                }
+            }
+            case _2_BALL_TYPE_USERVAR -> {
+                String path = FileManager.getGameDir(version);
+                File[] ballFiles = new File(path + "/res/balls").listFiles();
+                if (ballFiles != null)  for (File ballFile : ballFiles) {
+
+                    if (ballFile.getName().contains(".")) continue;
+                    if (!(ballFile.getName().toLowerCase().contains(currentText.toLowerCase()))) continue;
+
+                    Button setImageItem = new Button(ballFile.getName());
+                    configureButton(setImageItem);
+                    setImageItem.setOnAction(event -> {
+                        EditorAttribute type = attribute.getObject().getAttribute(attribute.getObject().getName());
+                        
+                        UndoManager.registerChange(new AttributeChangeAction(type, type.stringValue(), ballFile.getName()));
+                        attribute.getObject().setAttribute(attribute.getObject().getName(), ballFile.getName());
                     });
                     vBox.getChildren().add(setImageItem);
 

@@ -39,7 +39,7 @@ public class _2_Level_BallInstance extends EditorObject {
         addAttributeAdapter("pos", AttributeAdapter.pointAttributeAdapter(
                 this, "pos", "pos"));
 
-        addAttributeAdapter("typeEnum", BallInstanceHelper.ballTypeAttributeAdapter(this, "type", "typeEnum"));
+        addAttributeAdapter("typeEnum", BallInstanceHelper.ballTypeAttributeAdapter(this, "type", "typeEnum", null));
 
     }
 

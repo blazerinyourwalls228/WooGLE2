@@ -2,7 +2,6 @@ package com.worldOfGoo2.level;
 
 import com.woogleFX.editorObjects.EditorObject;
 import com.woogleFX.editorObjects.ImageUtility;
-import com.woogleFX.editorObjects.ObjectUtil;
 import com.woogleFX.editorObjects.attributes.AttributeAdapter;
 import com.woogleFX.editorObjects.attributes.EditorAttribute;
 import com.woogleFX.editorObjects.attributes.InputField;
@@ -15,7 +14,6 @@ import com.woogleFX.editorObjects.objectCreators.ObjectCreator;
 import com.woogleFX.engine.LevelManager;
 import com.woogleFX.engine.fx.FXPropertiesView;
 import com.woogleFX.engine.renderer.Depth;
-import com.woogleFX.file.resourceManagers.GlobalResourceManager;
 import com.woogleFX.file.resourceManagers.ResourceManager;
 import com.woogleFX.gameData.animation.AnimationManager;
 import com.woogleFX.gameData.animation.Keyframe;
@@ -26,9 +24,9 @@ import com.woogleFX.gameData.items.ItemManager;
 import com.woogleFX.gameData.level.GameVersion;
 import com.worldOfGoo2.items._2_Item;
 import com.worldOfGoo2.items._2_Item_Object;
+import com.worldOfGoo2.util.BallInstanceHelper;
 import com.worldOfGoo2.util.BinAnimationHelper;
 import com.worldOfGoo2.util.ItemHelper;
-import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
@@ -130,8 +128,6 @@ public class _2_Level_Item extends EditorObject {
 
 
     private void refreshUserVariables() {
-
-        StringBuilder userVariables = new StringBuilder("?User Variables<");
         EditorObject obj = this;
 
         EditorAttribute[] attributes = new EditorAttribute[24];
@@ -162,26 +158,44 @@ public class _2_Level_Item extends EditorObject {
             userVariable2.setTypeID("userVariables");
         }
 
+        ArrayList<EditorObject> userVariables = getItem().getChildren("userVariables");
+        
+        i = 0;
         for (EditorObject child : getChildren("userVariables")) {
+            
             addAttribute(child.getName(), InputField._2_CHILD_HIDDEN);
-            addAttributeAdapter(child.getName(), new AttributeAdapter(child.getName()) {
-                @Override
-                public EditorAttribute getValue() {
-                    EditorAttribute editorAttribute = new EditorAttribute(child.getName(), InputField._2_STRING, obj);
-                    editorAttribute.setValue(child.getAttribute("value").stringValue());
-                    return editorAttribute;
-                }
-
-                @Override
-                public void setValue(String value) {
-                    child.setAttribute("value", value);
-                }
-            });
+            
+            if (userVariables.get(i).getAttribute("type").intValue() == 4) {
+                EditorAttribute attribute = new EditorAttribute(child.getName(), InputField._2_BALL_TYPE_USERVAR, child);
+                addAttributeAdapter(child.getName(),
+                    BallInstanceHelper.ballTypeAttributeAdapter(child, child.getName(), "value", attribute));
+                
+                child.addAttributeAdapter(child.getName(),
+                    BallInstanceHelper.ballTypeAttributeAdapter(child, child.getName(), "value", attribute));
+                
+                attribute.addChangeListener((observable, oldValue, newValue) -> {
+                    setAttribute(child.getName(), newValue);
+                });
+            } else {
+                addAttributeAdapter(child.getName(), new AttributeAdapter(child.getName()) {
+                    @Override
+                    public EditorAttribute getValue() {
+                        EditorAttribute editorAttribute = new EditorAttribute(child.getName(), InputField._2_STRING, obj);
+                        editorAttribute.setValue(child.getAttribute("value").stringValue());
+                        return editorAttribute;
+                    }
+    
+                    @Override
+                    public void setValue(String value) {
+                        child.setAttribute("value", value);
+                    }
+                });
+            }
 
             MetaEditorAttribute userVariableAttribute = new MetaEditorAttribute();
             userVariableAttribute.setName(child.getName());
             userVariablesAttribute.getChildren().add(userVariableAttribute);
-
+            i++;
         }
 
     }

@@ -68,6 +68,7 @@ public enum InputField {
     _2_LIST_STRING,
     _2_LIST_NUMBER,
     _2_BALL_TYPE,
+    _2_BALL_TYPE_USERVAR,
     _2_TERRAIN_GROUP_TYPE_INDEX,
     _2_TERRAIN_GROUP,
     _2_ITEM_TYPE,
