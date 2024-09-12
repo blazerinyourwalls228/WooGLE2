@@ -18,7 +18,7 @@ import java.util.Stack;
 
 public class ItemManager {
 
-    private static final Map<String, _2_Item> itemMap = new HashMap<>();
+    public static final Map<String, _2_Item> itemMap = new HashMap<>();
     public static _2_Item getItem(String id) {
 
         _2_Item item = itemMap.get(id);

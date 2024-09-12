@@ -33,8 +33,8 @@ public class HierarchyManager {
 
     public static Image getObjectIcon(Class<? extends EditorObject> type, boolean terrain) {
 
-        String iconName = switch (type.getName()) {
-            case "addin", "Addin_addin", "Addin_id", "Addin_name",
+        String iconName = switch (type.getSimpleName()) {
+            case "addin", "Addin", "Addin_addin", "Addin_id", "Addin_name",
                     "Addin_type", "Addin_version", "Addin_description",
                     "Addin_author", "Addin_levels", "Addin_level",
                     "Addin_dir", "Addin_wtf_name",
@@ -52,7 +52,7 @@ public class HierarchyManager {
             case "font" -> "resrc/font";
             case "hinge" -> "scene/hinge";
             case "label" -> "scene/label";
-            case "level" -> "level/level";
+            case "level", "_2_Level" -> "level/level";
             case "levelexit" -> "level/levelexit";
             case "line" -> "scene/line";
             case "linearforcefield" -> "scene/linearforcefield";
@@ -79,10 +79,15 @@ public class HierarchyManager {
             case "targetheight" -> "level/targetheight";
             case "Vertex" -> "level/Vertex";
 
-            case "CameraKeyFrame" -> "level/camera";
-            case "Pin" -> "scene/hinge";
+            // WOG2
+
+            case "CameraKeyFrame", "_2_Level_CameraKeyFrame" -> "level/camera";
+            case "Pin", "_2_Level_Pin" -> "scene/hinge";
             case "Item" -> "scene/SceneLayer";
             case "UserVariable" -> "addin/addin";
+            case "_2_Level_BallInstance" -> "level/BallInstance";
+            case "_2_Level_Strand" -> "level/Strand";
+            //case "_2_Level_TerrainGroup" -> "level/Strand";
 
             default -> null;
         };
@@ -108,6 +113,14 @@ public class HierarchyManager {
             case "TerrainNonSticky" -> "WoG2/terrainNonSticky";
             case "TerrainSticky" -> "WoG2/terrainSticky";
             case "TerrainUnwalkable" -> "WoG2/terrainUnwalkable";
+            case "PipeInLiquid" -> "WoG2/pipeInLiquid";
+            case "PipeInBalls" -> "WoG2/pipeInBalls";
+            case "LinearForceField" -> "scene/linearforcefield";
+            case "RadialForceField" -> "scene/radialforcefield";
+            case "AmbientSoundArea" -> "level/loopsound";
+            case "AutoBoundsArea" -> "WoG2/autoBounds";
+            case "Water" -> "WoG2/water";
+            case "Connection" -> "WoG2/connection";
 
             default -> "scene/SceneLayer";
         };
@@ -172,9 +185,9 @@ public class HierarchyManager {
                 if (cell.getTableRow().getItem().getType().equals("Item")) {
                     cell.setText(cell.getTableRow().getItem().getAttribute("type").stringValue());
                     imageView.setImage(getItemIcon(cell.getTableRow().getItem().getAttribute("type").stringValue()));
-                    imageView.setFitWidth(16);
-                    imageView.setFitHeight(16);
                 }
+                imageView.setFitWidth(16);
+                imageView.setFitHeight(16);
 
                 // If the cell's EditorObject is invalid, display its graphic with a warning symbol.
                 // Otherwise, just display its graphic.

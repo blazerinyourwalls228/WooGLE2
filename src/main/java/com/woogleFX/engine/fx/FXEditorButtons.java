@@ -12,20 +12,25 @@ import com.woogleFX.file.resourceManagers.ResourceManager;
 import com.woogleFX.editorObjects.objectCreators.ObjectAdder;
 import com.woogleFX.engine.undoHandling.UndoManager;
 import com.woogleFX.engine.gui.PaletteReconfigurator;
+import com.woogleFX.gameData.items.ItemManager;
 import com.woogleFX.gameData.level.*;
 import com.woogleFX.gameData.level.levelOpening.LevelLoader;
 import com.woogleFX.gameData.level.levelSaving.LevelUpdater;
 import com.worldOfGoo.ball.Part;
 import com.worldOfGoo2.ball._2_Ball_Image;
 import com.worldOfGoo2.ball._2_Ball_Part;
+import com.worldOfGoo2.items._2_Item;
 import com.worldOfGoo2.level._2_Level_BallInstance;
+import com.worldOfGoo2.level._2_Level_Item;
 import com.worldOfGoo2.misc._2_Point;
 import com.worldOfGoo2.util.BallInstanceHelper;
+import com.worldOfGoo2.util.ItemHelper;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventType;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -579,6 +584,7 @@ public class FXEditorButtons {
     private static final Button buttonCleanResources = new Button();
     private static final Button buttonSetMusic = new Button();
     private static final Button buttonSetLoopsound = new Button();
+    private static final Button buttonAddItem = new Button();
 
     private static void resources(ToolBar toolBar) {
 
@@ -599,6 +605,11 @@ public class FXEditorButtons {
         buttonAddTextResource.setTooltip(new DelayedTooltip("Add Text Resource"));
         toolBar.getItems().add(buttonAddTextResource);
 
+        MenuButton menuButton = new MenuButton("Add Items");
+        buttonAddItem.setGraphic(menuButton);
+        buttonAddItem.setTooltip(new DelayedTooltip("Add Items"));
+        toolBar.getItems().add(buttonAddItem);
+
         toolBar.getItems().add(new Separator());
 
         setIcon(buttonCleanResources, prefix + "clean_level_resources.png");
@@ -618,6 +629,25 @@ public class FXEditorButtons {
         buttonSetLoopsound.setTooltip(new DelayedTooltip("Set Loop Sound"));
         toolBar.getItems().add(buttonSetLoopsound);
 
+    }
+
+    public static void updateItemsSelector(WOG2Level wog2Level) {
+        MenuButton content = (MenuButton) buttonAddItem.getGraphic();
+        content.getItems().clear();
+        for (var entry : ItemHelper.itemTypeMap.entrySet()) {
+            Menu item = new Menu(entry.getValue());
+            for (var loadedItemEntry : ItemManager.itemMap.entrySet()) {
+                if (loadedItemEntry.getValue().getAttribute("type").intValue() == entry.getKey()) {
+                    MenuItem sub = new MenuItem(loadedItemEntry.getKey());
+                    sub.setOnAction(e -> {
+                        var object = ObjectAdder.addObject2(_2_Level_Item.class, wog2Level.getLevel().getPossibleChildrenTypeIDs()[3], wog2Level.getLevel());
+                        object.setAttribute("type", loadedItemEntry.getKey());
+                    });
+                    item.getItems().add(sub);
+                }
+            }
+            content.getItems().add(item);
+        }
     }
 
 
