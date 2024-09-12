@@ -62,6 +62,7 @@ public class LevelManager {
             FXContainers.getViewPane().getChildren().remove(0);
             FXContainers.getViewPane().getChildren().add(0, FXHierarchy.getNewHierarchySwitcherButtons());
             FXEditorButtons.updateTerrainGroupSelector(wog2Level);
+            FXEditorButtons.updateItemsSelector(wog2Level);
         }
 
         String levelName = level.getLevelName() + " (version " + level.getVersion() + ")";
