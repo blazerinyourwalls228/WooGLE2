@@ -6,6 +6,7 @@ import java.util.*;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.woogleFX.editorObjects.attributes.*;
 import com.woogleFX.editorObjects.objectComponents.ObjectComponent;
+import com.woogleFX.engine.undoHandling.userActions.ObjectDestructionAction;
 import com.woogleFX.gameData.level.GameVersion;
 
 import com.worldOfGoo2.level._2_Level_BallInstance;
@@ -256,6 +257,16 @@ public class EditorObject {
 
     public void onLoaded() {
 
+    }
+    
+    /**
+     * Gets called when the object is deleted.
+     * Don't delete other objects in this, instead, create ObjectDestructionActions
+     * and the ObjectManager will delete them automatically.
+     * (This is done to preserve the object's original positions in the scene tree)
+     */
+    public List<ObjectDestructionAction> onDelete() {
+        return null;
     }
 
 }

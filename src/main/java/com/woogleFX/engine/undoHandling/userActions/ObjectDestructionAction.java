@@ -25,5 +25,10 @@ public class ObjectDestructionAction extends UserAction {
         ObjectManager.deleteItem(LevelManager.getLevel(), getObject(), false);
         SelectionManager.selectionMode();
     }
+    
+    
+    public int compareTo(ObjectDestructionAction other) {
+        return position - other.position;
+    }
 
 }

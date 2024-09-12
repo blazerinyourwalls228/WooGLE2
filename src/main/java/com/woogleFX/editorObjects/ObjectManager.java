@@ -4,7 +4,6 @@ import com.woogleFX.editorObjects.attributes.InputField;
 import com.woogleFX.editorObjects.objectCreators.ObjectAdder;
 import com.woogleFX.editorObjects.objectCreators.ObjectCreator;
 import com.woogleFX.engine.LevelManager;
-import com.woogleFX.engine.SelectionManager;
 import com.woogleFX.engine.fx.hierarchy.FXHierarchy;
 import com.woogleFX.engine.fx.FXPropertiesView;
 import com.woogleFX.engine.undoHandling.UndoManager;
@@ -20,10 +19,9 @@ import com.worldOfGoo.level.Vertex;
 import com.worldOfGoo.scene.Scene;
 import com.worldOfGoo2.level._2_Level_BallInstance;
 import com.worldOfGoo2.level._2_Level_Strand;
-import com.worldOfGoo2.util.BallInstanceHelper;
-
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class ObjectManager {
 
@@ -218,23 +216,33 @@ public class ObjectManager {
 
     public static void delete(_Level level) {
 
-        ArrayList<UserAction> objectDestructionActions = new ArrayList<>();
+        ArrayList<ObjectDestructionAction> objectDestructionActions = new ArrayList<>();
 
         ArrayList<EditorObject> newSelectionBuilder = new ArrayList<>();
         for (EditorObject selected : level.getSelected()) {
 
             EditorObject parent = selected.getParent();
-
             int row = parent.getTreeItem().getChildren().indexOf(selected.getTreeItem());
 
             objectDestructionActions.add(new ObjectDestructionAction(selected, Math.max(row, 0)));
 
+            List<ObjectDestructionAction> childActions = selected.onDelete();
+            
+            if (childActions != null) {
+                objectDestructionActions.addAll(childActions);
+            }
+            
             deleteItem(level, selected, false);
 
             EditorObject parentObject = (row <= 0) ? parent : parent.getTreeItem().getChildren().get(row - 1).getValue();
             if (Arrays.stream(level.getSelected()).noneMatch(e -> e == parentObject)) newSelectionBuilder.add(parentObject);
         }
-
+        
+        for (ObjectDestructionAction action : objectDestructionActions) {
+            deleteItem(level, action.getObject(), false);
+        }
+        
+        objectDestructionActions.sort((a, b) -> b.compareTo(a));
         UndoManager.registerChange(objectDestructionActions.toArray(new UserAction[0]));
 
         EditorObject[] newSelected = newSelectionBuilder.toArray(new EditorObject[0]);
