@@ -4,6 +4,7 @@ import com.woogleFX.editorObjects.EditorObject;
 import com.woogleFX.editorObjects.attributes.*;
 import com.woogleFX.engine.LevelManager;
 import com.woogleFX.engine.fx.FXEditorButtons;
+import com.woogleFX.engine.undoHandling.userActions.ObjectDestructionAction;
 import com.woogleFX.file.resourceManagers.ResourceManager;
 import com.woogleFX.gameData.animation.SimpleBinAnimation;
 import com.woogleFX.gameData.ball.BallManager;
@@ -11,11 +12,12 @@ import com.woogleFX.gameData.ball._2Ball;
 import com.woogleFX.gameData.level.GameVersion;
 import com.woogleFX.gameData.level.WOG2Level;
 import com.woogleFX.gameData.level.levelOpening.LevelLoader;
-import com.worldOfGoo.resrc.FlashAnim;
 import com.worldOfGoo2.util.BallInstanceHelper;
 import com.worldOfGoo2.util.BinAnimationHelper;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class _2_Level_BallInstance extends EditorObject {
 
@@ -130,5 +132,23 @@ public class _2_Level_BallInstance extends EditorObject {
 
     }
 
+    
+    @Override
+    public List<ObjectDestructionAction> onDelete() {
+        List<ObjectDestructionAction> outActions = new ArrayList<>();
+        
+        WOG2Level level = (WOG2Level)LevelManager.getLevel();
+        for (EditorObject object : level.getObjects()) {
+            if (object instanceof _2_Level_Strand strand) {
+                if (this == strand.getGoo1() || this == strand.getGoo2()) {
+                    int position = strand.getParent().getChildren().indexOf(strand);
+                    outActions.add(new ObjectDestructionAction(strand, position));
+                }
+            }
+        }
+        
+        return outActions;
+    }
+    
 }
 
