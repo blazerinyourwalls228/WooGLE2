@@ -184,11 +184,13 @@ public class EditorObject {
         }
         for (EditorAttribute attribute : attributes) if (attribute.getName().equals(name)) return attribute;
         logger.error("Accessed invalid attribute " + name + " (for " + getType() + ")");
+        Thread.dumpStack();
         return EditorAttribute.NULL;
     }
     public final EditorAttribute getAttribute2(String name) {
         for (EditorAttribute attribute : attributes) if (attribute.getName().equals(name)) return attribute;
         logger.error("Accessed invalid attribute " + name + " (for " + getType() + ")");
+        Thread.dumpStack();
         return EditorAttribute.NULL;
     }
     public final void setAttribute(String name, Object value) {
