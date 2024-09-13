@@ -24,7 +24,8 @@ import javafx.scene.shape.Polygon;
 import java.util.ArrayList;
 
 public class _2_Level_TerrainGroup extends EditorObject {
-
+    private ArrayList<_2_Level_BallInstance> balls = new ArrayList<>();
+    
     public _2_Level_TerrainGroup(EditorObject parent) {
         super(parent, "TerrainGroup", GameVersion.VERSION_WOG2);
 
@@ -219,5 +220,18 @@ public class _2_Level_TerrainGroup extends EditorObject {
 
         });
 
+    }
+    
+    public void addBall(_2_Level_BallInstance ballInstance) {
+        if (!balls.contains(ballInstance))
+            balls.add(ballInstance);
+    }
+    
+    public void removeBall(_2_Level_BallInstance ballInstance) {
+        balls.remove(ballInstance);
+    }
+    
+    public ArrayList<_2_Level_BallInstance> getBalls() {
+        return balls;
     }
 }

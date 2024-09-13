@@ -2,6 +2,9 @@ package com.worldOfGoo2.level;
 
 import com.woogleFX.editorObjects.EditorObject;
 import com.woogleFX.editorObjects._2_Positionable;
+import com.woogleFX.editorObjects.attributes.AttributeAdapter;
+import com.woogleFX.editorObjects.attributes.EditorAttribute;
+import com.woogleFX.editorObjects.attributes.InputField;
 import com.woogleFX.engine.LevelManager;
 import com.woogleFX.engine.fx.FXEditorButtons;
 import com.woogleFX.engine.undoHandling.userActions.ObjectDestructionAction;
@@ -21,7 +24,9 @@ import java.util.List;
 
 public class _2_Level_BallInstance extends _2_Positionable {
 
+    private _2_Level_TerrainGroup currentGroup = null;
     private _2Ball ball = null;
+    
     public _2Ball getBall() {
         return ball;
     }
@@ -39,7 +44,34 @@ public class _2_Level_BallInstance extends _2_Positionable {
         randomSeed = (long)(Math.random() * 10000000);
 
         addAttributeAdapter("typeEnum", BallInstanceHelper.ballTypeAttributeAdapter(this, "type", "typeEnum", null));
+        addAttributeAdapter("terrainGroup", new AttributeAdapter("terrainGroup") {
+            private final EditorAttribute attribute = new EditorAttribute("terrainGroup", InputField._2_NUMBER, _2_Level_BallInstance.this);
+            
+            @Override
+            public EditorAttribute getValue() {
+                attribute.setValue(getAttribute2("terrainGroup").stringValue());
+                return attribute;
+            }
 
+            @Override
+            public void setValue(String value) {
+                if (currentGroup != null) {
+                    currentGroup.removeBall(_2_Level_BallInstance.this);
+                }
+                
+                int newValue = Integer.parseInt(value);
+                setAttribute2("terrainGroup", newValue);
+                
+                _2_Level level = ((WOG2Level)LevelManager.getLevel()).getLevel();
+                ArrayList<EditorObject> terrainGroups = level.getChildren("terrainGroups");
+                
+                if (newValue > 0 && newValue < terrainGroups.size()) {
+                    currentGroup = (_2_Level_TerrainGroup)terrainGroups.get(newValue);
+                    currentGroup.addBall(_2_Level_BallInstance.this);
+                }
+            }
+            
+        });
     }
 
     @Override
@@ -122,8 +154,26 @@ public class _2_Level_BallInstance extends _2_Positionable {
     }
 
     
+    public List<_2_Level_BallInstance> getConnected() {
+        _2_Level level = ((WOG2Level)LevelManager.getLevel()).getLevel();
+        ArrayList<_2_Level_BallInstance> out = new ArrayList<>();
+        
+        for (_2_Level_Strand strand : level.getChildren("strands").toArray(_2_Level_Strand[]::new)) {
+            if (strand.getGoo1() == this)
+                out.add(strand.getGoo2());
+            else if (strand.getGoo2() == this)
+                out.add(strand.getGoo1());
+        }
+        
+        return out;
+    }
+    
+    
     @Override
     public List<ObjectDestructionAction> onDelete() {
+        if (currentGroup != null)
+            currentGroup.removeBall(this);
+        
         List<ObjectDestructionAction> outActions = new ArrayList<>();
         
         WOG2Level level = (WOG2Level)LevelManager.getLevel();
