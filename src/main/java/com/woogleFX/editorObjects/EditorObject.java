@@ -236,6 +236,15 @@ public class EditorObject {
         attributeAdapters.put(name, attributeAdapter);
     }
 
+    public final EditorObject getChild(String attributeName) {
+        for (EditorObject child : children) {
+            if (child.getTypeID().equals(attributeName))
+                return child;
+        }
+        
+        return null;
+    }
+    
     public final ArrayList<EditorObject> getChildren(String attributeName) {
         ArrayList<EditorObject> children2 = new ArrayList<>();
         for (EditorObject child : children) if (child.getTypeID().equals(attributeName)) children2.add(child);

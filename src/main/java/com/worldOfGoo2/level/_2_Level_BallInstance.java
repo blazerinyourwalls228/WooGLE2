@@ -1,7 +1,7 @@
 package com.worldOfGoo2.level;
 
 import com.woogleFX.editorObjects.EditorObject;
-import com.woogleFX.editorObjects.attributes.*;
+import com.woogleFX.editorObjects._2_Positionable;
 import com.woogleFX.engine.LevelManager;
 import com.woogleFX.engine.fx.FXEditorButtons;
 import com.woogleFX.engine.undoHandling.userActions.ObjectDestructionAction;
@@ -19,7 +19,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class _2_Level_BallInstance extends EditorObject {
+public class _2_Level_BallInstance extends _2_Positionable {
 
     private _2Ball ball = null;
     public _2Ball getBall() {
@@ -38,9 +38,6 @@ public class _2_Level_BallInstance extends EditorObject {
 
         randomSeed = (long)(Math.random() * 10000000);
 
-        addAttributeAdapter("pos", AttributeAdapter.pointAttributeAdapter(
-                this, "pos", "pos"));
-
         addAttributeAdapter("typeEnum", BallInstanceHelper.ballTypeAttributeAdapter(this, "type", "typeEnum", null));
 
     }
@@ -55,14 +52,6 @@ public class _2_Level_BallInstance extends EditorObject {
     @Override
     public void onLoaded() {
         super.onLoaded();
-
-        EditorObject pos = getChildren("pos").get(0);
-        setAttribute2("pos", pos.getAttribute("x").stringValue() +
-                "," + pos.getAttribute("y").stringValue());
-        pos.getAttribute("x").addChangeListener((observable, oldValue, newValue) ->
-                setAttribute2("pos", newValue + "," + getAttribute2("pos").positionValue().getY()));
-        pos.getAttribute("y").addChangeListener((observable, oldValue, newValue) ->
-                setAttribute2("pos", getAttribute2("pos").positionValue().getX() + "," + newValue));
 
         getAttribute("discovered").addChangeListener((observable, oldValue, newValue) -> update());
         getAttribute("interactive").addChangeListener((observable, oldValue, newValue) -> update());

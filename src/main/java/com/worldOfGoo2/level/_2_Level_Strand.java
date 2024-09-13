@@ -157,22 +157,22 @@ public class _2_Level_Strand extends EditorObject {
 
         if (strandImage != null) addObjectComponent(new ImageComponent() {
             public double getX() {
-                double x1 = goo1.getAttribute("pos").positionValue().getX();
-                double x2 = goo2.getAttribute("pos").positionValue().getX();
+                double x1 = goo1.getPosition().getX();
+                double x2 = goo2.getPosition().getX();
                 return (x1 + x2) / 2;
             }
             public double getY() {
-                double y1 = -goo1.getAttribute("pos").positionValue().getY();
-                double y2 = -goo2.getAttribute("pos").positionValue().getY();
+                double y1 = -goo1.getPosition().getY();
+                double y2 = -goo2.getPosition().getY();
                 return (y1 + y2) / 2;
             }
             public double getRotation() {
 
-                double x1 = goo1.getAttribute("pos").positionValue().getX();
-                double y1 = -goo1.getAttribute("pos").positionValue().getY();
+                double x1 = goo1.getPosition().getX();
+                double y1 = -goo1.getPosition().getY();
 
-                double x2 = goo2.getAttribute("pos").positionValue().getX();
-                double y2 = -goo2.getAttribute("pos").positionValue().getY();
+                double x2 = goo2.getPosition().getX();
+                double y2 = -goo2.getPosition().getY();
 
                 return Math.PI / 2 + Renderer.angleTo(new Point2D(x1, y1), new Point2D(x2, y2));
 
@@ -186,11 +186,11 @@ public class _2_Level_Strand extends EditorObject {
             }
             public double getScaleY() {
 
-                double x1 = goo1.getAttribute("pos").positionValue().getX();
-                double y1 = -goo1.getAttribute("pos").positionValue().getY();
+                double x1 = goo1.getPosition().getX();
+                double y1 = -goo1.getPosition().getY();
 
-                double x2 = goo2.getAttribute("pos").positionValue().getX();
-                double y2 = -goo2.getAttribute("pos").positionValue().getY();
+                double x2 = goo2.getPosition().getX();
+                double y2 = -goo2.getPosition().getY();
 
                 return Math.hypot(x2 - x1, y2 - y1) / strandImage.getHeight();
 
@@ -219,25 +219,25 @@ public class _2_Level_Strand extends EditorObject {
 
             public double getX() {
                 if (goo1 == null || goo2 == null) return 0;
-                double x1 = goo1.getAttribute("pos").positionValue().getX();
-                double x2 = goo2.getAttribute("pos").positionValue().getX();
+                double x1 = goo1.getPosition().getX();
+                double x2 = goo2.getPosition().getX();
                 return (x1 + x2) / 2;
             }
 
             public double getY() {
                 if (goo1 == null || goo2 == null) return 0;
-                double y1 = -goo1.getAttribute("pos").positionValue().getY();
-                double y2 = -goo2.getAttribute("pos").positionValue().getY();
+                double y1 = -goo1.getPosition().getY();
+                double y2 = -goo2.getPosition().getY();
                 return (y1 + y2) / 2;
             }
 
             public double getRotation() {
 
-                double x1 = goo1.getAttribute("pos").positionValue().getX();
-                double y1 = -goo1.getAttribute("pos").positionValue().getY();
+                double x1 = goo1.getPosition().getX();
+                double y1 = -goo1.getPosition().getY();
 
-                double x2 = goo2.getAttribute("pos").positionValue().getX();
-                double y2 = -goo2.getAttribute("pos").positionValue().getY();
+                double x2 = goo2.getPosition().getX();
+                double y2 = -goo2.getPosition().getY();
 
                 return Math.PI / 2 + Renderer.angleTo(new Point2D(x1, y1), new Point2D(x2, y2));
 
@@ -249,10 +249,10 @@ public class _2_Level_Strand extends EditorObject {
 
             public double getHeight() {
                 if (goo1 == null || goo2 == null) return 0;
-                double x1 = goo1.getAttribute("pos").positionValue().getX();
-                double y1 = -goo1.getAttribute("pos").positionValue().getY();
-                double x2 = goo2.getAttribute("pos").positionValue().getX();
-                double y2 = -goo2.getAttribute("pos").positionValue().getY();
+                double x1 = goo1.getPosition().getX();
+                double y1 = -goo1.getPosition().getY();
+                double x2 = goo2.getPosition().getX();
+                double y2 = -goo2.getPosition().getY();
                 double amt = (getAttribute("type").stringValue().equals("Terrain")) ? 0.1 : 0.35;
                 return Math.hypot(y2 - y1, x2 - x1) - amt;
 

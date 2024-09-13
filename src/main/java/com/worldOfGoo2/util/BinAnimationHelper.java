@@ -1,8 +1,7 @@
 package com.worldOfGoo2.util;
 
-import com.woogleFX.editorObjects.EditorObject;
+import com.woogleFX.editorObjects._2_Positionable;
 import com.woogleFX.editorObjects.objectComponents.ImageComponent;
-import com.woogleFX.editorObjects.objectComponents.ObjectComponent;
 import com.woogleFX.engine.LevelManager;
 import com.woogleFX.file.resourceManagers.ResourceManager;
 import com.woogleFX.gameData.animation.AnimationManager;
@@ -17,7 +16,7 @@ import java.util.ArrayList;
 
 public class BinAnimationHelper {
 
-    public static void addBinAnimationAsObjectPositions(EditorObject editorObject, SimpleBinAnimation binAnimation, String state) {
+    public static void addBinAnimationAsObjectPositions(_2_Positionable editorObject, SimpleBinAnimation binAnimation, String state) {
 
         ArrayList<ImageComponent> objectComponents = new ArrayList<>();
 
@@ -122,7 +121,7 @@ public class BinAnimationHelper {
     }
 
 
-    public static void addBinAnimationGroupAsObjectPositions(ArrayList<ImageComponent> objectComponents, EditorObject editorObject, SimpleBinAnimation binAnimation, SimpleBinAnimation.SimpleBinAnimationGroup animationGroup, double x, double y, double scaleX, double scaleY, double rotation) {
+    public static void addBinAnimationGroupAsObjectPositions(ArrayList<ImageComponent> objectComponents, _2_Positionable editorObject, SimpleBinAnimation binAnimation, SimpleBinAnimation.SimpleBinAnimationGroup animationGroup, double x, double y, double scaleX, double scaleY, double rotation) {
 
         for (int i = 0; i < animationGroup.sectionLength; i++) {
             SimpleBinAnimation.SimpleBinAnimationSection section = binAnimation.sections[i + animationGroup.sectionOffset];
@@ -190,7 +189,7 @@ public class BinAnimationHelper {
                                     double addX = (part.offsetX - part.centerX * part.scaleX) * scaleX * itemScaleX * itemScaleX2 * scaleFactor + initialAddX + imageAddX;
                                     double addY = (part.offsetY - part.centerY * part.scaleY) * scaleY * itemScaleY * itemScaleY2 * scaleFactor + initialAddY + imageAddY;
 
-                                    double ballX = editorObject.getChildren("pos").get(0).getAttribute("x").doubleValue();
+                                    double ballX = editorObject.getPosition().getX();
                                     double rotation = (editorObject instanceof _2_Level_BallInstance) ?
                                             editorObject.getAttribute("angle").doubleValue() :
                                             editorObject.getAttribute("rotation").doubleValue();
@@ -198,7 +197,7 @@ public class BinAnimationHelper {
                                 }
 
                                 @Override
-                                public void setX(double _x) {
+                                public void setX(double x) {
 
                                     double itemAddX;
                                     double itemAddY;
@@ -236,7 +235,9 @@ public class BinAnimationHelper {
                                     double rotation = (editorObject instanceof _2_Level_BallInstance) ?
                                             editorObject.getAttribute("angle").doubleValue() :
                                             editorObject.getAttribute("rotation").doubleValue();
-                                    editorObject.getChildren("pos").get(0).setAttribute("x", _x - (addX * Math.cos(-rotation) - addY * Math.sin(-rotation)));
+                                    
+                                    double y = editorObject.getPosition().getY();
+                                    editorObject.setPosition(x - (addX * Math.cos(-rotation) - addY * Math.sin(-rotation)), y);
                                 }
 
                                 @Override
@@ -275,7 +276,7 @@ public class BinAnimationHelper {
                                     double addX = (part.offsetX - part.centerX * part.scaleX) * scaleX * itemScaleX * itemScaleX2 * scaleFactor + initialAddX + imageAddX;
                                     double addY = (part.offsetY - part.centerY * part.scaleY) * scaleY * itemScaleY * itemScaleY2 * scaleFactor + initialAddY + imageAddY;
 
-                                    double ballY = -editorObject.getChildren("pos").get(0).getAttribute("y").doubleValue();
+                                    double ballY = -editorObject.getPosition().getY();
                                     double rotation = (editorObject instanceof _2_Level_BallInstance) ?
                                             editorObject.getAttribute("angle").doubleValue() :
                                             editorObject.getAttribute("rotation").doubleValue();
@@ -283,7 +284,7 @@ public class BinAnimationHelper {
                                 }
 
                                 @Override
-                                public void setY(double _y) {
+                                public void setY(double y) {
 
                                     double itemAddX;
                                     double itemAddY;
@@ -321,7 +322,9 @@ public class BinAnimationHelper {
                                     double rotation = (editorObject instanceof _2_Level_BallInstance) ?
                                             editorObject.getAttribute("angle").doubleValue() :
                                             editorObject.getAttribute("rotation").doubleValue();
-                                    editorObject.getChildren("pos").get(0).setAttribute("y", -_y + (addX * Math.sin(-rotation) + addY * Math.cos(-rotation)));
+                                    
+                                    double x = editorObject.getPosition().getX();
+                                    editorObject.setPosition(x, -y + (addX * Math.sin(-rotation) + addY * Math.cos(-rotation)));
                                 }
 
                                 @Override

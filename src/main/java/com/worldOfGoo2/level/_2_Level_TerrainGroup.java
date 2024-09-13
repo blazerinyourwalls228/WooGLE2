@@ -5,12 +5,11 @@ import com.woogleFX.editorObjects.attributes.AttributeAdapter;
 import com.woogleFX.editorObjects.attributes.EditorAttribute;
 import com.woogleFX.editorObjects.attributes.InputField;
 import com.woogleFX.editorObjects.attributes.MetaEditorAttribute;
+import com.woogleFX.editorObjects.attributes.dataTypes.Position;
 import com.woogleFX.editorObjects.objectComponents.MeshComponent;
 import com.woogleFX.engine.LevelManager;
 import com.woogleFX.engine.fx.FXEditorButtons;
 import com.woogleFX.engine.fx.FXPropertiesView;
-import com.woogleFX.file.resourceManagers.GlobalResourceManager;
-import com.woogleFX.file.resourceManagers.ResourceManager;
 import com.woogleFX.gameData.level.GameVersion;
 import com.woogleFX.gameData.level.WOG2Level;
 import com.woogleFX.gameData.terrainTypes.TerrainTypeManager;
@@ -22,7 +21,6 @@ import com.worldOfGoo2.util.TerrainHelper;
 import javafx.scene.image.Image;
 import javafx.scene.shape.Polygon;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 public class _2_Level_TerrainGroup extends EditorObject {
@@ -120,9 +118,9 @@ public class _2_Level_TerrainGroup extends EditorObject {
 
                 // Find the highest ball
                 _2_Level_BallInstance furthestBall = balls.get(0);
-                double furthestDistance = furthestBall.getChildren("pos").get(0).getAttribute("y").doubleValue();
+                double furthestDistance = furthestBall.getPosition().getY();
                 for (_2_Level_BallInstance ballInstance : balls) {
-                    double distance = ballInstance.getChildren("pos").get(0).getAttribute("y").doubleValue();
+                    double distance = ballInstance.getPosition().getY();
                     if (distance > furthestDistance) {
                         furthestDistance = distance;
                         furthestBall = ballInstance;
@@ -135,9 +133,10 @@ public class _2_Level_TerrainGroup extends EditorObject {
                 double theta = Math.PI / 2;
                 int i = 100;
                 do {
-
-                    polygon.getPoints().addAll(currentBall.getChildren("pos").get(0).getAttribute("x").doubleValue(),
-                            -currentBall.getChildren("pos").get(0).getAttribute("y").doubleValue());
+                    Position currentPos = currentBall.getPosition();
+                    
+                    polygon.getPoints().addAll(currentPos.getX(),
+                            -currentPos.getY());
 
                     ArrayList<_2_Level_BallInstance> connectedToThisOne = new ArrayList<>();
                     for (EditorObject editorObject : ((WOG2Level)LevelManager.getLevel()).getLevel().getChildren("strands"))
@@ -151,11 +150,11 @@ public class _2_Level_TerrainGroup extends EditorObject {
                     _2_Level_BallInstance minimumBall = furthestBall;
 
                     for (_2_Level_BallInstance connected : connectedToThisOne) if (connected != previous) {
-
-                        double angleBetween = Math.atan2(connected.getChildren("pos").get(0).getAttribute("y").doubleValue() -
-                                currentBall.getChildren("pos").get(0).getAttribute("y").doubleValue(),
-                                connected.getChildren("pos").get(0).getAttribute("x").doubleValue() -
-                                        currentBall.getChildren("pos").get(0).getAttribute("x").doubleValue());
+                        Position connectedPos = connected.getPosition();
+                        
+                        double angleBetween = Math.atan2(
+                                connectedPos.getY() - currentPos.getY(),
+                                connectedPos.getX() - currentPos.getX());
 
                         double angleDistance = angleBetween - theta;
                         while (angleDistance < 0) angleDistance += Math.TAU;
@@ -164,7 +163,6 @@ public class _2_Level_TerrainGroup extends EditorObject {
                             minimumAngle = angleBetween;
                             minimumBall = connected;
                         }
-
                     }
 
                     previous = currentBall;
@@ -172,7 +170,6 @@ public class _2_Level_TerrainGroup extends EditorObject {
                     theta = minimumAngle + Math.PI;
 
                     i--;
-
                 } while (currentBall != furthestBall && i > 0);
 
 

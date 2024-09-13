@@ -354,44 +354,54 @@ public class BallInstanceHelper {
 
             Image image = createBallImageWoG2(ballInstance, ball, _scaleX, _scaleY, new Random(ballInstance.getRandomSeed()));
 
-            EditorObject pos = ballInstance.getChildren("pos").get(0);
-
             double final_scaleX = _scaleX;
             double final_scaleY = _scaleY;
             objectComponents.add(new ImageComponent() {
+                @Override
                 public double getX() {
-                    return pos.getAttribute("x").doubleValue();
+                    return ballInstance.getPosition().getX();
                 }
+                @Override
                 public void setX(double x) {
-                    pos.setAttribute("x", x);
+                    ballInstance.setPosition(x, ballInstance.getPosition().getY());
                 }
+                @Override
                 public double getY() {
-                    return -pos.getAttribute("y").doubleValue();
+                    return -ballInstance.getPosition().getY();
                 }
+                @Override
                 public void setY(double y) {
-                    pos.setAttribute("y", -y);
+                    ballInstance.setPosition(ballInstance.getPosition().getX(), -y);
                 }
+                @Override
                 public double getRotation() {
                     return -ballInstance.getAttribute("angle").doubleValue();
                 }
+                @Override
                 public void setRotation(double rotation) {
                     ballInstance.setAttribute("angle", -rotation);
                 }
+                @Override
                 public double getScaleX() {
                     return final_scaleX;
                 }
+                @Override
                 public double getScaleY() {
                     return final_scaleY;
                 }
+                @Override
                 public double getDepth() {
                     return 0.000001;
                 }
+                @Override
                 public Image getImage() {
                     return image;
                 }
+                @Override
                 public boolean isVisible() {
                     return !ballInstance.getAttribute("type").stringValue().equals("Terrain") && LevelManager.getLevel().getVisibilitySettings().getShowGoos() == 2;
                 }
+                @Override
                 public boolean isResizable() {
                     return false;
                 }
@@ -400,53 +410,65 @@ public class BallInstanceHelper {
         }
         boolean isCircle = ball == null || !ball.getObjects().get(0).getChildren("shape").get(0).getAttribute("ballShape").stringValue().equals("1");
 
-        EditorObject pos = ballInstance.getChildren("pos").get(0);
-
         if (isCircle) {
 
             if (ballInstance.getAttribute("type").stringValue().equals("Terrain")) {
 
                 objectComponents.add(new CircleComponent() {
+                    @Override
                     public double getX() {
-                        return pos.getAttribute("x").doubleValue();
+                        return ballInstance.getPosition().getX();
                     }
+                    @Override
                     public void setX(double x) {
-                        pos.setAttribute("x", x);
+                        ballInstance.setPosition(x, ballInstance.getPosition().getY());
                     }
+                    @Override
                     public double getY() {
-                        return -pos.getAttribute("y").doubleValue();
+                        return -ballInstance.getPosition().getY();
                     }
+                    @Override
+                    public void setY(double y) {
+                        ballInstance.setPosition(ballInstance.getPosition().getX(), -y);
+                    }
+                    @Override
                     public double getRotation() {
                         return -ballInstance.getAttribute("angle").doubleValue();
                     }
-                    public void setY(double y) {
-                        pos.setAttribute("y", -y);
-                    }
+                    @Override
                     public double getRadius() {
                         return 0.1;
                     }
+                    @Override
                     public double getEdgeSize() {
                         return 100;
                     }
+                    @Override
                     public boolean isEdgeOnly() {
                         return true;
                     }
+                    @Override
                     public javafx.scene.paint.Paint getBorderColor() {
                         return new javafx.scene.paint.Color(0.0, 0.0, 0.0, 1.0);
                     }
+                    @Override
                     public javafx.scene.paint.Paint getColor() {
                         return new javafx.scene.paint.Color(0.0, 0.0, 0.0, 0.0);
                     }
+                    @Override
                     public double getDepth() {
                         return 0.000001;
                     }
+                    @Override
                     public boolean isVisible() {
                         if (LevelManager.getLevel().getVisibilitySettings().getShowGoos() == 0) return false;
                         return (ball == null || ballInstance.getAttribute("type").stringValue().equals("Terrain") && ballInstance.visibilityFunction()) || LevelManager.getLevel().getVisibilitySettings().getShowGoos() == 1 || (ballInstance.getAttribute("type").stringValue().equals("Terrain") && FXEditorButtons.comboBoxSelected == ballInstance.getAttribute("terrainGroup").intValue());
                     }
+                    @Override
                     public boolean isRotatable() {
                         return false;
                     }
+                    @Override
                     public boolean isResizable() {
                         return false;
                     }
@@ -454,36 +476,46 @@ public class BallInstanceHelper {
 
             }
             objectComponents.add(new CircleComponent() {
+                @Override
                 public double getX() {
-                    return pos.getAttribute("x").doubleValue();
+                    return ballInstance.getPosition().getX();
                 }
+                @Override
                 public void setX(double x) {
-                    pos.setAttribute("x", x);
+                    ballInstance.setPosition(x, ballInstance.getPosition().getY());
                 }
+                @Override
                 public double getY() {
-                    return -pos.getAttribute("y").doubleValue();
+                    return -ballInstance.getPosition().getY();
                 }
+                @Override
                 public void setY(double y) {
-                    pos.setAttribute("y", -y);
+                    ballInstance.setPosition(ballInstance.getPosition().getX(), -y);
                 }
+                @Override
                 public double getRotation() {
                     return -ballInstance.getAttribute("angle").doubleValue();
                 }
+                @Override
                 public void setRotation(double rotation) {
                     ballInstance.setAttribute("angle", -rotation);
                 }
+                @Override
                 public double getRadius() {
                     if (ball == null) return 0.2;
                     else if (ballInstance.getAttribute("type").stringValue().equals("Terrain")) return 0.1;
                     return ball.getWidth() / 2;
                 }
+                @Override
                 public double getEdgeSize() {
                     if (ballInstance.getAttribute("type").stringValue().equals("Terrain")) return 0.025;
                     else return 0.05;
                 }
+                @Override
                 public boolean isEdgeOnly() {
                     return false;
                 }
+                @Override
                 public javafx.scene.paint.Paint getBorderColor() {
                     if (ball == null) {
                         return new javafx.scene.paint.Color(0.5, 0.25, 0.25, 1.0);
@@ -511,13 +543,16 @@ public class BallInstanceHelper {
                         return new javafx.scene.paint.Color(0, 0, 0, 0);
                     }
                 }
+                @Override
                 public double getDepth() {
                     return 0.000001;
                 }
+                @Override
                 public boolean isVisible() {
                     if (LevelManager.getLevel().getVisibilitySettings().getShowGoos() == 0) return false;
                     return (ball == null || ballInstance.getAttribute("type").stringValue().equals("Terrain") && ballInstance.visibilityFunction()) || LevelManager.getLevel().getVisibilitySettings().getShowGoos() == 1 || (ballInstance.getAttribute("type").stringValue().equals("Terrain") && FXEditorButtons.comboBoxSelected == ballInstance.getAttribute("terrainGroup").intValue());
                 }
+                @Override
                 public boolean isResizable() {
                     return false;
                 }
@@ -526,47 +561,57 @@ public class BallInstanceHelper {
         }
 
         else objectComponents.add(new RectangleComponent() {
+            @Override
             public double getX() {
-                return pos.getAttribute("x").doubleValue();
+                return ballInstance.getPosition().getX();
             }
-
+            
+            @Override
             public void setX(double x) {
-                double y = pos.getAttribute("y").doubleValue();
-                pos.setAttribute("x", x + "," + y);
+                ballInstance.setPosition(x, ballInstance.getPosition().getY());
             }
-
+            
+            @Override
             public double getY() {
-                return -pos.getAttribute("y").doubleValue();
+                return -ballInstance.getPosition().getY();
             }
-
+            
+            @Override
             public void setY(double y) {
-                pos.setAttribute("y", -y);
+                ballInstance.setPosition(ballInstance.getPosition().getX(), -y);
             }
 
+            @Override
             public double getRotation() {
                 return -ballInstance.getAttribute("angle").doubleValue();
             }
 
+            @Override
             public void setRotation(double rotation) {
                 ballInstance.setAttribute("angle", -rotation);
             }
 
+            @Override
             public double getWidth() {
                 return ball.getWidth();
             }
 
+            @Override
             public double getHeight() {
                 return ball.getHeight();
             }
 
+            @Override
             public double getEdgeSize() {
                 return 0.05;
             }
 
+            @Override
             public boolean isEdgeOnly() {
                 return !ballInstance.getAttribute("type").stringValue().equals("Terrain");
             }
 
+            @Override
             public javafx.scene.paint.Paint getBorderColor() {
                 if (ball == null) {
                     return new javafx.scene.paint.Color(0.5, 0.25, 0.25, 1.0);
@@ -575,6 +620,7 @@ public class BallInstanceHelper {
                 }
             }
 
+            @Override
             public javafx.scene.paint.Paint getColor() {
                 if (ballInstance.getAttribute("type").stringValue().equals("Terrain")) {
                     return new javafx.scene.paint.Color(0.5, 0.5, 0.5, 1.0);
@@ -583,14 +629,17 @@ public class BallInstanceHelper {
                 }
             }
 
+            @Override
             public double getDepth() {
                 return 0.000001;
             }
 
+            @Override
             public boolean isVisible() {
                 return (ball == null || ballInstance.getAttribute("type").stringValue().equals("Terrain") && ballInstance.visibilityFunction()) || LevelManager.getLevel().getVisibilitySettings().getShowGoos() == 1;
             }
 
+            @Override
             public boolean isResizable() {
                 return false;
             }
