@@ -510,8 +510,8 @@ public class _2_Level_Item extends EditorObject {
 
     private boolean addPartAsObjectPosition(_2_Item_Object part) {
 
-        double partX = part.getChildren("position").get(0).getAttribute("x").doubleValue();
-        double partY = -part.getChildren("position").get(0).getAttribute("y").doubleValue();
+        double partX = (item.getAttribute("variations").booleanValue()) ? 0 : part.getChildren("position").get(0).getAttribute("x").doubleValue();
+        double partY = (item.getAttribute("variations").booleanValue()) ? 0 : -part.getChildren("position").get(0).getAttribute("y").doubleValue();
         double partScaleX = part.getChildren("scale").get(0).getAttribute("x").doubleValue();
         double partScaleY = part.getChildren("scale").get(0).getAttribute("y").doubleValue();
         double partRotation = part.getAttribute("rotation").doubleValue();

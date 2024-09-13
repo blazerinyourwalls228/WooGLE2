@@ -150,7 +150,7 @@ public class _2_Level_TerrainGroup extends EditorObject {
                     double minimumAngle = 0;
                     _2_Level_BallInstance minimumBall = furthestBall;
 
-                    for (_2_Level_BallInstance connected : connectedToThisOne) if (connected != previous) {
+                    for (_2_Level_BallInstance connected : connectedToThisOne) if (connected != null && connected != previous) {
 
                         double angleBetween = Math.atan2(connected.getChildren("pos").get(0).getAttribute("y").doubleValue() -
                                 currentBall.getChildren("pos").get(0).getAttribute("y").doubleValue(),
