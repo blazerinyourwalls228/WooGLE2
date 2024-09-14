@@ -1,8 +1,12 @@
 package com.worldOfGoo2.level;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.woogleFX.editorObjects.EditorObject;
+import com.woogleFX.editorObjects.attributes.AttributeAdapter;
+import com.woogleFX.editorObjects.attributes.EditorAttribute;
 import com.woogleFX.editorObjects.attributes.InputField;
 import com.woogleFX.editorObjects.attributes.MetaEditorAttribute;
 import com.woogleFX.editorObjects.objectComponents.ImageComponent;
@@ -10,6 +14,7 @@ import com.woogleFX.editorObjects.objectComponents.RectangleComponent;
 import com.woogleFX.engine.LevelManager;
 import com.woogleFX.engine.fx.FXEditorButtons;
 import com.woogleFX.engine.renderer.Renderer;
+import com.woogleFX.engine.undoHandling.userActions.ObjectDestructionAction;
 import com.woogleFX.file.resourceManagers.ResourceManager;
 import com.woogleFX.gameData.ball.AtlasManager;
 import com.woogleFX.gameData.ball.BallManager;
@@ -34,25 +39,9 @@ public class _2_Level_Strand extends EditorObject {
 
 
     private Image strandImage;
-
-
+    
     private _2_Level_BallInstance goo1 = null;
-    public _2_Level_BallInstance getGoo1() {
-        return goo1;
-    }
-    public void setGoo1(_2_Level_BallInstance goo1) {
-        this.goo1 = goo1;
-    }
-
-
     private _2_Level_BallInstance goo2 = null;
-    public _2_Level_BallInstance getGoo2() {
-        return goo2;
-    }
-    public void setGoo2(_2_Level_BallInstance goo2) {
-        this.goo2 = goo2;
-    }
-
 
     //private int strandBallID = 2;
 
@@ -66,10 +55,56 @@ public class _2_Level_Strand extends EditorObject {
 
         setMetaAttributes(MetaEditorAttribute.parse("ball1UID,ball2UID,type,filled,"));
 
-
-
         addAttributeAdapter("type", BallInstanceHelper.ballTypeAttributeAdapter(this, "type", "type", null));
+        addAttributeAdapter("ball1UID", new AttributeAdapter("ball1UID") {
+            private final EditorAttribute attribute = new EditorAttribute("ball1UID", InputField._2_NUMBER, _2_Level_Strand.this);
+            
+            @Override
+            public EditorAttribute getValue() {
+                attribute.setValue(getAttribute2("ball1UID").stringValue());
+                return attribute;
+            }
 
+            @Override
+            public void setValue(String value) {
+                int newValue = Integer.parseInt(value);
+                setAttribute2("ball1UID", newValue);
+                
+                ArrayList<EditorObject> gooballs = ((WOG2Level)LevelManager.getLevel()).getLevel().getChildren("balls");
+                for (EditorObject ballInstance : gooballs) {
+                    if (ballInstance.getAttribute("uid").intValue() == newValue) {
+                        setGoo1((_2_Level_BallInstance)ballInstance);
+                        update();
+                        break;
+                    }
+                }
+            }
+        });
+        
+        addAttributeAdapter("ball2UID", new AttributeAdapter("ball2UID") {
+            private final EditorAttribute attribute = new EditorAttribute("ball2UID", InputField._2_NUMBER, _2_Level_Strand.this);
+            
+            @Override
+            public EditorAttribute getValue() {
+                attribute.setValue(getAttribute2("ball2UID").stringValue());
+                return attribute;
+            }
+
+            @Override
+            public void setValue(String value) {
+                int newValue = Integer.parseInt(value);
+                setAttribute2("ball2UID", newValue);
+                
+                ArrayList<EditorObject> gooballs = ((WOG2Level)LevelManager.getLevel()).getLevel().getChildren("balls");
+                for (EditorObject ballInstance : gooballs) {
+                    if (ballInstance.getAttribute("uid").intValue() == newValue) {
+                        setGoo2((_2_Level_BallInstance)ballInstance);
+                        update();
+                        break;
+                    }
+                }
+            }
+        });
     }
 
 
@@ -113,17 +148,6 @@ public class _2_Level_Strand extends EditorObject {
 
         if (LevelManager.getLevel() == null) return;
 
-        for (EditorObject obj : ((WOG2Level)LevelManager.getLevel()).getObjects()) if (obj instanceof _2_Level_BallInstance ballInstance) {
-
-            String id = ballInstance.getAttribute("uid").stringValue();
-            String gb1 = getAttribute("ball1UID").stringValue();
-            String gb2 = getAttribute("ball2UID").stringValue();
-
-            if (id.equals(gb1)) goo1 = ballInstance;
-            else if (id.equals(gb2)) goo2 = ballInstance;
-
-        }
-
         if (goo1 != null && getAttribute("type").stringValue().equals("Terrain")) setAttribute("type", "10");
 
         try {
@@ -142,6 +166,20 @@ public class _2_Level_Strand extends EditorObject {
 
         addPartAsObjectPosition();
 
+    }
+    
+    
+    @Override
+    public List<ObjectDestructionAction> onDelete() {
+        if (goo1 != null) {
+            goo1.removeStrand(this);
+        }
+        
+        if (goo2 != null) {
+            goo2.removeStrand(this);
+        }
+        
+        return null;
     }
 
 
@@ -319,5 +357,31 @@ public class _2_Level_Strand extends EditorObject {
         });
 
     }
+    
+    public _2_Level_BallInstance getGoo1() {
+        return goo1;
+    }
+    
+    public void setGoo1(_2_Level_BallInstance goo1) {
+        if (this.goo1 != null) {
+            this.goo1.removeStrand(this);
+        }
+        
+        this.goo1 = goo1;
+        goo1.addStrand(this);
+    }
 
+    public _2_Level_BallInstance getGoo2() {
+        return goo2;
+    }
+    
+    public void setGoo2(_2_Level_BallInstance goo2) {
+        if (this.goo2 != null) {
+            this.goo2.removeStrand(this);
+        }
+        
+        this.goo2 = goo2;
+        goo2.addStrand(this);
+    }
+    
 }

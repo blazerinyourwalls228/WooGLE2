@@ -26,6 +26,7 @@ public class _2_Level_BallInstance extends _2_Positionable {
 
     private _2_Level_TerrainGroup currentGroup = null;
     private _2Ball ball = null;
+    private ArrayList<_2_Level_Strand> strands = new ArrayList<>();
     
     public _2Ball getBall() {
         return ball;
@@ -72,6 +73,17 @@ public class _2_Level_BallInstance extends _2_Positionable {
             }
             
         });
+    }
+    
+    public boolean isConnected(_2_Level_BallInstance other) {
+        for (int i = 0; i < strands.size(); i++) {
+            _2_Level_Strand strand = strands.get(i);
+            
+            if (strand.getGoo1() == other || strand.getGoo2() == other)
+                return true;
+        }
+        
+        return false;
     }
 
     @Override
@@ -189,5 +201,12 @@ public class _2_Level_BallInstance extends _2_Positionable {
         return outActions;
     }
     
+    public void addStrand(_2_Level_Strand strand) {
+        strands.add(strand);
+    }
+    
+    public void removeStrand(_2_Level_Strand strand) {
+        strands.remove(strand);
+    }
 }
 
