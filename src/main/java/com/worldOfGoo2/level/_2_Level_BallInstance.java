@@ -58,6 +58,7 @@ public class _2_Level_BallInstance extends _2_Positionable {
             public void setValue(String value) {
                 if (currentGroup != null) {
                     currentGroup.removeBall(_2_Level_BallInstance.this);
+                    currentGroup.update();
                 }
                 
                 int newValue = Integer.parseInt(value);
@@ -69,6 +70,7 @@ public class _2_Level_BallInstance extends _2_Positionable {
                 if (newValue > 0 && newValue < terrainGroups.size()) {
                     currentGroup = (_2_Level_TerrainGroup)terrainGroups.get(newValue);
                     currentGroup.addBall(_2_Level_BallInstance.this);
+                    currentGroup.update();
                 }
             }
             
@@ -89,6 +91,12 @@ public class _2_Level_BallInstance extends _2_Positionable {
         return false;
     }
 
+    public void updateTerrainGroup() {
+        if (currentGroup != null) {
+            currentGroup.update();
+        }
+    }
+    
     @Override
     public String getName() {
         String id = getAttribute("uid").stringValue();
@@ -104,6 +112,7 @@ public class _2_Level_BallInstance extends _2_Positionable {
         getAttribute("interactive").addChangeListener((observable, oldValue, newValue) -> update());
         getAttribute2("typeEnum").addChangeListener((observable, oldValue, newValue) -> update());
 
+        getAttribute("pos").addChangeListener((observable, oldValue, newValue) -> updateTerrainGroup());
     }
 
     @Override

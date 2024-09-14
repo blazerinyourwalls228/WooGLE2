@@ -150,6 +150,9 @@ public class _2_Level_Strand extends EditorObject {
 
         if (goo1 != null && getAttribute("type").stringValue().equals("Terrain")) setAttribute("type", "10");
 
+        if (goo1 != null) goo1.updateTerrainGroup();
+        if (goo2 != null) goo2.updateTerrainGroup();
+        
         try {
             _2Ball ball = BallManager.get2Ball(getAttribute("type").stringValue(), GameVersion.VERSION_WOG2);
             String imageString = ball.getObjects().get(0).getChildren("strandImageId").get(0).getAttribute("imageId").stringValue();
@@ -173,10 +176,12 @@ public class _2_Level_Strand extends EditorObject {
     public List<ObjectDestructionAction> onDelete() {
         if (goo1 != null) {
             goo1.removeStrand(this);
+            goo1.updateTerrainGroup();
         }
         
         if (goo2 != null) {
             goo2.removeStrand(this);
+            goo2.updateTerrainGroup();
         }
         
         return null;
@@ -365,10 +370,12 @@ public class _2_Level_Strand extends EditorObject {
     public void setGoo1(_2_Level_BallInstance goo1) {
         if (this.goo1 != null) {
             this.goo1.removeStrand(this);
+            this.goo1.updateTerrainGroup();
         }
         
         this.goo1 = goo1;
         goo1.addStrand(this);
+        goo1.updateTerrainGroup();
     }
 
     public _2_Level_BallInstance getGoo2() {
@@ -378,10 +385,12 @@ public class _2_Level_Strand extends EditorObject {
     public void setGoo2(_2_Level_BallInstance goo2) {
         if (this.goo2 != null) {
             this.goo2.removeStrand(this);
+            this.goo2.updateTerrainGroup();
         }
         
         this.goo2 = goo2;
         goo2.addStrand(this);
+        goo2.updateTerrainGroup();
     }
     
 }
