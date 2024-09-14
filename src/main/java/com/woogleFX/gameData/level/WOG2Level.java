@@ -2,6 +2,7 @@ package com.woogleFX.gameData.level;
 
 import com.woogleFX.editorObjects.EditorObject;
 import com.woogleFX.engine.LevelManager;
+import com.woogleFX.engine.fx.FXContainers;
 import com.worldOfGoo2.level._2_Level;
 
 import java.util.ArrayList;
@@ -39,10 +40,34 @@ public class WOG2Level extends _Level {
             ball.setAttribute("terrainGroup", terrainBall.getAttribute("group").stringValue());
         }
 
-        setOffsetX(1000);
-        setOffsetY(500);
-        setZoom(30);
+        resetCamera();
 
+    }
+
+
+    @Override
+    public void resetCamera() {
+        EditorObject boundsBottomLeft = level.getChildren("boundsBottomLeft").get(0);
+        EditorObject boundsTopRight = level.getChildren("boundsTopRight").get(0);
+
+        double sceneWidth = boundsTopRight.getAttribute("x").doubleValue() - boundsBottomLeft.getAttribute("x").doubleValue();
+        double sceneHeight = boundsTopRight.getAttribute("y").doubleValue() - boundsBottomLeft.getAttribute("y").doubleValue();
+        double middleX = -(boundsBottomLeft.getAttribute("x").doubleValue() + boundsTopRight.getAttribute("x").doubleValue()) / 2;
+        double middleY = (boundsBottomLeft.getAttribute("y").doubleValue() + boundsTopRight.getAttribute("y").doubleValue()) / 2;
+
+        double canvasWidth = FXContainers.getSplitPane().getDividers().get(0).getPosition() * FXContainers.getSplitPane().getWidth();
+        double canvasHeight = FXContainers.getSplitPane().getHeight();
+
+        setOffsetX(canvasWidth / 2 - middleX);
+        setOffsetY(canvasHeight / 2 + middleY);
+
+        double zoomX = canvasWidth / sceneWidth;
+        double zoomY = canvasHeight / sceneHeight;
+
+        setZoom(Math.min(Math.abs(zoomX), Math.abs(zoomY)));
+
+        setOffsetX((getOffsetX() - canvasWidth / 2) * getZoom() + canvasWidth / 2);
+        setOffsetY((getOffsetY() - canvasHeight / 2) * getZoom() + canvasHeight / 2);
     }
 
 }

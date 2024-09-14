@@ -3,7 +3,9 @@ package com.worldOfGoo2.util;
 import com.woogleFX.editorObjects._2_Positionable;
 import com.woogleFX.editorObjects.objectComponents.ImageComponent;
 import com.woogleFX.engine.LevelManager;
+import com.woogleFX.file.FileManager;
 import com.woogleFX.file.resourceManagers.ResourceManager;
+import com.woogleFX.gameData.animation.AnimBinReader;
 import com.woogleFX.gameData.animation.AnimationManager;
 import com.woogleFX.gameData.animation.SimpleBinAnimation;
 import com.woogleFX.gameData.level.GameVersion;
@@ -11,10 +13,20 @@ import com.worldOfGoo2.level._2_Level_BallInstance;
 import com.worldOfGoo2.level._2_Level_Item;
 import javafx.scene.image.Image;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class BinAnimationHelper {
+
+    private static final Map<Integer, String> hardcodedImageIdMap = new HashMap<>();
+    static {
+        hardcodedImageIdMap.put(811319554, "IMAGE_GLOBAL_PUPIL");
+        hardcodedImageIdMap.put(543867139, "IMAGE_TENTACLE_LIGHT");
+    }
 
     public static void addBinAnimationAsObjectPositions(_2_Positionable editorObject, SimpleBinAnimation binAnimation, String state) {
 
@@ -399,35 +411,80 @@ public class BinAnimationHelper {
                     case 3 -> {
                         SimpleBinAnimation.SimpleBinAnimationExternal external = binAnimation.externals[element.offset];
 
-                        for (SimpleBinAnimation binAnimation1 : AnimationManager.getBinAnimations()) {
-                            for (SimpleBinAnimation.SimpleBinAnimationExternal external1 : binAnimation1.externals) {
-                                if (external1.globalIdHash == external.globalIdHash && external1 != external) {
+                        String imageString = hardcodedImageIdMap.get(external.globalIdHash);
+                        if (imageString != null) {
 
-                                    if (external1.property12Offset != -1) {
-
-                                        SimpleBinAnimation.SimpleBinAnimationProperty12 property12 = binAnimation1.property12s[external1.property12Offset];
-
-                                        StringBuilder stringBuilder = new StringBuilder();
-                                        int byteIndex = binAnimation1.stringDefinitions[property12.stringTableIndex].stringTableIndex;
-                                        while (binAnimation1.stringTable[byteIndex] != 0x00) {
-                                            stringBuilder.append((char) binAnimation1.stringTable[byteIndex]);
-                                            byteIndex++;
-                                        }
-
-                                    }
-                                }
+                            Image image;
+                            try {
+                                image = ResourceManager.getImage(null, imageString, GameVersion.VERSION_WOG2);
+                            } catch (FileNotFoundException ignored) {
+                                continue;
                             }
+
+                            objectComponents.add(new ImageComponent() {
+                                @Override
+                                public Image getImage() {
+                                    return image;
+                                }
+
+                                @Override
+                                public double getX() {
+                                    double scaleFactor = ((editorObject instanceof _2_Level_BallInstance ballInstance ? ballInstance.getBall().getObjects().get(0).getChildren("ballParts").get(0).getAttribute("scale").doubleValue() : 1)) / 100;
+                                    double addX = x * scaleFactor;
+                                    double addY = y * scaleFactor;
+                                    double rotation = (editorObject instanceof _2_Level_BallInstance) ?
+                                            -editorObject.getAttribute("angle").doubleValue() :
+                                            -editorObject.getAttribute("rotation").doubleValue();
+                                    return addX * Math.cos(rotation) - addY * Math.sin(rotation) + editorObject.getChildren("pos").get(0).getAttribute("x").doubleValue();
+                                }
+
+                                @Override
+                                public double getY() {
+                                    double scaleFactor = ((editorObject instanceof _2_Level_BallInstance ballInstance ? ballInstance.getBall().getObjects().get(0).getChildren("ballParts").get(0).getAttribute("scale").doubleValue() : 1)) / 100;
+                                    double addX = x * scaleFactor;
+                                    double addY = y * scaleFactor;
+                                    double rotation = (editorObject instanceof _2_Level_BallInstance) ?
+                                            -editorObject.getAttribute("angle").doubleValue() :
+                                            -editorObject.getAttribute("rotation").doubleValue();
+                                    return addX * Math.sin(rotation) + addY * Math.cos(rotation) - editorObject.getChildren("pos").get(0).getAttribute("y").doubleValue();
+                                }
+
+                                @Override
+                                public double getScaleX() {
+                                    return scaleX / 500;
+                                }
+
+                                @Override
+                                public double getScaleY() {
+                                    return scaleY / 500;
+                                }
+
+                                @Override
+                                public double getDepth() {
+                                    return (editorObject instanceof _2_Level_BallInstance) ? 0.000001 : editorObject.getAttribute("depth").doubleValue();
+                                }
+                            });
+
                         }
 
                         if (external.property12Offset != -1) {
 
                             SimpleBinAnimation.SimpleBinAnimationProperty12 property12 = binAnimation.property12s[external.property12Offset];
+                            if (property12.type == 1) {
 
-                            StringBuilder stringBuilder = new StringBuilder();
-                            int byteIndex = binAnimation.stringDefinitions[property12.stringTableIndex].stringTableIndex;
-                            while (binAnimation.stringTable[byteIndex] != 0x00) {
-                                stringBuilder.append((char) binAnimation.stringTable[byteIndex]);
-                                byteIndex++;
+                                StringBuilder stringBuilder = new StringBuilder();
+                                int byteIndex = binAnimation.stringDefinitions[property12.stringTableIndex].stringTableIndex;
+                                while (binAnimation.stringTable[byteIndex] != 0x00) {
+                                    stringBuilder.append((char) binAnimation.stringTable[byteIndex]);
+                                    byteIndex++;
+                                }
+
+                                String animString = stringBuilder.toString().replace(".xml", ".bin");
+                                if (!animString.isEmpty()) {
+                                    SimpleBinAnimation binAnimation1 = AnimBinReader.readSimpleBinAnimation(Path.of(FileManager.getGameDir(GameVersion.VERSION_WOG2) + "/" + animString), "idk");
+                                    addBinAnimationAsObjectPositions(editorObject, binAnimation1, "");
+                                }
+
                             }
 
                         }

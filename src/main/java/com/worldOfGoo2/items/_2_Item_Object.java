@@ -17,6 +17,7 @@ public class _2_Item_Object extends EditorObject {
     private Image image;
 
     public Image getImage() {
+        if (image == null) updateImage();
         return image;
     }
 
@@ -57,12 +58,6 @@ public class _2_Item_Object extends EditorObject {
     }
 
 
-    @Override
-    public void update() {
-        updateImage();
-    }
-
-
     private void updateImage() {
 
         try {
@@ -70,7 +65,7 @@ public class _2_Item_Object extends EditorObject {
                 image = ResourceManager.getImage(null, getAttribute("name").stringValue(), GameVersion.VERSION_WOG2);
             }
         } catch (FileNotFoundException e) {
-            // e.printStackTrace();
+            e.printStackTrace();
         }
 
 

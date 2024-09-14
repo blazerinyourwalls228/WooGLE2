@@ -19,6 +19,12 @@ public class AnimationManager {
     public static ArrayList<SimpleBinAnimation> getBinAnimations() {
         return binAnimations;
     }
+    public static SimpleBinAnimation getBinAnimation(String id) {
+        for (SimpleBinAnimation binAnimation : binAnimations) {
+            if (binAnimation.name.equals(id)) return binAnimation;
+        }
+        return null;
+    }
 
 
     public static void updateAnimations(float timeElapsed) {

@@ -35,10 +35,10 @@ public class ItemManager {
                     item3.update();
                     stack.addAll(item3.getChildren());
                 }
-                System.out.println(item2.getChildren().get(0).getAttribute("name").stringValue());
                 ItemHelper.itemNameMap.put(item2.getChildren().get(0).getAttribute("uuid").stringValue(), item2.getChildren().get(0).getAttribute("name").stringValue());
                 itemMap.put(item2.getChildren().get(0).getAttribute("name").stringValue(), (_2_Item) item2.getChildren().get(0));
             }
+            System.out.println(ItemHelper.itemNameMap);
             return itemMap.get(id);
         } catch (IOException e) {
             ErrorAlarm.show(e);
