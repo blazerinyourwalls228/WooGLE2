@@ -201,6 +201,10 @@ public class _2_Level_BallInstance extends _2_Positionable {
         return outActions;
     }
     
+    public _2_Level_TerrainGroup getCurrentGroup() {
+        return currentGroup;
+    }
+    
     public void addStrand(_2_Level_Strand strand) {
         strands.add(strand);
     }

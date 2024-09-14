@@ -268,6 +268,8 @@ public class EditorObject {
 
     }
     
+    public void postInit() {}
+    
     /**
      * Gets called when the object is deleted.
      * Don't delete other objects in this, instead, create ObjectDestructionActions

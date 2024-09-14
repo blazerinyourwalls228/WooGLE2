@@ -87,6 +87,11 @@ public class _2_Level_TerrainGroup extends EditorObject {
         getAttribute("type").addChangeListener((observable, oldValue, newValue) -> update());
 
     }
+    
+    @Override
+    public void postInit() {
+        update();
+    }
 
     @Override
     public void update() {
@@ -103,78 +108,52 @@ public class _2_Level_TerrainGroup extends EditorObject {
 
         addObjectComponent(new MeshComponent() {
             @Override
-            public Polygon getPolygon() {
-                Polygon polygon = new Polygon();
-
-                // Get all balls in this terrain group
-                ArrayList<_2_Level_BallInstance> balls = new ArrayList<>();
-                for (EditorObject editorObject : ((WOG2Level)LevelManager.getLevel()).getLevel().getChildren("balls")) {
-                    if (editorObject instanceof _2_Level_BallInstance ballInstance) {
-                        if (ballInstance.getAttribute("terrainGroup").intValue() == ((WOG2Level)LevelManager.getLevel()).getLevel().getChildren("terrainGroups").indexOf(_2_Level_TerrainGroup.this)) {
-                            balls.add(ballInstance);
-                        }
-                    }
-                }
-                if (balls.isEmpty()) return polygon;
-
-                // Find the highest ball
-                _2_Level_BallInstance furthestBall = balls.get(0);
-                double furthestDistance = furthestBall.getPosition().getY();
-                for (_2_Level_BallInstance ballInstance : balls) {
-                    double distance = ballInstance.getPosition().getY();
-                    if (distance > furthestDistance) {
-                        furthestDistance = distance;
-                        furthestBall = ballInstance;
-                    }
-                }
-
-                // Do the thing
-                _2_Level_BallInstance previous = furthestBall;
-                _2_Level_BallInstance currentBall = furthestBall;
-                double theta = Math.PI / 2;
-                int i = 100;
-                do {
-                    Position currentPos = currentBall.getPosition();
+            public Tri[] getMesh() {
+                ArrayList<Tri> tris = new ArrayList<>();
+                
+                // Get all strands in this group
+                ArrayList<_2_Level_Strand> strands = new ArrayList<>();
+                for (EditorObject object : ((WOG2Level)LevelManager.getLevel()).getLevel().getChildren("strands")) {
+                    _2_Level_Strand strand = (_2_Level_Strand)object;
+                    _2_Level_BallInstance ballInstance = strand.getGoo1();
                     
-                    polygon.getPoints().addAll(currentPos.getX(),
-                            -currentPos.getY());
-
-                    ArrayList<_2_Level_BallInstance> connectedToThisOne = new ArrayList<>();
-                    for (EditorObject editorObject : ((WOG2Level)LevelManager.getLevel()).getLevel().getChildren("strands"))
-                        if (editorObject instanceof _2_Level_Strand strand) {
-                        if (strand.getGoo1() == currentBall) connectedToThisOne.add(strand.getGoo2());
-                        if (strand.getGoo2() == currentBall) connectedToThisOne.add(strand.getGoo1());
+                    if (ballInstance != null && ballInstance.getCurrentGroup() == _2_Level_TerrainGroup.this) {
+                        strands.add(strand);
                     }
-
-                    double minimumDistance = 10000;
-                    double minimumAngle = 0;
-                    _2_Level_BallInstance minimumBall = furthestBall;
-
-                    for (_2_Level_BallInstance connected : connectedToThisOne) if (connected != previous) {
-                        Position connectedPos = connected.getPosition();
+                }
+                
+                // Iterate through all strands and gooballs to find triangles
+                for (int i = 0; i < strands.size(); i++) {
+                    _2_Level_Strand strand = strands.get(i);
+                    
+                    for (int j = 0; j < balls.size(); j++) {
+                        _2_Level_BallInstance ballInstance = balls.get(j);
                         
-                        double angleBetween = Math.atan2(
-                                connectedPos.getY() - currentPos.getY(),
-                                connectedPos.getX() - currentPos.getX());
-
-                        double angleDistance = angleBetween - theta;
-                        while (angleDistance < 0) angleDistance += Math.TAU;
-                        if (angleDistance < minimumDistance) {
-                            minimumDistance = angleDistance;
-                            minimumAngle = angleBetween;
-                            minimumBall = connected;
+                        if (strand.getGoo1() == null || strand.getGoo2() == null)
+                            continue;
+                        
+                        if (strand.getGoo1().isConnected(ballInstance) && strand.getGoo2().isConnected(ballInstance)) {
+                            double[] xPositions = new double[3];
+                            double[] yPositions = new double[3];
+                            
+                            Position a = ballInstance.getPosition();
+                            xPositions[0] = a.getX();
+                            yPositions[0] = -a.getY();
+                            
+                            Position b = strand.getGoo1().getPosition();
+                            xPositions[1] = b.getX();
+                            yPositions[1] = -b.getY();
+                            
+                            Position c = strand.getGoo2().getPosition();
+                            xPositions[2] = c.getX();
+                            yPositions[2] = -c.getY();
+                            
+                            tris.add(new Tri(xPositions, yPositions));
                         }
                     }
-
-                    previous = currentBall;
-                    currentBall = minimumBall;
-                    theta = minimumAngle + Math.PI;
-
-                    i--;
-                } while (currentBall != furthestBall && i > 0);
-
-
-                return polygon;
+                }
+                
+                return tris.toArray(Tri[]::new);
             }
 
             @Override
