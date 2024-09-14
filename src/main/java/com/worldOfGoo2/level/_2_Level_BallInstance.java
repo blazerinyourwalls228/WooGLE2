@@ -124,7 +124,7 @@ public class _2_Level_BallInstance extends _2_Positionable {
                 strand.update();
             }
 
-            clearObjectPositions();
+            clearObjectComponents();
 
             addObjectComponents(BallInstanceHelper.generateBallObjectComponents(this));
 

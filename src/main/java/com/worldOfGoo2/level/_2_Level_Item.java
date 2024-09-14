@@ -305,7 +305,7 @@ public class _2_Level_Item extends _2_Positionable {
     public void refreshObjectPositions() {
 
 
-        clearObjectPositions();
+        clearObjectComponents();
 
         boolean ok = false;
         if (item != null) {

@@ -130,7 +130,7 @@ public class MousePressedManager {
         }
         for (EditorObject selected : level.getSelected())
 
-            if (selected.containsObjectPosition(dragSettings.getObjectComponent())) {
+            if (selected.containsObjectComponent(dragSettings.getObjectComponent())) {
 
                 if (!dragSettings.getObjectComponent().isDraggable()) return;
 

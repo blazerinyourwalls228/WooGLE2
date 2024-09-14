@@ -65,7 +65,7 @@ public class MouseMovedManager {
             ObjectComponent objectComponent = overshadowingSettings.getObjectComponent();
 
             boolean isOvershadowed = true;
-            for (EditorObject selected : selectedList) if (selected.containsObjectPosition(objectComponent)) {
+            for (EditorObject selected : selectedList) if (selected.containsObjectComponent(objectComponent)) {
                 isOvershadowed = false;
                 break;
             }

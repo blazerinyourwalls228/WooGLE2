@@ -131,19 +131,24 @@ public class EditorObject {
     public final ObjectComponent[] getObjectComponents() {
         return objectComponents.toArray(new ObjectComponent[0]);
     }
+    
     public final void addObjectComponent(ObjectComponent c) {
         objectComponents.add(c);
     }
+    
     public final void addObjectComponents(List<ObjectComponent> c) {
         objectComponents.addAll(c);
     }
-    public final void removeObjectPosition(ObjectComponent c) {
+    
+    public final void removeObjectComponent(ObjectComponent c) {
         objectComponents.remove(c);
     }
-    public final void clearObjectPositions() {
+    
+    public final void clearObjectComponents() {
         objectComponents.clear();
     }
-    public final boolean containsObjectPosition(ObjectComponent c) {
+    
+    public final boolean containsObjectComponent(ObjectComponent c) {
         return objectComponents.contains(c);
     }
 

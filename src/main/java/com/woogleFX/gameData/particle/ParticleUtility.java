@@ -74,7 +74,7 @@ public class ParticleUtility {
         for (ParticleGraphicsInstance particleGraphicsInstance : drawing.get(i).toArray(new ParticleGraphicsInstance[0])) {
             if (particleGraphicsInstance.update()) {
                 drawing.get(i).remove(particleGraphicsInstance);
-                particleObject.removeObjectPosition(particleGraphicsInstance.getObjectPosition());
+                particleObject.removeObjectComponent(particleGraphicsInstance.getObjectPosition());
             }
         }
 
@@ -160,7 +160,7 @@ public class ParticleUtility {
         drawing.get(i).add(particleGraphicsInstance);
 
         if (drawing.get(i).size() > obj.getAttribute("maxparticles").doubleValue()) {
-            particleObject.removeObjectPosition(drawing.get(i).get(0).getObjectPosition());
+            particleObject.removeObjectComponent(drawing.get(i).get(0).getObjectPosition());
             drawing.get(i).remove(0);
         }
 

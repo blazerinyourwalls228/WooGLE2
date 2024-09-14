@@ -216,7 +216,7 @@ public class Strand extends EditorObject {
 
     private void addPartAsObjectPosition() {
 
-        clearObjectPositions();
+        clearObjectComponents();
 
         if (goo1 == null || goo2 == null) return;
 

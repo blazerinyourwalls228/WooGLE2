@@ -96,7 +96,7 @@ public class _2_Level_TerrainGroup extends EditorObject {
     @Override
     public void update() {
 
-        clearObjectPositions();
+        clearObjectComponents();
 
         Image image = TerrainHelper.buildTerrainImage(this);
 
