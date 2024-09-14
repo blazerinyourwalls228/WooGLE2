@@ -95,7 +95,7 @@ public class _2_Level extends EditorObject {
 
     private void updateObjectPositions() {
 
-        clearObjectPositions();
+        clearObjectComponents();
 
         EditorObject boundsBottomLeft = getChildren("boundsBottomLeft").get(0);
         EditorObject boundsTopRight = getChildren("boundsTopRight").get(0);

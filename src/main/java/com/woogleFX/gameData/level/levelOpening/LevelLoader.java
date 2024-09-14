@@ -347,6 +347,10 @@ public class LevelLoader {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    
+                    for (EditorObject object : wog2Level.getObjects()) {
+                        object.postInit();
+                    }
 
                     return null;
                 }

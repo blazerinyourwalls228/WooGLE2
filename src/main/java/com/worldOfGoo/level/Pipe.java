@@ -109,7 +109,7 @@ public class Pipe extends EditorObject {
 
 
     private void updateObjectPositions() {
-        clearObjectPositions();
+        clearObjectComponents();
         for (int i = 0; i < getChildren().size() - 1; i++) {
             addObjectPositionBetweenVertices((Vertex)getChildren().get(i), (Vertex)getChildren().get(i + 1));
         }

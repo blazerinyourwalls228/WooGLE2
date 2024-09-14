@@ -162,29 +162,6 @@ public class ObjectManager {
                 _item.getParent().getTreeItem().getChildren().remove(_item.getTreeItem());
             }
 
-            if (_item instanceof _2_Level_BallInstance ballInstance) {
-
-                String id = ballInstance.getAttribute("uid").stringValue();
-
-                for (EditorObject EditorObject : level.getObjects())
-                    if (EditorObject instanceof _2_Level_Strand strand) {
-
-                        String gb1 = strand.getAttribute("ball1UID").stringValue();
-                        if (gb1.equals(id)) {
-                            strand.setGoo1(null);
-                            strand.update();
-                        }
-
-                        String gb2 = strand.getAttribute("ball2UID").stringValue();
-                        if (gb2.equals(id)) {
-                            strand.setGoo2(null);
-                            strand.update();
-                        }
-
-                    }
-
-            }
-
             if (_item instanceof _2_Level_Strand strand) {
 
                 String gb1 = strand.getAttribute("ball1UID").stringValue();

@@ -2,6 +2,7 @@ package com.worldOfGoo2.level;
 
 import com.woogleFX.editorObjects.EditorObject;
 import com.woogleFX.editorObjects.ImageUtility;
+import com.woogleFX.editorObjects._2_Positionable;
 import com.woogleFX.editorObjects.attributes.AttributeAdapter;
 import com.woogleFX.editorObjects.attributes.EditorAttribute;
 import com.woogleFX.editorObjects.attributes.InputField;
@@ -36,7 +37,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class _2_Level_Item extends EditorObject {
+public class _2_Level_Item extends _2_Positionable {
 
     private _2_Item item;
     public _2_Item getItem() {
@@ -61,7 +62,6 @@ public class _2_Level_Item extends EditorObject {
     public _2_Level_Item(EditorObject parent) {
         super(parent, "Item", GameVersion.VERSION_WOG2);
 
-        addAttributeAdapter("pos", AttributeAdapter.pointAttributeAdapter(this, "pos", "pos"));
         addAttributeAdapter("scale", AttributeAdapter.pointAttributeAdapter(this, "scale", "scale"));
 
         EditorAttribute temp = new EditorAttribute("type", InputField._2_ITEM_TYPE, this).assertRequired();
@@ -99,13 +99,6 @@ public class _2_Level_Item extends EditorObject {
     @Override
     public void onLoaded() {
         super.onLoaded();
-
-        EditorObject pos = getChildren("pos").get(0);
-        pos.getAttribute("x").addChangeListener((observable, oldValue, newValue) ->
-                setAttribute2("pos", newValue + "," + getAttribute2("pos").positionValue().getY()));
-        pos.getAttribute("y").addChangeListener((observable, oldValue, newValue) ->
-                setAttribute2("pos", getAttribute2("pos").positionValue().getX() + "," + newValue));
-        setAttribute2("pos", pos.getAttribute("x").stringValue() + "," + pos.getAttribute("y").stringValue());
 
         EditorObject scale = getChildren("scale").get(0);
         scale.getAttribute("x").addChangeListener((observable, oldValue, newValue) ->
@@ -312,7 +305,7 @@ public class _2_Level_Item extends EditorObject {
     public void refreshObjectPositions() {
 
 
-        clearObjectPositions();
+        clearObjectComponents();
 
         boolean ok = false;
         if (item != null) {
@@ -324,148 +317,179 @@ public class _2_Level_Item extends EditorObject {
         if (!ok) {
 
             addObjectComponent(new TextComponent() {
+                @Override
                 public _Font getFont() {
                     return null;
                 }
 
+                @Override
                 public Font getOtherFont() {
                     return new Font("Consolas", 0.5);
                 }
 
+                @Override
                 public String getText() {
                     return getAttribute("type").stringValue();
                 }
 
+                @Override
                 public double getX() {
-                    return getAttribute("pos").positionValue().getX() + 0.2;
+                    return getPosition().getX() + 0.2;
                 }
 
+                @Override
                 public double getY() {
-                    return -getAttribute("pos").positionValue().getY() + 0.16875;
+                    return -getPosition().getY() + 0.16875;
                 }
 
+                @Override
                 public double getDepth() {
                     return Depth.ITEMS;
                 }
 
+                @Override
                 public boolean isVisible() {
                     return shouldShow() && LevelManager.getLevel().getVisibilitySettings().isShowGraphics();
                 }
 
+                @Override
                 public boolean isResizable() {
                     return false;
                 }
 
+                @Override
                 public boolean isRotatable() {
                     return false;
                 }
             });
             addObjectComponent(new CircleComponent() {
+                @Override
                 public Paint getColor() {
                     return new javafx.scene.paint.Color(1.0, 1.0, 1.0, 1.0);
                 }
 
+                @Override
                 public double getEdgeSize() {
                     return 0.1;
                 }
 
+                @Override
                 public Paint getBorderColor() {
                     return new javafx.scene.paint.Color(1.0, 1.0, 1.0, 1.0);
                 }
 
+                @Override
                 public boolean isEdgeOnly() {
                     return false;
                 }
 
+                @Override
                 public double getRadius() {
                     return 0.1;
                 }
 
+                @Override
                 public double getX() {
-                    return getAttribute("pos").positionValue().getX();
+                    return getPosition().getX();
                 }
 
+                @Override
                 public void setX(double x) {
-                    double y = getAttribute("pos").positionValue().getY();
-                    setAttribute("pos", x + "," + y);
+                    setPosition(x, getPosition().getY());
                 }
 
+                @Override
                 public double getY() {
-                    return -getAttribute("pos").positionValue().getY();
+                    return -getPosition().getY();
                 }
 
+                @Override
                 public void setY(double y) {
-                    double x = getAttribute("pos").positionValue().getX();
-                    setAttribute("pos", x + "," + (-y));
+                    setPosition(getPosition().getX(), -y);
                 }
 
+                @Override
                 public double getDepth() {
                     return Depth.ITEMS;
                 }
 
+                @Override
                 public boolean isVisible() {
                     return shouldShow() && LevelManager.getLevel().getVisibilitySettings().isShowGraphics();
                 }
 
+                @Override
                 public boolean isResizable() {
                     return false;
                 }
 
+                @Override
                 public boolean isRotatable() {
                     return false;
                 }
             });
             addObjectComponent(new CircleComponent() {
+                @Override
                 public Paint getColor() {
                     return new javafx.scene.paint.Color(1.0, 1.0, 1.0, 1.0);
                 }
 
+                @Override
                 public double getEdgeSize() {
                     return 0.0125;
                 }
 
+                @Override
                 public Paint getBorderColor() {
                     return new javafx.scene.paint.Color(0.0, 0.0, 0.0, 1.0);
                 }
 
+                @Override
                 public boolean isEdgeOnly() {
                     return false;
                 }
 
+                @Override
                 public double getRadius() {
                     return 0.1;
                 }
 
+                @Override
                 public double getX() {
-                    return getAttribute("pos").positionValue().getX();
+                    return getPosition().getX();
                 }
 
+                @Override
                 public void setX(double x) {
-                    double y = getAttribute("pos").positionValue().getY();
-                    setAttribute("pos", x + "," + y);
+                    setPosition(x, getPosition().getY());
                 }
 
+                @Override
                 public double getY() {
-                    return -getAttribute("pos").positionValue().getY();
+                    return -getPosition().getY();
                 }
 
+                @Override
                 public void setY(double y) {
-                    double x = getAttribute("pos").positionValue().getX();
-                    setAttribute("pos", x + "," + (-y));
+                    setPosition(getPosition().getX(), -y);
                 }
 
+                @Override
                 public double getDepth() {
                     return Depth.ITEMS;
                 }
 
+                @Override
                 public boolean isVisible() {
                     return shouldShow() && LevelManager.getLevel().getVisibilitySettings().isShowGraphics();
                 }
 
+                @Override
                 public boolean isResizable() {
                     return false;
                 }
 
+                @Override
                 public boolean isRotatable() {
                     return false;
                 }
@@ -529,63 +553,77 @@ public class _2_Level_Item extends EditorObject {
             Image finalImg = ImageUtility.colorize(img, new Color((int)((color & 0xFF000000L) >> 24), (int)((color & 0xFF0000) >> 16), (int)((color & 0xFF00) >> 8), (int)(color & 0xFF)));
 
             addObjectComponent(new ImageComponent() {
+                @Override
                 public double getX() {
 
-                    double x = getAttribute("pos").positionValue().getX();
+                    double x = getPosition().getX();
                     double scaleX = getAttribute("scale").positionValue().getX();
 
                     return x + (partX - partPivotX * partScaleX) * scaleX;
 
                 }
+                @Override
                 public void setX(double x) {
-                    double y = getAttribute("pos").positionValue().getY();
+                    double y = getPosition().getY();
                     double scaleX = getAttribute("scale").positionValue().getX();
-                    setAttribute("pos", (x - (partX - partPivotX * partScaleX) * scaleX) + "," + y);
+                    setPosition(x - (partX - partPivotX * partScaleX) * scaleX, y);
                 }
+                @Override
                 public double getY() {
 
-                    double y = -getAttribute("pos").positionValue().getY();
+                    double y = -getPosition().getY();
                     double scaleY = getAttribute("scale").positionValue().getY();
 
                     return y + (partY - partPivotY * partScaleY) * scaleY;
 
                 }
+                @Override
                 public void setY(double y) {
-                    double x = getAttribute("pos").positionValue().getX();
+                    double x = getPosition().getX();
                     double scaleY = getAttribute("scale").positionValue().getY();
-                    setAttribute("pos", x + "," + -(y - (partY - partPivotY * partScaleY) * scaleY));
+                    setPosition(x, -(y - (partY - partPivotY * partScaleY) * scaleY));
                 }
+                @Override
                 public double getRotation() {
                     return -getAttribute("rotation").doubleValue() - partRotation;
                 }
+                @Override
                 public void setRotation(double rotation) {
                     setAttribute("rotation", -rotation + partRotation);
                 }
+                @Override
                 public double getScaleX() {
                     double scaleX = getAttribute("scale").positionValue().getX() * 0.01;
                     return partScaleX * scaleX;
                 }
+                @Override
                 public double getScaleY() {
                     double scaleY = getAttribute("scale").positionValue().getY() * 0.01;
                     return partScaleY * scaleY;
                 }
+                @Override
                 public void setScaleX(double _scaleX) {
                     double scaleY = getAttribute("scale").positionValue().getY();
                     setAttribute("scale", _scaleX * 100.0 / partScaleX + "," + scaleY);
                 }
+                @Override
                 public void setScaleY(double _scaleY) {
                     double scaleX = getAttribute("scale").positionValue().getX();
                     setAttribute("scale", scaleX + "," + _scaleY * 100.0 / partScaleY);
                 }
+                @Override
                 public double getDepth() {
                     return getAttribute("depth").doubleValue();
                 }
+                @Override
                 public double getAlpha() {
                     return part.getAttribute("imageAlpha").doubleValue() * (part.getAttribute("invisible").booleanValue() ? 0.5 : 1);
                 }
+                @Override
                 public Image getImage() {
                     return finalImg;
                 }
+                @Override
                 public boolean isVisible() {
                     if (!LevelManager.getLevel().getVisibilitySettings().isShowGraphics()) return false;
                     if (!shouldShow()) return false;
@@ -604,12 +642,15 @@ public class _2_Level_Item extends EditorObject {
                     }
                     return false;
                 }
+                @Override
                 public boolean isDraggable() {
                     return finalImg != null && finalImg.getWidth() > 2 && finalImg.getHeight() > 2;
                 }
+                @Override
                 public boolean isResizable() {
                     return finalImg != null && finalImg.getWidth() > 2 && finalImg.getHeight() > 2;
                 }
+                @Override
                 public boolean isRotatable() {
                     return finalImg != null && finalImg.getWidth() > 2 && finalImg.getHeight() > 2;
                 }

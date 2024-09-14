@@ -365,11 +365,10 @@ public class FXEditorButtons {
 
             String name = ball.getObjects().get(0).getAttribute("name").stringValue();
 
-            EditorObject ballInstance = ObjectCreator.create2(_2_Level_BallInstance.class, ((WOG2Level)LevelManager.getLevel()).getLevel(), ball.getVersion());
-            EditorObject point = ObjectCreator.create2(_2_Point.class, ballInstance, ball.getVersion());
-            point.setTypeID("pos");
-            point.setAttribute("x", 0);
-            point.setAttribute("y", 0);
+            _2_Level_BallInstance ballInstance = (_2_Level_BallInstance)ObjectCreator.create2(
+                _2_Level_BallInstance.class, ((WOG2Level)LevelManager.getLevel()).getLevel(), ball.getVersion());
+            
+            ballInstance.createPosition();
             ballInstance.setAttribute("type", name);
             ballInstance.setTypeID("balls");
             ballInstance.onLoaded();

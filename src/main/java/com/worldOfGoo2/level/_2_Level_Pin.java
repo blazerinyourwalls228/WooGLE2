@@ -1,7 +1,7 @@
 package com.worldOfGoo2.level;
 
 import com.woogleFX.editorObjects.EditorObject;
-import com.woogleFX.editorObjects.attributes.AttributeAdapter;
+import com.woogleFX.editorObjects._2_Positionable;
 import com.woogleFX.editorObjects.attributes.InputField;
 import com.woogleFX.editorObjects.attributes.MetaEditorAttribute;
 import com.woogleFX.editorObjects.objectComponents.RectangleComponent;
@@ -12,16 +12,13 @@ import com.worldOfGoo2.misc._2_Point;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
-public class _2_Level_Pin extends EditorObject {
+public class _2_Level_Pin extends _2_Positionable {
 
     public _2_Level_Pin(EditorObject parent) {
         super(parent, "Pin", GameVersion.VERSION_WOG2);
 
         addAttribute("uid", InputField._2_UID);
-
         addAttribute("pos", InputField._2_CHILD_HIDDEN).setChildAlias(_2_Point.class);
-        addAttributeAdapter("pos", AttributeAdapter.pointAttributeAdapter(this, "pos", "pos"));
-
         addAttribute("damping", InputField._2_NUMBER);
         addAttribute("limitVelocity", InputField._2_BOOLEAN);
         addAttribute("maxVelocity", InputField._2_NUMBER);
@@ -31,16 +28,16 @@ public class _2_Level_Pin extends EditorObject {
 
         addObjectComponent(new RectangleComponent() {
             public double getX() {
-                return getAttribute("pos").positionValue().getX();
+                return getPosition().getX();
             }
             public void setX(double x) {
-                setAttribute("pos", x + "," + -getY());
+                setPosition(x, getPosition().getY());
             }
             public double getY() {
-                return -getAttribute("pos").positionValue().getY();
+                return -getPosition().getY();
             }
             public void setY(double y) {
-                setAttribute("pos", getX() + "," + -y);
+                setPosition(getPosition().getX(), -y);;
             }
             public double getRotation() {
                 return Math.toRadians(45);
@@ -76,20 +73,6 @@ public class _2_Level_Pin extends EditorObject {
                 return false;
             }
         });
-
-    }
-
-
-    @Override
-    public void onLoaded() {
-        super.onLoaded();
-
-        EditorObject pos = getChildren("pos").get(0);
-        setAttribute2("pos", pos.getAttribute("x").stringValue() + "," + pos.getAttribute("y").stringValue());
-        pos.getAttribute("x").addChangeListener((observable, oldValue, newValue) ->
-                setAttribute2("pos", newValue + "," + getAttribute2("pos").positionValue().getY()));
-        pos.getAttribute("y").addChangeListener((observable, oldValue, newValue) ->
-                setAttribute2("pos", getAttribute2("pos").positionValue().getX() + "," + newValue));
 
     }
 

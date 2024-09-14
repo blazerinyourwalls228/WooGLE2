@@ -131,19 +131,24 @@ public class EditorObject {
     public final ObjectComponent[] getObjectComponents() {
         return objectComponents.toArray(new ObjectComponent[0]);
     }
+    
     public final void addObjectComponent(ObjectComponent c) {
         objectComponents.add(c);
     }
+    
     public final void addObjectComponents(List<ObjectComponent> c) {
         objectComponents.addAll(c);
     }
-    public final void removeObjectPosition(ObjectComponent c) {
+    
+    public final void removeObjectComponent(ObjectComponent c) {
         objectComponents.remove(c);
     }
-    public final void clearObjectPositions() {
+    
+    public final void clearObjectComponents() {
         objectComponents.clear();
     }
-    public final boolean containsObjectPosition(ObjectComponent c) {
+    
+    public final boolean containsObjectComponent(ObjectComponent c) {
         return objectComponents.contains(c);
     }
 
@@ -236,6 +241,15 @@ public class EditorObject {
         attributeAdapters.put(name, attributeAdapter);
     }
 
+    public final EditorObject getChild(String attributeName) {
+        for (EditorObject child : children) {
+            if (child.getTypeID().equals(attributeName))
+                return child;
+        }
+        
+        return null;
+    }
+    
     public final ArrayList<EditorObject> getChildren(String attributeName) {
         ArrayList<EditorObject> children2 = new ArrayList<>();
         for (EditorObject child : children) if (child.getTypeID().equals(attributeName)) children2.add(child);
@@ -258,6 +272,8 @@ public class EditorObject {
     public void onLoaded() {
 
     }
+    
+    public void postInit() {}
     
     /**
      * Gets called when the object is deleted.

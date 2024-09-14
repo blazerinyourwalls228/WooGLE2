@@ -10,8 +10,10 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.transform.Affine;
 
 public abstract class MeshComponent extends ObjectComponent {
-
-    public abstract Polygon getPolygon();
+    
+    public static record Face(double[] xPositions, double[] yPositions, int vertexCount) {}
+    
+    public abstract Face[] getMesh();
 
     public abstract Image getImage();
 
@@ -25,11 +27,13 @@ public abstract class MeshComponent extends ObjectComponent {
 
     public abstract double getDepth();
 
+    private Face[] cachedMesh;
+    
     @Override
     public void draw(GraphicsContext graphicsContext, boolean selected) {
-
-        Polygon polygon = getPolygon();
-
+        if (cachedMesh == null)
+            cachedMesh = getMesh();
+        
         Image image = getImage();
 
         double offsetX = LevelManager.getLevel().getOffsetX();
@@ -45,15 +49,11 @@ public abstract class MeshComponent extends ObjectComponent {
 
         graphicsContext.setFill(new ImagePattern(image, 0, 0, image.getWidth() * getScaleX(), image.getHeight() * getScaleY(), false));
 
-        double[] xPoints = new double[polygon.getPoints().size() / 2];
-        double[] yPoints = new double[polygon.getPoints().size() / 2];
-        for (int i = 0; i < polygon.getPoints().size() / 2; i++) {
-            xPoints[i] = polygon.getPoints().get(i * 2);
-            yPoints[i] = polygon.getPoints().get(i * 2 + 1);
+        // fill triangles
+        for (int i = 0; i < cachedMesh.length; i++) {
+            graphicsContext.fillPolygon(cachedMesh[i].xPositions, cachedMesh[i].yPositions, cachedMesh[i].vertexCount);
         }
-
-        graphicsContext.fillPolygon(xPoints, yPoints, polygon.getPoints().size() / 2);
-
+        
         graphicsContext.restore();
 
     }

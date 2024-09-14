@@ -7,6 +7,7 @@ import com.woogleFX.engine.fx.FXPropertiesView;
 import com.woogleFX.engine.SelectionManager;
 import com.woogleFX.engine.LevelManager;
 import com.woogleFX.editorObjects.ObjectManager;
+import com.woogleFX.editorObjects._2_Positionable;
 import com.woogleFX.engine.undoHandling.UndoManager;
 import com.woogleFX.engine.undoHandling.userActions.ObjectCreationAction;
 import com.woogleFX.gameData.level.GameVersion;
@@ -24,7 +25,6 @@ import com.worldOfGoo.text.TextString;
 import com.worldOfGoo.text.TextStrings;
 import com.worldOfGoo2.level.*;
 import com.worldOfGoo2.misc._2_Point;
-import com.worldOfGoo2.util.BallInstanceHelper;
 import javafx.geometry.Point2D;
 
 import java.util.HashSet;
@@ -175,30 +175,20 @@ public class ObjectAdder {
             point.setAttribute("x", 0);
             point.setAttribute("y", 0);
             point.setTypeID("textureOffset");
-        } else if (obj instanceof _2_Level_Item) {
-            EditorObject pos = ObjectCreator.create2(_2_Point.class, obj, GameVersion.VERSION_WOG2);
-            pos.setAttribute("x", 0);
-            pos.setAttribute("y", 0);
-            pos.setTypeID("pos");
-            EditorObject scale = ObjectCreator.create2(_2_Point.class, obj, GameVersion.VERSION_WOG2);
-            scale.setAttribute("x", 1);
-            scale.setAttribute("y", 1);
-            scale.setTypeID("scale");
-        } else if (obj instanceof _2_Level_BallInstance) {
-            EditorObject pos = ObjectCreator.create2(_2_Point.class, obj, GameVersion.VERSION_WOG2);
-            pos.setAttribute("x", 0);
-            pos.setAttribute("y", 0);
-            pos.setTypeID("pos");
+        } else if (obj instanceof _2_Positionable positionable) {
+            positionable.createPosition();
+            
+            if (obj instanceof _2_Level_Item) {
+                EditorObject scale = ObjectCreator.create2(_2_Point.class, obj, GameVersion.VERSION_WOG2);
+                scale.setAttribute("x", 1);
+                scale.setAttribute("y", 1);
+                scale.setTypeID("scale");
+            }
         } else if (obj instanceof _2_Level_CameraKeyFrame) {
             EditorObject position = ObjectCreator.create2(_2_Point.class, obj, GameVersion.VERSION_WOG2);
             position.setAttribute("x", 0);
             position.setAttribute("y", 0);
             position.setTypeID("position");
-        } else if (obj instanceof _2_Level_Pin) {
-            EditorObject pos = ObjectCreator.create2(_2_Point.class, obj, GameVersion.VERSION_WOG2);
-            pos.setAttribute("x", 0);
-            pos.setAttribute("y", 0);
-            pos.setTypeID("pos");
         }
 
         addAnything(obj);

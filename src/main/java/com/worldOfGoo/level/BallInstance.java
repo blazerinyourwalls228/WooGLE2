@@ -148,7 +148,7 @@ public class BallInstance extends EditorObject {
     public void refreshObjectPositions() {
 
 
-        clearObjectPositions();
+        clearObjectComponents();
 
         if (ball != null) {
             int i = 0;
