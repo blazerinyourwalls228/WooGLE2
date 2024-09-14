@@ -67,7 +67,7 @@ public class _2_Level_BallInstance extends _2_Positionable {
                 _2_Level level = ((WOG2Level)LevelManager.getLevel()).getLevel();
                 ArrayList<EditorObject> terrainGroups = level.getChildren("terrainGroups");
                 
-                if (newValue > 0 && newValue < terrainGroups.size()) {
+                if (newValue >= 0 && newValue < terrainGroups.size()) {
                     currentGroup = (_2_Level_TerrainGroup)terrainGroups.get(newValue);
                     currentGroup.addBall(_2_Level_BallInstance.this);
                     currentGroup.update();
@@ -177,21 +177,6 @@ public class _2_Level_BallInstance extends _2_Positionable {
 
     }
 
-    
-    public List<_2_Level_BallInstance> getConnected() {
-        _2_Level level = ((WOG2Level)LevelManager.getLevel()).getLevel();
-        ArrayList<_2_Level_BallInstance> out = new ArrayList<>();
-        
-        for (_2_Level_Strand strand : level.getChildren("strands").toArray(_2_Level_Strand[]::new)) {
-            if (strand.getGoo1() == this)
-                out.add(strand.getGoo2());
-            else if (strand.getGoo2() == this)
-                out.add(strand.getGoo1());
-        }
-        
-        return out;
-    }
-    
     
     @Override
     public List<ObjectDestructionAction> onDelete() {
