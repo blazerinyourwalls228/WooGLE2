@@ -1,7 +1,6 @@
 package com.worldOfGoo2.util;
 
 import com.woogleFX.editorObjects.EditorObject;
-import com.woogleFX.editorObjects.ObjectManager;
 import com.woogleFX.engine.LevelManager;
 import com.woogleFX.file.FileManager;
 import com.woogleFX.file.fileImport.ObjectGOOParser;
@@ -25,7 +24,10 @@ import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class TerrainHelper {
 
@@ -147,6 +149,18 @@ public class TerrainHelper {
 
         return image;
 
+    }
+    
+    public static <T> Set<T> subtract(T[] arr1, List<T> arr2){
+        HashSet<T> map = new HashSet<>();
+        for (int i = 0; i < arr1.length; i++)
+            map.add(arr1[i]);
+    
+        for(int i = 0; i < arr2.size(); i++)
+            if(map.contains(arr2.get(i)))
+                map.remove(arr2.get(i));
+        
+        return map;
     }
 
 }

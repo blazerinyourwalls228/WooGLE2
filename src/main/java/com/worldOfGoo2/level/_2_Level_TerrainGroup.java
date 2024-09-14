@@ -5,22 +5,15 @@ import com.woogleFX.editorObjects.attributes.AttributeAdapter;
 import com.woogleFX.editorObjects.attributes.EditorAttribute;
 import com.woogleFX.editorObjects.attributes.InputField;
 import com.woogleFX.editorObjects.attributes.MetaEditorAttribute;
-import com.woogleFX.editorObjects.attributes.dataTypes.Position;
-import com.woogleFX.editorObjects.objectComponents.MeshComponent;
+import com.woogleFX.editorObjects.objectComponents.TerrainMeshComponent;
 import com.woogleFX.engine.LevelManager;
-import com.woogleFX.engine.fx.FXEditorButtons;
 import com.woogleFX.engine.fx.FXPropertiesView;
 import com.woogleFX.gameData.level.GameVersion;
 import com.woogleFX.gameData.level.WOG2Level;
 import com.woogleFX.gameData.terrainTypes.TerrainTypeManager;
 import com.worldOfGoo2.misc._2_Point;
-import com.worldOfGoo2.terrain.BaseSettings;
 import com.worldOfGoo2.terrain._2_Terrain_TerrainType;
 import com.worldOfGoo2.util.ItemHelper;
-import com.worldOfGoo2.util.TerrainHelper;
-import javafx.scene.image.Image;
-import javafx.scene.shape.Polygon;
-
 import java.util.ArrayList;
 
 public class _2_Level_TerrainGroup extends EditorObject {
@@ -98,107 +91,23 @@ public class _2_Level_TerrainGroup extends EditorObject {
 
         clearObjectComponents();
 
-        Image image = TerrainHelper.buildTerrainImage(this);
+        addObjectComponent(new TerrainMeshComponent(this, getStrands(), balls.toArray(_2_Level_BallInstance[]::new)));
 
-        String terrainType = getAttribute("typeUuid").stringValue();
+    }
 
-        _2_Terrain_TerrainType terrain = TerrainTypeManager.getTerrainType(terrainType);
-
-        BaseSettings baseSettings = (BaseSettings) terrain.getChildren("baseSettings").get(0);
-
-        addObjectComponent(new MeshComponent() {
-            @Override
-            public Tri[] getMesh() {
-                ArrayList<Tri> tris = new ArrayList<>();
-                
-                // Get all strands in this group
-                ArrayList<_2_Level_Strand> strands = new ArrayList<>();
-                for (EditorObject object : ((WOG2Level)LevelManager.getLevel()).getLevel().getChildren("strands")) {
-                    _2_Level_Strand strand = (_2_Level_Strand)object;
-                    _2_Level_BallInstance ballInstance = strand.getGoo1();
-                    
-                    if (ballInstance != null && ballInstance.getCurrentGroup() == _2_Level_TerrainGroup.this) {
-                        strands.add(strand);
-                    }
-                }
-                
-                // Iterate through all strands and gooballs to find triangles
-                for (int i = 0; i < strands.size(); i++) {
-                    _2_Level_Strand strand = strands.get(i);
-                    
-                    for (int j = 0; j < balls.size(); j++) {
-                        _2_Level_BallInstance ballInstance = balls.get(j);
-                        
-                        if (strand.getGoo1() == null || strand.getGoo2() == null)
-                            continue;
-                        
-                        if (strand.getGoo1().isConnected(ballInstance) && strand.getGoo2().isConnected(ballInstance)) {
-                            double[] xPositions = new double[3];
-                            double[] yPositions = new double[3];
-                            
-                            Position a = ballInstance.getPosition();
-                            xPositions[0] = a.getX();
-                            yPositions[0] = -a.getY();
-                            
-                            Position b = strand.getGoo1().getPosition();
-                            xPositions[1] = b.getX();
-                            yPositions[1] = -b.getY();
-                            
-                            Position c = strand.getGoo2().getPosition();
-                            xPositions[2] = c.getX();
-                            yPositions[2] = -c.getY();
-                            
-                            tris.add(new Tri(xPositions, yPositions));
-                        }
-                    }
-                }
-                
-                return tris.toArray(Tri[]::new);
+    private _2_Level_Strand[] getStrands() {
+        ArrayList<_2_Level_Strand> strands = new ArrayList<>();
+        
+        for (EditorObject object : ((WOG2Level)LevelManager.getLevel()).getLevel().getChildren("strands")) {
+            _2_Level_Strand strand = (_2_Level_Strand)object;
+            _2_Level_BallInstance ballInstance = strand.getGoo1();
+            
+            if (ballInstance != null && ballInstance.getCurrentGroup() == _2_Level_TerrainGroup.this) {
+                strands.add(strand);
             }
-
-            @Override
-            public Image getImage() {
-                return image;
-            }
-
-            @Override
-            public double getX() {
-                return 0;
-            }
-
-            @Override
-            public double getY() {
-                return 0;
-            }
-
-            @Override
-            public double getScaleX() {
-                return baseSettings.getAttribute("metersToUv").doubleValue() / image.getWidth();
-            }
-
-            @Override
-            public double getScaleY() {
-                return baseSettings.getAttribute("metersToUv").doubleValue() / image.getHeight();
-            }
-
-            @Override
-            public double getDepth() {
-                return getAttribute("sortOffset").doubleValue() * 0.00001 + (getAttribute("foreground").booleanValue() ? 0.01 : 0) - 0.02;
-            }
-
-            @Override
-            public boolean isVisible() {
-
-                if (LevelManager.getLevel().getVisibilitySettings().getShowGoos() != 2) return false;
-
-                int terrainGroup = ((WOG2Level)LevelManager.getLevel()).getLevel().getChildren("terrainGroups").indexOf(_2_Level_TerrainGroup.this);
-                if (terrainGroup < 0 || terrainGroup >= FXEditorButtons.comboBoxList.size()) return true;
-                else return FXEditorButtons.comboBoxList.get(terrainGroup);
-
-            }
-
-        });
-
+        }
+        
+        return strands.toArray(_2_Level_Strand[]::new);
     }
     
     public void addBall(_2_Level_BallInstance ballInstance) {

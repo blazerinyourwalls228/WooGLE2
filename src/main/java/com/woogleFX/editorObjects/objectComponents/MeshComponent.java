@@ -11,9 +11,9 @@ import javafx.scene.transform.Affine;
 
 public abstract class MeshComponent extends ObjectComponent {
     
-    public static record Tri(double[] xPositions, double[] yPositions) {}
+    public static record Face(double[] xPositions, double[] yPositions, int vertexCount) {}
     
-    public abstract Tri[] getMesh();
+    public abstract Face[] getMesh();
 
     public abstract Image getImage();
 
@@ -27,12 +27,13 @@ public abstract class MeshComponent extends ObjectComponent {
 
     public abstract double getDepth();
 
-    private Tri[] cachedMesh;
+    private Face[] cachedMesh;
     
     @Override
     public void draw(GraphicsContext graphicsContext, boolean selected) {
         if (cachedMesh == null)
             cachedMesh = getMesh();
+        
         Image image = getImage();
 
         double offsetX = LevelManager.getLevel().getOffsetX();
@@ -50,7 +51,7 @@ public abstract class MeshComponent extends ObjectComponent {
 
         // fill triangles
         for (int i = 0; i < cachedMesh.length; i++) {
-            graphicsContext.fillPolygon(cachedMesh[i].xPositions, cachedMesh[i].yPositions, 3);
+            graphicsContext.fillPolygon(cachedMesh[i].xPositions, cachedMesh[i].yPositions, cachedMesh[i].vertexCount);
         }
         
         graphicsContext.restore();

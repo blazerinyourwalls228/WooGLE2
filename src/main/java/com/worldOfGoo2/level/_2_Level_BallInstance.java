@@ -76,6 +76,9 @@ public class _2_Level_BallInstance extends _2_Positionable {
     }
     
     public boolean isConnected(_2_Level_BallInstance other) {
+        if (this == other)
+            return false;
+        
         for (int i = 0; i < strands.size(); i++) {
             _2_Level_Strand strand = strands.get(i);
             
