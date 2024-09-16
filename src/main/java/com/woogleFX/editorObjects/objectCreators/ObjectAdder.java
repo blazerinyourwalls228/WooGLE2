@@ -196,12 +196,13 @@ public class ObjectAdder {
 
         int i = switch (level.getCurrentlySelectedSection()) {
             case "Terrain" -> 0;
-            case "Pins" -> 4;
-            case "Camera" -> 5;
-            case "Addin" -> 6;
+            case "Balls" -> 1;
+            case "Items" -> 2;
+            case "Pins" -> 3;
+            case "Camera" -> 4;
+            case "Addin" -> 5;
             default -> -1;
         };
-        FXHierarchy.getNewHierarchySwitcherButtons().getSelectionModel().select((i + 1) % 7);
         FXHierarchy.getNewHierarchySwitcherButtons().getSelectionModel().select((i + 1) % 6);
         FXHierarchy.getNewHierarchySwitcherButtons().getSelectionModel().select(i);
 
