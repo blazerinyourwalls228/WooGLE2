@@ -9,6 +9,7 @@ import com.woogleFX.engine.SelectionManager;
 import com.woogleFX.engine.undoHandling.UndoManager;
 import com.woogleFX.engine.undoHandling.userActions.DeleteSplinePointAction;
 import com.woogleFX.engine.undoHandling.userActions.UserAction;
+import com.woogleFX.gameData.level.GameVersion;
 import com.woogleFX.gameData.level.levelSaving.LevelUpdater;
 import javafx.geometry.Point2D;
 import javafx.scene.input.KeyCode;
@@ -101,14 +102,18 @@ public class KeyPressedManager {
         }
         if (event.getCode() == KeyCode.ENTER) {
             if (SelectionManager.getMode() == SelectionManager.GEOMETRY) {
-                QuadCurve2D first = SplineManager.getQuadCurve(0);
-                QuadCurve2D last = SplineManager.getQuadCurve(SplineManager.getQuadCurveCount() - 1);
-                double xAvg = (first.getX1() + last.getX2()) / 2;
-                double yAvg = (first.getY1() + last.getY2()) / 2;
-                SplineManager.addPoint(last.getX2(), last.getY2(), xAvg, yAvg, first.getX1(), first.getY1(), SplineManager.getPointCount() + 2);
-                SplineGeometryPlacer.fillCurrentSplineWithGeometry();
-                SelectionManager.selectionMode();
-                SplineManager.clear();
+                if (LevelManager.getLevel().getVersion() == GameVersion.VERSION_WOG2) {
+                    SplineGeometryPlacer.placeTerrain();
+                } else {
+                    QuadCurve2D first = SplineManager.getQuadCurve(0);
+                    QuadCurve2D last = SplineManager.getQuadCurve(SplineManager.getQuadCurveCount() - 1);
+                    double xAvg = (first.getX1() + last.getX2()) / 2;
+                    double yAvg = (first.getY1() + last.getY2()) / 2;
+                    SplineManager.addPoint(last.getX2(), last.getY2(), xAvg, yAvg, first.getX1(), first.getY1(), SplineManager.getPointCount() + 2);
+                    SplineGeometryPlacer.fillCurrentSplineWithGeometry();
+                    SelectionManager.selectionMode();
+                    SplineManager.clear();
+                }
             }
         }
     }
