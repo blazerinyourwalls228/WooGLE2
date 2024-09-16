@@ -664,6 +664,7 @@ public class SplineGeometryPlacer {
         prevPoint.setAttribute("y", 0);
         WOG2Level level = (WOG2Level) LevelManager.getLevel();
         EditorObject group = ObjectCreator.create2(_2_Level_TerrainGroup.class, level.getLevel(), LevelManager.getLevel().getVersion());
+        group.setAttribute("type", "Green_Hills");
         int newGroupIndex = level.getObjects().stream().filter(obj -> obj instanceof _2_Level_TerrainGroup).toList().size();
         group.setTypeID("terrainGroups");
         level.getLevel().getChildren("terrainGroups").add(group);
@@ -684,7 +685,9 @@ public class SplineGeometryPlacer {
                 terrainNode.setAttribute("pos", x + "," + -y);
                 //terrainNode.setAttribute("typeEnum", "Terrain");
                 terrainNode.setAttribute("type", "Terrain");
-                terrainNode.setAttribute("terrainGroup", newGroupIndex);
+                try {
+                    terrainNode.setAttribute("terrainGroup", newGroupIndex);
+                } catch (Exception ignored) {}
                 myFatBalls = myFatBalls.stream().sorted((obj1, obj2) -> obj1.getAttribute("uid").intValue()).toList();
                 terrainNode.setAttribute("uid", biggestUID++);
                 level.getObjects().add(terrainNode);
