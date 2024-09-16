@@ -901,6 +901,78 @@ public class FXEditorButtons {
 
     }
 
+    private static final Button addPipeInLiquidButton = new Button();
+    private static final Button addPipeInBallsButton = new Button();
+    private static final Button addPoolButton = new Button();
+    private static final Button addStickyTerrainButton = new Button();
+    private static final Button addDeadlyTerrainButton = new Button();
+    private static final Button addFrictionlessTerrainButton = new Button();
+    private static final Button addUnwalkableTerrainButton = new Button();
+    private static final Button addNonStickyTerrainButton = new Button();
+    private static final Button addClearTerrainButton = new Button();
+    private static final Button addWaterButton = new Button();
+    private static final Button addLevelExit2Button = new Button();
+
+    private static void addWoG2Items(ToolBar toolbar) {
+        String prefix = "ObjectIcons/WoG2/";
+
+        setIcon(addPipeInLiquidButton, prefix + "pipeInLiquid.png");
+        addPipeInLiquidButton.setOnAction(e -> ObjectAdder.addWOG2Item("PipeInLiquid"));
+        addPipeInLiquidButton.setTooltip(new DelayedTooltip("Add PipeInLiquid"));
+        toolbar.getItems().add(addPipeInLiquidButton);
+
+        setIcon(addPipeInBallsButton, prefix + "pipeInBalls.png");
+        addPipeInBallsButton.setOnAction(e -> ObjectAdder.addWOG2Item("PipeInBalls"));
+        addPipeInBallsButton.setTooltip(new DelayedTooltip("Add PipeInBalls"));
+        toolbar.getItems().add(addPipeInBallsButton);
+
+        setIcon(addPoolButton, prefix + "pool.png");
+        addPoolButton.setOnAction(e -> ObjectAdder.addWOG2Item("Pool"));
+        addPoolButton.setTooltip(new DelayedTooltip("Add Pool"));
+        toolbar.getItems().add(addPoolButton);
+
+        setIcon(addStickyTerrainButton, prefix + "terrainSticky.png");
+        addStickyTerrainButton.setOnAction(e -> ObjectAdder.addWOG2Item("TerrainSticky"));
+        addStickyTerrainButton.setTooltip(new DelayedTooltip("Add TerrainSticky"));
+        toolbar.getItems().add(addStickyTerrainButton);
+
+        setIcon(addDeadlyTerrainButton, prefix + "terrainDeadly.png");
+        addDeadlyTerrainButton.setOnAction(e -> ObjectAdder.addWOG2Item("TerrainDeadly"));
+        addDeadlyTerrainButton.setTooltip(new DelayedTooltip("Add TerrainDeadly"));
+        toolbar.getItems().add(addDeadlyTerrainButton);
+
+        setIcon(addFrictionlessTerrainButton, prefix + "terrainFrictionless.png");
+        addFrictionlessTerrainButton.setOnAction(e -> ObjectAdder.addWOG2Item("TerrainFrictionless"));
+        addFrictionlessTerrainButton.setTooltip(new DelayedTooltip("Add TerrainFrictionless"));
+        toolbar.getItems().add(addFrictionlessTerrainButton);
+
+        setIcon(addUnwalkableTerrainButton, prefix + "terrainUnwalkable.png");
+        addUnwalkableTerrainButton.setOnAction(e -> ObjectAdder.addWOG2Item("TerrainUnwalkable"));
+        addUnwalkableTerrainButton.setTooltip(new DelayedTooltip("Add TerrainUnwalkable"));
+        toolbar.getItems().add(addUnwalkableTerrainButton);
+
+        setIcon(addNonStickyTerrainButton, prefix + "terrainNonSticky.png");
+        addNonStickyTerrainButton.setOnAction(e -> ObjectAdder.addWOG2Item("TerrainNonSticky"));
+        addNonStickyTerrainButton.setTooltip(new DelayedTooltip("Add TerrainNonSticky"));
+        toolbar.getItems().add(addNonStickyTerrainButton);
+
+        setIcon(addClearTerrainButton, prefix + "terrainClear.png");
+        addClearTerrainButton.setOnAction(e -> ObjectAdder.addWOG2Item("TerrainClear"));
+        addClearTerrainButton.setTooltip(new DelayedTooltip("Add TerrainClear"));
+        toolbar.getItems().add(addClearTerrainButton);
+
+        setIcon(addWaterButton, prefix + "water.png");
+        addWaterButton.setOnAction(e -> ObjectAdder.addWOG2Item("Water"));
+        addWaterButton.setTooltip(new DelayedTooltip("Add Water"));
+        toolbar.getItems().add(addWaterButton);
+
+        setIcon(addLevelExit2Button, "ObjectIcons/level/levelexit.png");
+        addLevelExit2Button.setOnAction(e -> ObjectAdder.addWOG2Item("LevelExit"));
+        addLevelExit2Button.setTooltip(new DelayedTooltip("Add LevelExit"));
+        toolbar.getItems().add(addLevelExit2Button);
+    }
+
+
 
     public static void init() {
 
@@ -929,7 +1001,7 @@ public class FXEditorButtons {
         nullGooballsToolbar = new ToolBar();
         nullGooballsToolbar.setMinHeight(27);
         nullGooballsToolbar.setOnMouseClicked(e -> showPaletteConfigurator(e, nullGooballsToolbar));
-        // addBallsTo();
+        addWoG2Items(sequelGooballsToolbar);
         vBox.getChildren().add(2, nullGooballsToolbar);
 
         addObjectsToolbar = new ToolBar();

@@ -77,8 +77,8 @@ public class GlobalResourceManager {
         sequelResources.clear();
         if (!FileManager.getGameDir(GameVersion.VERSION_WOG2).isEmpty()) {
             openResources(GameVersion.VERSION_WOG2);
-            openItems();
             AtlasManager.reloadAtlas();
+            openItems();
             openBallTable();
             new Thread(() -> {
                 try {

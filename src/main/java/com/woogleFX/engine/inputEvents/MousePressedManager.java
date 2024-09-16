@@ -13,6 +13,7 @@ import com.woogleFX.engine.LevelManager;
 import com.woogleFX.editorObjects.DragSettings;
 import com.woogleFX.engine.undoHandling.UndoManager;
 import com.woogleFX.engine.undoHandling.userActions.CreateSplinePointAction;
+import com.woogleFX.gameData.level.GameVersion;
 import com.woogleFX.gameData.level.WOG1Level;
 import com.woogleFX.gameData.level.WOG2Level;
 import com.woogleFX.gameData.level._Level;
@@ -287,7 +288,7 @@ public class MousePressedManager {
             for (int j = 0; j < length; j++) {
                 double s = j / length;
                 Point2D p = SplineGeometryPlacer.getPointOnSplineSegment(splineSegment, s);
-                if (Math.hypot(p.getX() - mouseX, p.getY() - mouseY) < 4) {
+                if (Math.hypot(p.getX() - mouseX, p.getY() - mouseY) < 0.5) {
                     SplineManager.select((i / 2) * 3 + 1, (s + i % 2) / 2);
                     return;
                 }
@@ -311,7 +312,12 @@ public class MousePressedManager {
 
 
     private static boolean mouseIntersection(double mouseX, double mouseY, double x, double y) {
-        double width = 6 / LevelManager.getLevel().getZoom();
+        double width;
+        if (LevelManager.getLevel().getVersion().equals(GameVersion.VERSION_WOG2)) {
+            width = 0.0025;
+        } else {
+            width = 6 / LevelManager.getLevel().getZoom();
+        }
         return Math.hypot(mouseX - x, mouseY - y) < width;
     }
 

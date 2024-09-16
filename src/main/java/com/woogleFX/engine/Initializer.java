@@ -87,6 +87,27 @@ public class Initializer {
 
     public static void startWithWorldOfGooVersion() {
 
+        BaseGameResources.init();
+        GlobalResourceManager.init();
+
+        try {
+            FileManager.openFailedImage();
+        } catch (IOException ignored) {
+
+        }
+
+
+        String[] launchArguments = Main.getLaunchArguments();
+
+        if (launchArguments.length > 0) {
+            logger.info("Opening level " + launchArguments[0]);
+            if (!FileManager.getGameDir(GameVersion.VERSION_WOG1_NEW).isEmpty()) {
+                LevelLoader.openLevel(launchArguments[0], GameVersion.VERSION_WOG1_NEW);
+            } else {
+                LevelLoader.openLevel(launchArguments[0], GameVersion.VERSION_WOG1_OLD);
+            }
+        }
+
         initializeGUI();
 
         FXEditorButtons.updateAllButtons();

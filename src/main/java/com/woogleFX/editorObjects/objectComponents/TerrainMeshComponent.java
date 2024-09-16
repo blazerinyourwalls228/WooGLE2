@@ -74,7 +74,7 @@ public class TerrainMeshComponent extends MeshComponent {
         // Merge triangles into bigger polygons
         ArrayList<ArrayList<_2_Level_BallInstance>> mergedPolygons = new ArrayList<>();
         while (tris.size() > 0) {
-            ArrayList<_2_Level_BallInstance> polygon = new ArrayList<>(Arrays.asList(tris.removeLast()));
+            ArrayList<_2_Level_BallInstance> polygon = new ArrayList<>(Arrays.asList(tris.remove(tris.size() - 1)));
             
             boolean addedVertices;
             do {

@@ -25,6 +25,7 @@ import com.worldOfGoo.text.TextString;
 import com.worldOfGoo.text.TextStrings;
 import com.worldOfGoo2.level.*;
 import com.worldOfGoo2.misc._2_Point;
+import com.worldOfGoo2.util.ItemHelper;
 import javafx.geometry.Point2D;
 
 import java.util.HashSet;
@@ -195,15 +196,13 @@ public class ObjectAdder {
 
         int i = switch (level.getCurrentlySelectedSection()) {
             case "Terrain" -> 0;
-            case "Terrain Groups" -> 1;
-            case "Balls" -> 2;
-            case "Items" -> 3;
             case "Pins" -> 4;
             case "Camera" -> 5;
             case "Addin" -> 6;
             default -> -1;
         };
         FXHierarchy.getNewHierarchySwitcherButtons().getSelectionModel().select((i + 1) % 7);
+        FXHierarchy.getNewHierarchySwitcherButtons().getSelectionModel().select((i + 1) % 6);
         FXHierarchy.getNewHierarchySwitcherButtons().getSelectionModel().select(i);
 
         FXHierarchy.getHierarchy().getSelectionModel().clearSelection();
@@ -385,5 +384,25 @@ public class ObjectAdder {
         }
 
     }
+
+    public static void addWOG2Item(String type) {
+        EditorObject targetItem = ObjectCreator.create2(_2_Level_Item.class, ((WOG2Level)(LevelManager.getLevel())).getLevel(), LevelManager.getLevel().getVersion());
+        assert targetItem != null;
+        EditorObject pointPos = ObjectCreator.create2(_2_Point.class, targetItem, targetItem.getVersion());
+        assert pointPos != null;
+        pointPos.setAttribute("x", 0);
+        pointPos.setAttribute("y", 0);
+        pointPos.setTypeID("pos");
+        EditorObject pointScale = ObjectCreator.create2(_2_Point.class, targetItem, targetItem.getVersion());
+        assert pointScale != null;
+        pointScale.setAttribute("x", 1);
+        pointScale.setAttribute("y", 1);
+        pointScale.setTypeID("scale");
+        ((WOG2Level)(LevelManager.getLevel())).getObjects().add(targetItem);
+        targetItem.setAttribute("type", type);
+        targetItem.onLoaded();
+        targetItem.update();
+    }
+
 
 }

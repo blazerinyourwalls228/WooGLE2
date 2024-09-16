@@ -1,6 +1,7 @@
 package com.woogleFX.editorObjects.splineGeom;
 
 import com.woogleFX.editorObjects.EditorObject;
+import com.woogleFX.editorObjects.objectCreators.ObjectAdder;
 import com.woogleFX.editorObjects.objectCreators.ObjectCreator;
 import com.woogleFX.engine.LevelManager;
 import com.woogleFX.engine.undoHandling.UndoManager;
@@ -8,6 +9,11 @@ import com.woogleFX.engine.undoHandling.userActions.DeleteSplinePointAction;
 import com.woogleFX.engine.undoHandling.userActions.ObjectCreationAction;
 import com.woogleFX.engine.undoHandling.userActions.UserAction;
 import com.woogleFX.gameData.level.WOG1Level;
+import com.woogleFX.gameData.level.WOG2Level;
+import com.worldOfGoo2.level._2_Level_BallInstance;
+import com.worldOfGoo2.level._2_Level_Strand;
+import com.worldOfGoo2.level._2_Level_TerrainGroup;
+import com.worldOfGoo2.misc._2_Point;
 import javafx.geometry.Point2D;
 
 import java.awt.geom.QuadCurve2D;
@@ -15,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SplineGeometryPlacer {
+
+    private static int biggestUID = 10000;
 
     private static final double TOLERANCE = 0.001;
 
@@ -650,5 +658,68 @@ public class SplineGeometryPlacer {
 
     }
 
+    public static void placeTerrain() {
+        EditorObject prevPoint = ObjectCreator.create2(_2_Point.class, null, LevelManager.getLevel().getVersion());
+        prevPoint.setAttribute("x", 0);
+        prevPoint.setAttribute("y", 0);
+        WOG2Level level = (WOG2Level) LevelManager.getLevel();
+        EditorObject group = ObjectCreator.create2(_2_Level_TerrainGroup.class, level.getLevel(), LevelManager.getLevel().getVersion());
+        int newGroupIndex = level.getObjects().stream().filter(obj -> obj instanceof _2_Level_TerrainGroup).toList().size();
+        group.setTypeID("terrainGroups");
+        level.getLevel().getChildren("terrainGroups").add(group);
+        level.getObjects().add(group);
+        List<EditorObject> myFatBalls = level.getObjects().stream().filter(obj -> obj instanceof _2_Level_BallInstance).toList();
+        List<EditorObject> nodes = new ArrayList<>();
+        List<EditorObject> strands = new ArrayList<>();
+        for (int i = 0; i < SplineManager.getPointCount(); i++) {
+            double x = SplineManager.getSplinePoint(i).getX();
+            double y = SplineManager.getSplinePoint(i).getY();
+            // i did it because it was placing multiple terrain goos in the same place
+            if (Math.abs(prevPoint.getAttribute("x").doubleValue() - x) > 0.025 || Math.abs(prevPoint.getAttribute("y").doubleValue() - (-y)) > 0.00125) {
+                EditorObject terrainNode = ObjectCreator.create2(_2_Level_BallInstance.class, level.getLevel(), LevelManager.getLevel().getVersion());
+                EditorObject point = ObjectCreator.create2(_2_Point.class, terrainNode, terrainNode.getVersion());
+                point.setAttribute("x", x);
+                point.setAttribute("y", -y);
+                point.setTypeID("pos");
+                terrainNode.setAttribute("pos", x + "," + -y);
+                //terrainNode.setAttribute("typeEnum", "Terrain");
+                terrainNode.setAttribute("type", "Terrain");
+                terrainNode.setAttribute("terrainGroup", newGroupIndex);
+                myFatBalls = myFatBalls.stream().sorted((obj1, obj2) -> obj1.getAttribute("uid").intValue()).toList();
+                terrainNode.setAttribute("uid", biggestUID++);
+                level.getObjects().add(terrainNode);
+                nodes.add(terrainNode);
+                prevPoint = point;
+                terrainNode.update();
+                terrainNode.onLoaded();
+            }
+        }
+        // hardest part: the strands
+        // this part of strands is easier
+        for (int i = 0; i < nodes.size(); i++) {
+            EditorObject node1 = nodes.get(i);
+            EditorObject node2;
+            try {
+                node2 = nodes.get(i + 1);
+            } catch (IndexOutOfBoundsException e) {
+                node2 = nodes.get(0);
+            }
+            EditorObject strand = ObjectCreator.create2(_2_Level_Strand.class, level.getLevel(), level.getVersion());
+            strand.setTypeID("strands");
+            strand.setAttribute("ball1UID", node1.getAttribute("uid").intValue());
+            strand.setAttribute("ball2UID", node2.getAttribute("uid").intValue());
+            strand.setAttribute("type", 10);
+            strand.setAttribute("filled", true);
+            strands.add(strand);
+            level.getObjects().add(strand);
+            ObjectAdder.addAnything(strand);
+            node1.update();
+            node2.update();
+            strand.update();
+        }
+        SplineManager.clear();
+        // пиздец starts here
+        // пиздец didnt come yet, sorry
+    }
 
 }
